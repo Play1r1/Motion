@@ -326,7 +326,7 @@ class TgBadge {
 
 // ------------------------------------------------------------------ background
 const CAM = { x: 0, y: 0, s: 1, rz: 0 };
-const BGP = { deep: 0 };   // 0 = light brand gradient, 1 = deep end-card blue
+const BGP = { deep: 0, white: 0 };   // deep: end-card blue; white: brand off-white (logo sheet)
 let bgCtx, fieldCv, fieldCtx, fieldImg, dotsCv, dotsCtx;
 const FW_ = 72, FH_ = 128;
 let VIG;
@@ -343,6 +343,7 @@ function initBg() {
   VIG.addColorStop(1, 'rgba(18,46,110,0.22)');
 }
 const RAMP_L = [[0, [241, 247, 255]], [0.38, [214, 231, 252]], [0.66, [160, 198, 247]], [1, [88, 146, 234]]];
+const RAMP_W = [[0, [250, 249, 246]], [0.45, [247, 247, 244]], [0.8, [240, 242, 245]], [1, [231, 236, 244]]];
 const RAMP_D = [[0, [92, 142, 236]], [0.4, [54, 104, 214]], [0.7, [30, 70, 172]], [1, [14, 36, 104]]];
 function ramp(R, v) {
   v = clamp(v);
@@ -364,9 +365,10 @@ function drawBg(t) {
       let f = 0.5 + 0.34 * sn(u * 0.9, v * 0.62, t * 0.9, 0.7) + 0.16 * sn(u * 1.9 + 3, v * 1.4, t * 1.3, 2.1);
       // brand bias: deeper blue toward the lower-left and the edges
       f += 0.16 * (v / 3.9) + 0.1 * Math.abs(u) / 2.2 - 0.06 * (u / 2.2);
-      const cl = ramp(RAMP_L, f), cd = ramp(RAMP_D, f);
+      const cl = ramp(RAMP_L, f), cd = ramp(RAMP_D, f), cw = ramp(RAMP_W, f);
       const k = (j * FW_ + i) * 4;
-      d[k] = lerp(cl[0], cd[0], BGP.deep); d[k + 1] = lerp(cl[1], cd[1], BGP.deep); d[k + 2] = lerp(cl[2], cd[2], BGP.deep); d[k + 3] = 255;
+      for (let c = 0; c < 3; c++) d[k + c] = lerp(lerp(cl[c], cd[c], BGP.deep), cw[c], BGP.white);
+      d[k + 3] = 255;
     }
   }
   fieldCtx.putImageData(fieldImg, 0, 0);
@@ -379,15 +381,17 @@ function drawBg(t) {
   bgCtx.fillStyle = '#ffffff';
   for (let y = oy - G; y < H + G; y += G) {
     for (let x = ox - G; x < W + G; x += G) {
-      const a = clamp((sn(x / 260 + 0.3, y / 300, t * 0.6, 4.2) - 0.12) * 2.1) * (0.55 - 0.3 * BGP.deep);
+      const a = clamp((sn(x / 260 + 0.3, y / 300, t * 0.6, 4.2) - 0.12) * 2.1) * (0.55 - 0.3 * BGP.deep) * (1 - BGP.white);
       if (a < 0.02) continue;
       bgCtx.globalAlpha = a;
       bgCtx.fillRect(x - 1.5, y - 1.5, 3, 3);
     }
   }
   bgCtx.globalAlpha = 1;
+  bgCtx.globalAlpha = 1 - 0.75 * BGP.white;
   bgCtx.fillStyle = VIG;
   bgCtx.fillRect(0, 0, W, H);
+  bgCtx.globalAlpha = 1;
 }
 
 // ------------------------------------------------------------------ bootstrap
@@ -408,7 +412,7 @@ async function boot() {
 }
 
 window.seek = (t, frame = Math.round(t * FPS)) => {
-  CAM.x = 0; CAM.y = 0; CAM.s = 1; CAM.rz = 0; BGP.deep = 0;
+  CAM.x = 0; CAM.y = 0; CAM.s = 1; CAM.rz = 0; BGP.deep = 0; BGP.white = 0;
   for (const s of SCENES) s.update(t);
   $('#cam').style.transform = `translate(${CAM.x.toFixed(2)}px, ${CAM.y.toFixed(2)}px) scale(${CAM.s.toFixed(4)}) rotateZ(${CAM.rz.toFixed(3)}deg)`;
   drawBg(t);

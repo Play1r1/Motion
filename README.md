@@ -15,14 +15,14 @@ A 27.5 s, 1080×1920 @ 30 fps promo reel for the INCPT Wallet Telegram mini app 
 |---|---|---|
 | 0.0 | ОПЛАТИТЬ ПОДПИСКУ С КРИПТЫ? | Subscription payments float in parallax: After Effects, APPLE.COM/BILL, HIGGSFIELD |
 | 2.5 | И БЕЗ KYC? | The payments settle into a frosted tray, and one is tapped |
-| 5.0 | [logo] INCPT WALLET | Drop: the logo spins in, locked up with the wordmark on foil highlight bands (logo gradient). The phone rises; Получить/Отправить lift off |
+| 5.0 | INCPT WALLET | Drop. The phone rises with the home screen. Получить/Отправить lift off |
 | 7.5 | КАРТА В ОДИН КЛИК | Card-issue sheet. The card flies out. Tap on «Оформить карту · $50» |
 | 9.4 | БЕЗ KYC | The «OneClick MasterCard NoKYC» title lifts off |
 | 10.6 | APPLE PAY И GOOGLE PAY | Both ✓ rows lift off |
 | 12.5 | ПОПОЛНЯЙ → ПЛАТИ → ВЫВОДИ | My cards: top-up tap and the +$22 row, payments fan out, withdraw tap |
 | 16.25 | ПО ВСЕМУ МИРУ | Holo card in 3D with a stream of real transactions |
 | 18.75 | ВСЁ ПРЯМО В TELEGRAM | Home screen scrolls through balance → cards → operations. The Telegram header lifts |
-| 22.3 | INCPT WALLET · AI-криптокошелёк и карты | End card on deep brand blue: the logo flies in from depth, the wordmark sits on foil highlight bands, then a «Доступен в Telegram» badge |
+| 22.3 | INCPT WALLET · AI-КРИПТОКОШЕЛЁК И КАРТЫ | End card in the INCPT IO brand-sheet style on off-white: the logo flies in from depth, then «INCPT WALLET» (WALLET in the logo gradient), a tracked tagline, and a «Доступен в Telegram» badge |
 
 The copy uses only claims that are visible in the app: OneClick, NoKYC, Apple/Google Pay, «онлайн-платежи по всему миру», and the Telegram mini app. "AI" comes from the product positioning.
 

@@ -93,7 +93,7 @@ scene({
   },
 });
 
-// ======================================================================= 3. DROP — [logo] INCPT WALLET
+// ======================================================================= 3. DROP — INCPT WALLET
 scene({
   init() {
     const cam = $('#cam');
@@ -101,43 +101,16 @@ scene({
     this.recv = new Cut(this.ph, 'btn_receive');
     this.send = new Cut(this.ph, 'btn_send');
     this.tap = new Tap(this.ph, 200);
-    // lock-up: logo left of a two-line, left-aligned "INCPT / WALLET" with foil highlight bands
-    this.h = new Headline('INCPT\nWALLET', { y: TXT_TOP - 6, size: 140, hl: true, align: 'left', width: null, left: 0 });
-    this.logo = new LogoMark();
-    this.lock = null;
-    cue(4.9, 'whoosh', { dur: 0.35, gain: 0.5, up: true });
+    this.h = new Headline('INCPT\nWALLET', { y: TXT_TOP - 10, size: 150 });
     cue(4.98, 'impact', { gain: 1.0 });
-    cue(5.04, 'shimmer', { gain: 0.28 });
-    cue(5.06, 'tick', { gain: 0.5 }); cue(5.18, 'tick', { gain: 0.5 });
+    cue(5.0, 'tick', { gain: 0.5 }); cue(5.12, 'tick', { gain: 0.5 });
     cue(6.17, 'whoosh', { dur: 0.35, gain: 0.5 });
     cue(6.25, 'pop', { gain: 0.6 }); cue(6.33, 'pop', { gain: 0.55, pitch: 1.12 });
     cue(6.88, 'tap', { gain: 0.7 });
     cue(7.14, 'whoosh', { dur: 0.45, gain: 0.95, pan: -0.8 });
   },
-  layout() {
-    const el = this.h.el, prev = el.style.display;
-    el.style.display = '';
-    const textW = el.offsetWidth, textH = el.offsetHeight;
-    el.style.display = prev;
-    const LH = 272, LW = LH * MANIFEST.logo.size[0] / MANIFEST.logo.size[1], GAP = 44;
-    const OVER = 0.1 * this.h.size;                    // highlight band overhang on each side
-    const x0 = (W - (LW + GAP + textW + 2 * OVER)) / 2;
-    el.style.left = x0 + LW + GAP + OVER + 'px';
-    this.lock = { x: x0 + LW / 2, y: TXT_TOP - 6 + textH / 2, h: LH };
-  },
   update(t) {
-    if (!this.lock) this.layout();
-    this.h.at(t, 5.06, 7.2, { stagger: 0.12, dy: 0.5 });
-    this.h.bandsAt(t, 5.3, 7.2);
-    // logo spins in on the drop, breathes, then leaves with the whip
-    const L = this.lock;
-    const pin = oX(prog(t, 4.86, 5.3)), pout = iX(prog(t, 7.16, 7.42));
-    this.logo.set({
-      x: L.x - pout * 700, y: L.y, h: lerp(90, L.h, pin),
-      ry: lerp(-150, 0, pin) + kf(t, [[5.3, 0], [7.2, 10, lin]]), rz: lerp(-35, 0, pin), rx: kf(t, [[5.3, 0], [7.2, -4, lin]]),
-      o: clamp((t - 4.86) * 9) * (1 - pout), blur: (1 - pin) * 10 + pout * 12,
-      sheen: vis(t, 5.2, 6.1) ? prog(t, 5.2, 6.1) : null,
-    });
+    this.h.at(t, 5.0, 7.2, { stagger: 0.12, dy: 0.5 });
     const on = vis(t, 4.6, 7.55);
     this.ph.set({ vis: on });
     if (!on) return;
@@ -355,38 +328,56 @@ scene({
 });
 
 // ======================================================================= 10. END CARD
+// Brand lock-up in the style of the INCPT IO logo sheet: logo, "INCPT WALLET" (WALLET in the
+// logo gradient), a tracked grey tagline, then the "Доступен в Telegram" badge — on brand off-white.
 scene({
   init() {
     this.logo = new LogoMark();
-    this.h = new Headline('INCPT\nWALLET', { y: 836, size: 150, hl: true });
-    this.sub = new Headline('AI-криптокошелёк и карты', { y: 1128, size: 46, color: 'rgba(255,255,255,0.94)', cls: 'sub', lh: 1.1 });
-    Object.assign(this.sub.el.style, { fontFamily: "'Inter Variable', sans-serif", fontVariationSettings: "'opsz' 32", fontWeight: '600', letterSpacing: '-0.01em' });
+    this.lock = document.createElement('div');
+    this.lock.className = 'lockup';
+    this.lock.innerHTML = '<div class="lk-title"><span class="lk-w lk-incpt">INCPT</span><span class="lk-w lk-io">WALLET</span></div><div class="lk-tag">AI-КРИПТОКОШЕЛЁК И КАРТЫ</div>';
+    $('#text').appendChild(this.lock);
+    this.title = this.lock.querySelector('.lk-title');
+    this.words = [...this.lock.querySelectorAll('.lk-w')];
+    this.tag = this.lock.querySelector('.lk-tag');
     this.badge = new TgBadge('Доступен в', 'Telegram');
+    this.badge.el.classList.add('dark');
     cue(22.4, 'whoosh', { dur: 0.5, gain: 0.6, up: true });
     cue(22.82, 'impact', { gain: 0.8, soft: true });
     cue(22.9, 'shimmer', { gain: 0.4 });
-    cue(22.92, 'tick', { gain: 0.45 }); cue(23.04, 'tick', { gain: 0.45 });
-    cue(23.78, 'pop', { gain: 0.65, pitch: 0.85 });
+    cue(23.0, 'tick', { gain: 0.4 }); cue(23.14, 'tick', { gain: 0.4 });
+    cue(23.86, 'pop', { gain: 0.65, pitch: 0.85 });
     cue(25.6, 'shimmer', { gain: 0.22 });
   },
   update(t) {
     const on = t >= 22.2;
-    if (!on) { this.logo.set({ o: 0 }); this.badge.set({ o: 0 }); this.h.at(t, 99); this.sub.at(t, 99); return; }
-    BGP.deep = tw(t, 22.2, 22.95, 0, 1, ioC);
+    this.lock.style.display = on ? '' : 'none';
+    if (!on) { this.logo.set({ o: 0 }); this.badge.set({ o: 0 }); return; }
+    BGP.white = tw(t, 22.2, 22.95, 0, 1, ioC);
     CAM.s = kf(t, [[22.6, 1.0], [27.5, 1.05, lin]]);
     // logo flies in from depth, spinning to face camera, then floats
     const pin = oX(prog(t, 22.36, 23.0));
-    const fl = t - 23.0;
+    const fl = Math.max(0, t - 23.0);
     this.logo.set({
-      x: 540, y: 575 + (1 - pin) * 120 - Math.max(0, fl) * 5, h: lerp(70, 430, pin),
-      ry: lerp(-160, -8, pin) + Math.max(0, fl) * 3.4, rz: lerp(-40, -5, pin) + Math.max(0, fl) * 0.5,
-      rx: Math.sin(Math.max(0, fl) * 0.9) * 3, o: clamp((t - 22.36) * 7), blur: (1 - pin) * 12,
-      sheen: vis(t, 22.95, 23.9) ? prog(t, 22.95, 23.9) : vis(t, 25.5, 26.4) ? prog(t, 25.5, 26.4) : null, shadow: 0.9,
+      x: 540, y: 640 + (1 - pin) * 120 - fl * 5, h: lerp(80, 520, pin),
+      ry: lerp(-160, -6, pin) + fl * 3, rz: lerp(-40, -2, pin) + fl * 0.4,
+      rx: Math.sin(fl * 0.9) * 3, o: clamp((t - 22.36) * 7), blur: (1 - pin) * 12,
+      sheen: vis(t, 22.95, 23.9) ? prog(t, 22.95, 23.9) : vis(t, 25.5, 26.4) ? prog(t, 25.5, 26.4) : null, shadow: 0.55,
     });
-    this.h.bandsAt(t, 22.84);
-    this.h.at(t, 22.9, null, { stagger: 0.12, dy: 0.5 });
-    this.sub.at(t, 23.36, null, { stagger: 0.05, dur: 0.6, dy: 0.6, blur: 10 });
-    const pb = oX(prog(t, 23.74, 24.4));
-    this.badge.set({ y: 1222, o: clamp((t - 23.74) * 6), dy: (1 - pb) * 60, s: lerp(0.92, 1, pb), blur: (1 - pb) * 8 });
+    // "INCPT WALLET": words rise + un-blur while the tracking settles from wide to the logo's spacing
+    const ls = lerp(0.34, 0.12, Ease.outCubic(prog(t, 22.98, 24.0)));
+    Object.assign(this.title.style, { letterSpacing: ls + 'em', paddingLeft: ls + 'em' });
+    this.words.forEach((w, i) => {
+      const p = prog(t, 22.98 + i * 0.14, 22.98 + i * 0.14 + 0.6), e = Ease.outExpo(p);
+      w.style.opacity = clamp(p * 3).toFixed(3);
+      w.style.transform = `translateY(${((1 - e) * 0.45).toFixed(4)}em)`;
+      w.style.filter = e < 0.99 ? `blur(${((1 - e) * 12).toFixed(2)}px)` : '';
+    });
+    this.words[1].style.backgroundPosition = `${(t * 18) % 200}% 50%`;
+    const ts = lerp(0.62, 0.3, Ease.outCubic(prog(t, 23.45, 24.5)));
+    const pt = prog(t, 23.45, 24.1);
+    Object.assign(this.tag.style, { letterSpacing: ts + 'em', paddingLeft: ts + 'em', opacity: clamp(pt * 1.6).toFixed(3) });
+    const pb = oX(prog(t, 23.82, 24.5));
+    this.badge.set({ y: 1300, o: clamp((t - 23.82) * 6), dy: (1 - pb) * 60, s: lerp(0.92, 1, pb), blur: (1 - pb) * 8 });
   },
 });

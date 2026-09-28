@@ -82,10 +82,40 @@ def over(dst_rgb, dst_a, src_rgb, src_a):
 SHADOW_COL = (22, 48, 104)
 
 
-def cutout(name, scr, box, r, pad=90, shadow=True, inset=0.6, sh_blur=26, sh_dy=22, sh_op=0.26):
+def paint_corners(scr, box, crop, r, zone=120, tol=34):
+    """The real UI element has rounder (continuous) corners than our mask: in the corner
+    wedges the crop still shows screen background. Detect those pixels by comparing with
+    the background sampled just outside each corner, then paint them in from the element."""
+    import cv2
+    h, w = crop.shape[:2]
+    x0, y0, x1, y1 = box
+    full = np.asarray(screens[scr]).astype(np.float32)
+    ours = sdf_rrect(w, h, r, ss=2) > 0.0
+    ys, xs = np.mgrid[0:h, 0:w]
+    hole = np.zeros((h, w), bool)
+    for cx, cy, sx, sy in [(0, 0, -1, -1), (w, 0, 1, -1), (0, h, -1, 1), (w, h, 1, 1)]:
+        bgc = full[int(np.clip(y0 + cy + sy * 5, 0, SH - 1)), int(np.clip(x0 + cx + sx * 5, 0, SW - 1))]
+        zone_m = (np.abs(xs - cx) < zone) & (np.abs(ys - cy) < zone)
+        near_bg = np.sqrt(((crop - bgc) ** 2).sum(axis=2)) < tol
+        # only the part connected to the very corner (never interior highlights)
+        cand = (zone_m & near_bg).astype(np.uint8)
+        n, lab = cv2.connectedComponents(cand)
+        seed = lab[min(max(cy - (cy > 0), 0), h - 1), min(max(cx - (cx > 0), 0), w - 1)]
+        if seed > 0:
+            hole |= lab == seed
+    hole = cv2.dilate(hole.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
+    hole &= ours
+    img = np.clip(crop, 0, 255).astype(np.uint8)
+    out = cv2.inpaint(img[..., ::-1].copy(), hole.astype(np.uint8) * 255, 9, cv2.INPAINT_TELEA)[..., ::-1]
+    return out.astype(np.float32)
+
+
+def cutout(name, scr, box, r, pad=90, shadow=True, inset=0.6, sh_blur=26, sh_dy=22, sh_op=0.26, true_r=None):
     x0, y0, x1, y1 = box
     w, h = x1 - x0, y1 - y0
     crop = np.asarray(screens[scr].crop(box)).astype(np.float32)
+    if true_r:
+        crop = paint_corners(scr, box, crop, r)
     a = sdf_rrect(w, h, r, inset=inset)
     if shadow:
         s_rgb, s_a = contour_shadow(a, pad, sh_blur, sh_dy, SHADOW_COL, sh_op)
@@ -120,11 +150,11 @@ ops = [("op_ae", 701), ("op_apple_out", 907), ("op_higgs", 1113), ("op_apple_in"
 for n, y in ops:
     cutout(n, 3, (37, y, 883, y + 182), 48)
 # Screen 4 – my cards
-cutout("card_main", 4, (68, 396, 851, 892), 52, pad=120, sh_blur=40, sh_dy=34, sh_op=0.30)
+cutout("card_main", 4, (68, 396, 851, 892), 52, pad=120, sh_blur=40, sh_dy=34, sh_op=0.30, true_r=82)
 for n, x in [("btn_topup", 68), ("btn_withdraw", 270), ("btn_details", 471), ("btn_settings", 673)]:
     cutout(n, 4, (x, 965, x + 178, 1093), 64)
 # Screen 5 – card issue sheet
-cutout("card_issue", 5, (36, 511, 810, 1002), 52, pad=120, sh_blur=40, sh_dy=34, sh_op=0.30)
+cutout("card_issue", 5, (36, 511, 810, 1002), 52, pad=120, sh_blur=40, sh_dy=34, sh_op=0.30, true_r=82)
 cutout("btn_issue", 5, (36, 1671, 884, 1799), 64, inset=1.0)
 cutout("row_applepay", 5, (0, 1308, 920, 1402), 47)
 cutout("row_googlepay", 5, (0, 1420, 920, 1514), 47)
