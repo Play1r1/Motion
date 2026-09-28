@@ -193,6 +193,43 @@ to_img(rgb_, al_).save(os.path.join(OUT, "tg_header.png"))
 manifest["cutouts"]["tg_header"] = {"src": "build/tg_header.png", "screen": 1, "box": [0, 160, SW, 140], "pad": 90,
                                     "size": [SW + 180, 140 + 180], "r": 46}
 
+# ---------------------------------------------------------------- empty slots
+# When a UI element lifts off the phone, its slot must not keep a copy of it: these patches
+# rebuild the screen background behind each element (vertical blend of the rows just above
+# and below, or a flat sample), and sit on the screen under the lifted cut-out.
+manifest["slots"] = {}
+
+
+def slot(key, scr, box, m=5, mode="vlerp", sample=None):
+    arr = np.asarray(screens[scr]).astype(np.float32)
+    x0, y0, x1, y1 = box
+    x0, y0, x1, y1 = max(0, x0 - m), max(0, y0 - m), min(SW, x1 + m), min(SH, y1 + m)
+    h = y1 - y0
+    if mode == "vlerp":
+        top = arr[y0 - 2, x0:x1]
+        bot = arr[min(SH - 1, y1 + 1), x0:x1]
+        k = np.linspace(0, 1, h)[:, None, None]
+        patch = top[None] * (1 - k) + bot[None] * k
+        patch = np.stack([ndimage.gaussian_filter(patch[..., c], (0, 3)) for c in range(3)], -1)
+    else:
+        patch = np.zeros((h, x1 - x0, 3), np.float32) + arr[sample[1], sample[0]]
+    # feather the patch edge so it melts into the screenshot
+    ys, xs = np.mgrid[0:h, 0:x1 - x0]
+    edge = np.minimum.reduce([xs, ys, x1 - x0 - 1 - xs, h - 1 - ys]).astype(np.float32)
+    a = np.clip(edge / 3.0, 0, 1)
+    to_img(patch, a).save(os.path.join(OUT, f"slot_{key}.png"))
+    manifest["slots"][key] = {"src": f"build/slot_{key}.png", "x": x0, "y": y0, "w": x1 - x0, "h": h}
+
+
+slot("s1_buttons", 1, (20, 856, 900, 1044), m=0)      # both pills + their soft shadows
+slot("s5_card", 5, (36, 511, 810, 1002), m=5, mode="const", sample=(20, 700))
+slot("s5_title", 5, (124, 1080, 796, 1160), m=3, mode="const", sample=(100, 1120))
+slot("s5_applepay", 5, (0, 1308, 920, 1402), m=2, mode="const", sample=(460, 1300))
+slot("s5_googlepay", 5, (0, 1420, 920, 1514), m=2, mode="const", sample=(460, 1300))
+slot("s4_card", 4, (68, 396, 851, 892), m=5)
+slot("s4_op_ae", 4, (37, 1354, 883, 1533), m=4, mode="const", sample=(460, 1542))
+slot("s4_op_apple", 4, (37, 1551, 883, 1728), m=3, mode="const", sample=(460, 1542))
+
 # ---------------------------------------------------------------- stitched scroll page
 # page_y = screen_y - 300 + scroll ; s1 scroll 0, s2 scroll 1024, s3 scroll 1300
 HEAD = 300

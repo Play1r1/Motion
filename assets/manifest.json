@@ -394,6 +394,64 @@
   "screenRadius": 92,
   "shadowPad": 160
  },
+ "slots": {
+  "s1_buttons": {
+   "src": "build/slot_s1_buttons.png",
+   "x": 20,
+   "y": 856,
+   "w": 880,
+   "h": 188
+  },
+  "s5_card": {
+   "src": "build/slot_s5_card.png",
+   "x": 31,
+   "y": 506,
+   "w": 784,
+   "h": 501
+  },
+  "s5_title": {
+   "src": "build/slot_s5_title.png",
+   "x": 121,
+   "y": 1077,
+   "w": 678,
+   "h": 86
+  },
+  "s5_applepay": {
+   "src": "build/slot_s5_applepay.png",
+   "x": 0,
+   "y": 1306,
+   "w": 920,
+   "h": 98
+  },
+  "s5_googlepay": {
+   "src": "build/slot_s5_googlepay.png",
+   "x": 0,
+   "y": 1418,
+   "w": 920,
+   "h": 98
+  },
+  "s4_card": {
+   "src": "build/slot_s4_card.png",
+   "x": 63,
+   "y": 391,
+   "w": 793,
+   "h": 506
+  },
+  "s4_op_ae": {
+   "src": "build/slot_s4_op_ae.png",
+   "x": 33,
+   "y": 1350,
+   "w": 854,
+   "h": 187
+  },
+  "s4_op_apple": {
+   "src": "build/slot_s4_op_apple.png",
+   "x": 34,
+   "y": 1548,
+   "w": 852,
+   "h": 183
+  }
+ },
  "page": {
   "src": "build/page_home.jpg",
   "h": 3000,

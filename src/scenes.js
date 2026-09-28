@@ -25,6 +25,8 @@ function lift(node, t, t0, dur, to, back = null) {
 }
 // press: 0 -> 1 -> 0 around a tap
 const press = (t, t0) => (t < t0 ? 0 : t < t0 + 0.12 ? prog(t, t0, t0 + 0.12) : 1 - prog(t, t0 + 0.12, t0 + 0.34));
+// show/hide an empty-slot patch
+const slotO = (im, o) => { im.style.opacity = clamp(o).toFixed(3); };
 // centre of a cut-out in phone-local px
 const home = n => { const c = MANIFEST.cutouts[n], so = MANIFEST.phone.screenOffset; return [so[0] + c.box[0] + c.box[2] / 2, so[1] + c.box[1] + c.box[3] / 2]; };
 
@@ -100,6 +102,7 @@ scene({
     this.ph = new Phone(cam, 'home');
     this.recv = new Cut(this.ph, 'btn_receive');
     this.send = new Cut(this.ph, 'btn_send');
+    this.slotBtns = this.ph.addSlot('s1_buttons');
     this.tap = new Tap(this.ph, 200);
     this.h = new Headline('INCPT\nWALLET', { y: TXT_TOP - 10, size: 150 });
     cue(4.98, 'impact', { gain: 1.0 });
@@ -122,8 +125,10 @@ scene({
       rz: tw(t, 4.62, 5.5, -4, 0),
     });
     this.ph.setScroll(0);
-    lift(this.recv, t, 6.25, 0.75, { x: -95, y: -40, z: 170, s: 1.48, rz: -3, ry: 6 });
-    lift(this.send, t, 6.33, 0.75, { x: 95, y: -40, z: 190, s: 1.48, rz: 3, ry: -6 });
+    // both pills leave their slots (the screen underneath shows clean background)
+    slotO(this.slotBtns, (t - 6.25) * 14);
+    lift(this.recv, t, 6.25, 0.75, { x: -95, y: -40, z: 170, s: 1.48, rz: -3 });
+    lift(this.send, t, 6.33, 0.75, { x: 95, y: -40, z: 210, s: 1.48, rz: 3 });
     if (t > 6.33) this.send.set({ s: this.send.p.s * (1 - 0.04 * press(t, 6.88)) });
     const [sx, sy] = home('btn_send');
     this.tap.at(t, 6.88, sx + 95 + 40, sy - 40, 260);
@@ -141,6 +146,10 @@ scene({
     this.title = new Cut(this.ph, 'title_oneclick');
     this.apay = new Cut(this.ph, 'row_applepay');
     this.gpay = new Cut(this.ph, 'row_googlepay');
+    this.slotCard = this.ph.addSlot('s5_card');
+    this.slotTitle = this.ph.addSlot('s5_title');
+    this.slotApay = this.ph.addSlot('s5_applepay');
+    this.slotGpay = this.ph.addSlot('s5_googlepay');
     this.tap = new Tap(this.ph, 200);
     this.h1 = new Headline('КАРТА\nВ ОДИН КЛИК', { y: TXT_TOP, size: 118 });
     this.h2 = new Headline('БЕЗ KYC', { y: TXT_TOP + 40, size: 150 });
@@ -168,21 +177,24 @@ scene({
       x: tw(t, 7.28, 7.95, 1550, 0), y: PHONE_Y + tw(t, 12.28, 12.54, 0, -2400, iX), s: PHONE_S,
       ry: tw(t, 7.28, 7.95, 24, 0) + kf(t, [[7.8, -5], [12.4, 5, lin]]), rx: kf(t, [[7.5, 4], [12.4, -2, lin]]),
     });
-    // card lifts, then steps back for the KYC title
-    lift(this.card, t, 7.7, 0.8, { y: -150, z: 280, s: 1.5, ry: -9, rx: 7, rz: -2 },
-      { t: 9.28, dur: 0.45, to: { y: -300, z: -60, s: 1.0 } });
-    this.card.set({ vis: t < 10.9, ry: this.card.p.ry + kf(t, [[8.5, 0], [9.3, 4, lin]]) });
+    // card lifts out of its slot, then settles back into it before the KYC title rises
+    lift(this.card, t, 7.7, 0.8, { y: -150, z: 280, s: 1.5, ry: -9, rx: 7, rz: -2 }, { t: 9.14, dur: 0.38 });
+    this.card.set({ vis: t < 9.53, ry: this.card.p.ry + kf(t, [[8.5, 0], [9.14, 4, lin], [9.52, 0, ioC]]) });
+    slotO(this.slotCard, (t - 7.7) * 14 * (t < 9.52 ? 1 : 0));
     // issue button: rise, press
     lift(this.btn, t, 8.4, 0.5, { z: 110, s: 1.12 }, { t: 9.28, dur: 0.4 });
     this.btn.set({ s: this.btn.p.s * (1 - 0.05 * press(t, 8.72)) });
     const [bx, by] = home('btn_issue');
     this.tap.at(t, 8.72, bx + 110, by, 190);
-    // NoKYC title chip
-    lift(this.title, t, 9.38, 0.7, { y: -130, z: 300, s: 1.95, rx: 4 }, { t: 10.44, dur: 0.4 });
-    this.title.set({ ry: this.title.p.ry + kf(t, [[9.4, -4], [10.6, 4, lin]]) });
+    // NoKYC title chip (flat to the screen: tilted neighbours would intersect in 3D)
+    lift(this.title, t, 9.5, 0.7, { y: -130, z: 300, s: 1.95 }, { t: 10.44, dur: 0.4 });
+    this.title.set({ rz: kf(t, [[9.5, -1], [10.6, 1, lin]]) });
+    slotO(this.slotTitle, Math.min((t - 9.5) * 14, 1 - Ease.inOutCubic(prog(t, 10.44, 10.84))));
     // wallet rows
-    lift(this.apay, t, 10.6, 0.75, { x: -24, y: -170, z: 230, s: 1.36, rz: -1.5, ry: 5 });
-    lift(this.gpay, t, 10.74, 0.75, { x: 24, y: -100, z: 260, s: 1.36, rz: 1.5, ry: -5 });
+    lift(this.apay, t, 10.6, 0.75, { x: -24, y: -170, z: 230, s: 1.36, rz: -1.5 });
+    lift(this.gpay, t, 10.74, 0.75, { x: 24, y: -100, z: 300, s: 1.36, rz: 1.5 });
+    slotO(this.slotApay, (t - 10.6) * 14);
+    slotO(this.slotGpay, (t - 10.74) * 14);
   },
 });
 
@@ -196,11 +208,14 @@ scene({
     this.bOut = new Cut(this.ph, 'btn_withdraw');
     const so = MANIFEST.phone.screenOffset;
     this.rTop = new Cut(this.ph, 'op_topup', { at: [so[0] + 460, so[1] + 1330] });
+    this.slotCard = this.ph.addSlot('s4_card');
+    this.slotAe = this.ph.addSlot('s4_op_ae');
+    this.slotAp = this.ph.addSlot('s4_op_apple');
     // payments: AE + Apple lift from their real spots on this screen; Higgsfield joins from below
     this.rows = [
-      [new Cut(this.ph, 'op_ae', { at: [so[0] + 460, so[1] + 1355 + 91] }), 13.8, -40, -580, 240, -2.5, 0],
-      [new Cut(this.ph, 'op_apple_out', { at: [so[0] + 460, so[1] + 1552 + 91] }), 13.87, 40, -537, 280, 1.5, 0],
-      [new Cut(this.ph, 'op_higgs', { at: [so[0] + 460, so[1] + 1760 + 91] }), 13.94, -24, -505, 320, -1, 700],
+      [new Cut(this.ph, 'op_ae', { at: [so[0] + 460, so[1] + 1355 + 91] }), 13.8, -40, -580, 280, -2.5, 0],
+      [new Cut(this.ph, 'op_apple_out', { at: [so[0] + 460, so[1] + 1552 + 91] }), 13.87, 40, -537, 340, 1.5, 0],
+      [new Cut(this.ph, 'op_higgs', { at: [so[0] + 460, so[1] + 1760 + 91] }), 13.94, -24, -505, 400, -1, 700],
     ];
     this.tap = new Tap(this.ph, 200);
     this.w1 = new Headline('ПОПОЛНЯЙ', { y: TXT_TOP + 40, size: 136 });
@@ -233,20 +248,23 @@ scene({
       rx: tw(t, 12.3, 13.0, -20, 3) + kf(t, [[13.0, 0], [16, -2, lin]]),
     });
     // card hovers above the action buttons, steps back while the payments fan out
-    lift(this.card, t, 12.66, 0.8, { y: -150, z: 170, s: 1.38, rx: 8, ry: -6, rz: -1.5 },
-      { t: 13.66, dur: 0.5, to: { y: -250, z: 120, s: 1.18, rx: 5, ry: -3, rz: -1 } });
-    this.card.set({ ry: this.card.p.ry + kf(t, [[13.3, 0], [16, 4, lin]]) });
+    // (all lifted pieces stay parallel to the screen; the phone's own drift gives the 3D)
+    lift(this.card, t, 12.66, 0.8, { y: -150, z: 170, s: 1.38, rz: -1.5 },
+      { t: 13.66, dur: 0.5, to: { y: -250, z: 150, s: 1.18, rz: -1 } });
+    slotO(this.slotCard, (t - 12.66) * 14);
     // 1. top-up: button rises + press, then the +$22 row slides up over the phone
     lift(this.bTop, t, 12.92, 0.5, { z: 120, s: 1.3, y: -10 }, { t: 13.62, dur: 0.35 });
     this.bTop.set({ s: this.bTop.p.s * (1 - 0.06 * press(t, 13.12)) });
     const r1in = oX(prog(t, 13.2, 13.9)), r1out = iX(prog(t, 13.6, 13.84));
-    this.rTop.set({ vis: t > 13.18 && t < 13.9, x: -r1out * 1700, y: (1 - r1in) * 1300, z: 260, s: 1.3, rz: -2 + r1in * 1.5, ry: (1 - r1in) * -20 - r1out * 20 });
+    this.rTop.set({ vis: t > 13.18 && t < 13.9, x: -r1out * 1700, y: (1 - r1in) * 1300, z: 260, s: 1.3, rz: -2 + r1in * 1.5 });
     // 2. payments fan out from the list
     this.rows.forEach(([n, t0, dx, dy, dz, rz, below], i) => {
       const pin = oX(prog(t, t0, t0 + 0.75));
       const pout = iX(prog(t, 14.8 + i * 0.03, 15.06 + i * 0.03));
-      n.set({ vis: t > t0 - 0.01 && t < 15.2, x: lerp(0, dx, pin) + pout * 1700, y: lerp(below, dy, pin), z: lerp(0, dz, pin), s: lerp(1, 1.25, pin), rz: lerp(0, rz, pin), ry: lerp(0, -8 + i * 6, pin) + (t - t0) * 2 + pout * 20 });
+      n.set({ vis: t > t0 - 0.01 && t < 15.2, x: lerp(0, dx, pin) + pout * 1700, y: lerp(below, dy, pin), z: lerp(0, dz, pin), s: lerp(1, 1.25, pin), rz: lerp(0, rz, pin) + (t - t0) * 0.6 });
     });
+    slotO(this.slotAe, (t - 13.8) * 14);
+    slotO(this.slotAp, (t - 13.87) * 14);
     // 3. withdraw: button rises big, press
     lift(this.bOut, t, 15.04, 0.6, { z: 230, s: 1.95, y: -40, x: 10 });
     this.bOut.set({ s: this.bOut.p.s * (1 - 0.06 * press(t, 15.42)) });
@@ -263,13 +281,13 @@ scene({
     this.card = new Cut(cam, 'card_main', { onScreen: false });
     this.rows = [
       ['op_ae', -170, 380, -700, 0.7, 2.6],
-      ['op_apple_out', 330, 860, 220, 0.84, 0],
+      ['op_apple_out', 330, 860, 400, 0.78, 0],
       ['op_higgs', 200, 120, -1100, 0.62, 4.2],
-      ['op_apple_in', -330, 1150, 120, 0.8, 0],
+      ['op_apple_in', -330, 1150, 360, 0.74, 0],
       ['op_topup', 180, 1300, -1200, 0.58, 4.8],
-      ['op_higgs', 350, 1650, 300, 0.9, 0],
+      ['op_higgs', 350, 1650, 440, 0.82, 0],
       ['op_ae', -200, 1750, -800, 0.66, 3],
-      ['op_apple_out', -350, 2150, 240, 0.86, 0],
+      ['op_apple_out', -350, 2150, 400, 0.8, 0],
     ].map(r => ({ n: new Cut(cam, r[0], { onScreen: false }), x: r[1], y: r[2], z: r[3], s: r[4], blur: r[5] }));
     this.h = new Headline('ПО ВСЕМУ\nМИРУ', { y: TXT_TOP, size: 136 });
     cue(16.2, 'whoosh', { dur: 0.6, gain: 0.7, pan: 0.6 });

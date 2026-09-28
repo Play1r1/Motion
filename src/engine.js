@@ -187,6 +187,14 @@ class Phone extends Node {
       this.screenEl.appendChild(mkImg(`screens/${name}.jpg`, 'fill'));
     }
   }
+  // clean background patch that hides an element's slot on this screen once it lifts off
+  addSlot(key) {
+    const S = MANIFEST.slots[key];
+    const im = mkImg(S.src, 'abs');
+    Object.assign(im.style, { left: S.x + 'px', top: S.y + 'px', opacity: '0' });
+    this.screenEl.appendChild(im);
+    return im;
+  }
   setScroll(v) {
     if (this.page) this.page.style.transform = `translateY(${-v.toFixed(2)}px)`;
   }
@@ -339,8 +347,8 @@ function initBg() {
   fieldCtx = fieldCv.getContext('2d');
   fieldImg = fieldCtx.createImageData(FW_, FH_);
   VIG = bgCtx.createRadialGradient(W / 2, H * 0.46, H * 0.3, W / 2, H * 0.46, H * 0.62);
-  VIG.addColorStop(0, 'rgba(18,46,110,0)');
-  VIG.addColorStop(1, 'rgba(18,46,110,0.22)');
+  VIG.addColorStop(0, 'rgba(58,64,140,0)');
+  VIG.addColorStop(1, 'rgba(58,64,140,0.16)');
 }
 const RAMP_L = [[0, [241, 247, 255]], [0.38, [214, 231, 252]], [0.66, [160, 198, 247]], [1, [88, 146, 234]]];
 const RAMP_W = [[0, [250, 249, 246]], [0.45, [247, 247, 244]], [0.8, [240, 242, 245]], [1, [231, 236, 244]]];
@@ -355,6 +363,17 @@ function ramp(R, v) {
   }
   return R[R.length - 1][1];
 }
+// Brand background: a slow holographic foil field in the INCPT logo palette
+// (mint -> sky -> periwinkle -> lavender -> lilac), deepening toward the edges.
+const FOIL = [[168, 232, 218], [160, 214, 242], [170, 184, 240], [200, 188, 244], [226, 200, 244]];
+const FOIL_DEEP = [120, 150, 222];
+function foil(h) {
+  const n = FOIL.length;
+  h = (((h % 1) + 1) % 1) * n;
+  const i0 = Math.floor(h), f = h - i0, e = f * f * (3 - 2 * f);
+  const a = FOIL[i0], b = FOIL[(i0 + 1) % n];
+  return [lerp(a[0], b[0], e), lerp(a[1], b[1], e), lerp(a[2], b[2], e)];
+}
 function drawBg(t) {
   // parallax: background moves ~35% of the camera and scales a third as much
   const px = -CAM.x * 0.35 / W * 2.2, py = -CAM.y * 0.35 / H * 3.9, ps = 1 / (1 + (CAM.s - 1) * 0.3);
@@ -362,12 +381,20 @@ function drawBg(t) {
   for (let j = 0; j < FH_; j++) {
     for (let i = 0; i < FW_; i++) {
       const u = (i / FW_ - 0.5) * 2.2 * ps + px, v = (j / FH_ - 0.5) * 3.9 * ps + py;
-      let f = 0.5 + 0.34 * sn(u * 0.9, v * 0.62, t * 0.9, 0.7) + 0.16 * sn(u * 1.9 + 3, v * 1.4, t * 1.3, 2.1);
-      // brand bias: deeper blue toward the lower-left and the edges
-      f += 0.16 * (v / 3.9) + 0.1 * Math.abs(u) / 2.2 - 0.06 * (u / 2.2);
-      const cl = ramp(RAMP_L, f), cd = ramp(RAMP_D, f), cw = ramp(RAMP_W, f);
+      // hue flows along diagonal bands like the logo's foil
+      const h = 0.3 + 0.34 * sn(u * 0.8, v * 0.55, t * 0.7, 1.3) + 0.16 * sn(u * 1.7 + 2, v * 1.3, t * 1.1, 3.7) + (u * 0.5 + v * 0.35) * 0.2;
+      let c = foil(h);
+      // soft light pools (keeps dark headlines readable) and deeper foil at the frame edges
+      const L = clamp(0.5 + 0.5 * sn(u * 0.6 + 5, v * 0.45, t * 0.5, 6.1));
+      const lift = 0.1 + 0.3 * L * (1 - Math.abs(v) / 3.2);
+      const deep = clamp(0.08 + 0.22 * (v / 1.95) + 0.16 * Math.abs(u) / 1.1 - 0.12 * L) * 0.45;
+      const cw = ramp(RAMP_W, 0.5 + v * 0.1);
       const k = (j * FW_ + i) * 4;
-      for (let c = 0; c < 3; c++) d[k + c] = lerp(lerp(cl[c], cd[c], BGP.deep), cw[c], BGP.white);
+      for (let q = 0; q < 3; q++) {
+        let x = lerp(c[q], [246, 248, 255][q], lift);
+        x = lerp(x, FOIL_DEEP[q], deep);
+        d[k + q] = lerp(x, cw[q], BGP.white);
+      }
       d[k + 3] = 255;
     }
   }
@@ -375,19 +402,6 @@ function drawBg(t) {
   bgCtx.imageSmoothingEnabled = true;
   bgCtx.imageSmoothingQuality = 'high';
   bgCtx.drawImage(fieldCv, 0, 0, W, H);
-  // drifting dot grid (visible in soft patches, like the reference)
-  const G = 22 * (1 + (CAM.s - 1) * 0.3);
-  const ox = ((-CAM.x * 0.35) % G + G) % G, oy = ((-CAM.y * 0.35 - t * 6) % G + G) % G;
-  bgCtx.fillStyle = '#ffffff';
-  for (let y = oy - G; y < H + G; y += G) {
-    for (let x = ox - G; x < W + G; x += G) {
-      const a = clamp((sn(x / 260 + 0.3, y / 300, t * 0.6, 4.2) - 0.12) * 2.1) * (0.55 - 0.3 * BGP.deep) * (1 - BGP.white);
-      if (a < 0.02) continue;
-      bgCtx.globalAlpha = a;
-      bgCtx.fillRect(x - 1.5, y - 1.5, 3, 3);
-    }
-  }
-  bgCtx.globalAlpha = 1;
   bgCtx.globalAlpha = 1 - 0.75 * BGP.white;
   bgCtx.fillStyle = VIG;
   bgCtx.fillRect(0, 0, W, H);
