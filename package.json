@@ -1,0 +1,28 @@
+{
+  "name": "incpt-wallet-reel",
+  "version": "1.0.0",
+  "description": "INCPT Wallet 9:16 motion reel — deterministic HTML/3D timeline rendered frame-by-frame with Chromium",
+  "scripts": {
+    "assets": "python3 tools/build_assets.py",
+    "sheet": "node tools/render.mjs sheet 0:27.5:0.5",
+    "render": "node tools/render.mjs video --workers 3",
+    "sound": "python3 tools/sound.py",
+    "final": "bash tools/finalize.sh renders/incpt_wallet_reel.mp4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Play1r1/Motion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Play1r1/Motion/issues"
+  },
+  "homepage": "https://github.com/Play1r1/Motion#readme",
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/roboto-flex": "^5.3.0",
+    "playwright-core": "^1.63.0",
+    "sharp": "^0.35.5"
+  },
+  "private": true,
+  "type": "module"
+}
