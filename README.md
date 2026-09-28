@@ -1,7 +1,7 @@
 # INCPT Wallet — motion reel
 
-A 27.5 s, 1080×1920 @ 30 fps promo reel for the INCPT Wallet Telegram mini app (AI crypto wallet and crypto cards). It is cut in the editing language of the Tangem 6.1 "Address Book" reel:
-- light brand-blue canvas with a drifting dot grid
+A 27.5 s, 1080×1920 @ 30 fps promo reel for the INCPT Wallet Telegram mini app (AI crypto wallet and crypto cards). Its pacing follows the editing language of the Tangem 6.1 "Address Book" reel, with INCPT's own look:
+- a slow holographic foil background in the INCPT logo palette (mint, sky, periwinkle, lavender, lilac)
 - heavy, word-by-word headlines
 - real UI elements lifting off a titanium phone mockup
 - whip transitions with real motion blur
