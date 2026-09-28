@@ -12,6 +12,7 @@ import os
 
 import numpy as np
 from PIL import Image, ImageFilter
+from scipy import ndimage
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCR = os.path.join(ROOT, "assets", "screens")
@@ -103,10 +104,17 @@ def paint_corners(scr, box, crop, r, zone=120, tol=34):
         seed = lab[min(max(cy - (cy > 0), 0), h - 1), min(max(cx - (cx > 0), 0), w - 1)]
         if seed > 0:
             hole |= lab == seed
-    hole = cv2.dilate(hole.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
-    hole &= ours
-    img = np.clip(crop, 0, 255).astype(np.uint8)
-    out = cv2.inpaint(img[..., ::-1].copy(), hole.astype(np.uint8) * 255, 9, cv2.INPAINT_TELEA)[..., ::-1]
+    # the card proper, minus its pale anti-aliased rim (also along the straight edges)
+    real = ~hole
+    real[:, :1] = real[:, -1:] = False
+    real[:1, :] = real[-1:, :] = False
+    interior = ndimage.binary_erosion(real, iterations=5)
+    # every pixel outside the interior takes the colour of the nearest interior pixel,
+    # so the corners continue the card's own saturated foil instead of a washed-out blend
+    _, (iy, ix) = ndimage.distance_transform_edt(~interior, return_indices=True)
+    filled = crop[iy, ix]
+    soft = np.stack([ndimage.gaussian_filter(filled[..., c], 2.0) for c in range(3)], -1)
+    out = np.where(interior[..., None], crop, soft)
     return out.astype(np.float32)
 
 
@@ -150,11 +158,11 @@ ops = [("op_ae", 701), ("op_apple_out", 907), ("op_higgs", 1113), ("op_apple_in"
 for n, y in ops:
     cutout(n, 3, (37, y, 883, y + 182), 48)
 # Screen 4 – my cards
-cutout("card_main", 4, (68, 396, 851, 892), 52, pad=120, sh_blur=40, sh_dy=34, sh_op=0.30, true_r=82)
+cutout("card_main", 4, (68, 396, 851, 892), 52, pad=120, inset=1.2, sh_blur=40, sh_dy=34, sh_op=0.30, true_r=82)
 for n, x in [("btn_topup", 68), ("btn_withdraw", 270), ("btn_details", 471), ("btn_settings", 673)]:
     cutout(n, 4, (x, 965, x + 178, 1093), 64)
 # Screen 5 – card issue sheet
-cutout("card_issue", 5, (36, 511, 810, 1002), 52, pad=120, sh_blur=40, sh_dy=34, sh_op=0.30, true_r=82)
+cutout("card_issue", 5, (36, 511, 810, 1002), 52, pad=120, inset=1.2, sh_blur=40, sh_dy=34, sh_op=0.30, true_r=82)
 cutout("btn_issue", 5, (36, 1671, 884, 1799), 64, inset=1.0)
 cutout("row_applepay", 5, (0, 1308, 920, 1402), 47)
 cutout("row_googlepay", 5, (0, 1420, 920, 1514), 47)
@@ -332,7 +340,6 @@ manifest["phone"] = {
 }
 
 # ---------------------------------------------------------------- brand logo (holographic boomerang)
-from scipy import ndimage
 
 src = np.asarray(Image.open(os.path.join(ROOT, "assets", "brand", "logo_source.jpg")).convert("RGB")).astype(np.float32)
 dist = 255 - src.min(axis=2)                      # how far from paper white
