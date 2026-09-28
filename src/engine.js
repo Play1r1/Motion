@@ -195,28 +195,52 @@ class Phone extends Node {
 // ------------------------------------------------------------------ headlines
 // words appear one by one (rise + un-blur), leave with a quick lift + blur
 class Headline {
-  constructor(text, { y = 0, size = 118, color = 'var(--ink)', width = 1000, lh = 0.9, weight = 1000, wdth = 125, track = -0.035, cls = '' } = {}) {
+  // hl: holographic highlight band (logo gradient) behind every line; align: 'center' | 'left'
+  constructor(text, { y = 0, size = 118, color = 'var(--ink)', width = 1000, lh = 0.9, weight = 1000, wdth = 125, track = -0.035, cls = '', hl = false, align = 'center', left = null } = {}) {
     this.el = document.createElement('div');
     this.el.className = 'headline ' + cls;
     Object.assign(this.el.style, {
-      top: y + 'px', fontSize: size + 'px', color, lineHeight: lh, width: width + 'px', left: (W - width) / 2 + 'px',
+      top: y + 'px', fontSize: size + 'px', color, lineHeight: lh,
+      width: width ? width + 'px' : 'auto', left: (left ?? (W - (width || 0)) / 2) + 'px', textAlign: align,
       fontVariationSettings: `'wght' ${weight}, 'wdth' ${wdth}, 'opsz' 60`, letterSpacing: track + 'em',
     });
     this.words = [];
+    this.bands = [];
     for (const line of text.split('\n')) {
       const ld = document.createElement('div');
       ld.className = 'line';
+      const inner = document.createElement('span');
+      inner.className = 'lineInner';
+      if (hl) {
+        const band = document.createElement('div');
+        band.className = 'band';
+        inner.appendChild(band);
+        this.bands.push(band);
+      }
       for (const w of line.split(' ')) {
         const s = document.createElement('span');
         s.className = 'word';
-        s.textContent = w.replace(/_/g, ' ');
-        ld.appendChild(s);
+        s.textContent = w.replace(/_/g, '\u00a0');
+        inner.appendChild(s);
         this.words.push(s);
       }
+      ld.appendChild(inner);
       this.el.appendChild(ld);
     }
     $('#text').appendChild(this.el);
     this.size = size;
+  }
+  // highlight bands wipe in left -> right; the gradient keeps drifting like the logo's foil
+  bandsAt(t, tin, tout = null, { stagger = 0.08, dur = 0.5 } = {}) {
+    this.bands.forEach((b, i) => {
+      const t0 = tin + i * stagger;
+      let sx = Ease.outExpo(prog(t, t0, t0 + dur));
+      let o = clamp((t - t0) * 12);
+      if (tout !== null) { const po = Ease.inCubic(prog(t, tout + i * 0.03, tout + i * 0.03 + 0.22)); o *= 1 - po; }
+      b.style.transform = `scaleX(${sx.toFixed(4)})`;
+      b.style.opacity = o.toFixed(3);
+      b.style.backgroundPosition = `${(20 + t * 14 + i * 30) % 200}% 50%`;
+    });
   }
   // tin: time first word lands; stagger: seconds between words; tout: exit start (null = stays)
   at(t, tin, tout = null, { stagger = 0.1, dur = 0.55, outDur = 0.2, outStagger = 0.03, dy = 0.42, outDy = -0.3, blur = 16, from = 'below' } = {}) {
@@ -240,6 +264,63 @@ class Headline {
       w.style.filter = b > 0.1 ? `blur(${b.toFixed(2)}px)` : '';
     });
     this.el.style.display = any ? '' : 'none';
+  }
+}
+
+// ------------------------------------------------------------------ brand
+// INCPT logo in screen space with its own perspective; a thin sheen sweeps the foil
+class LogoMark {
+  constructor() {
+    const L = MANIFEST.logo;
+    this.el = document.createElement('div');
+    this.el.className = 'logo3d';
+    this.inner = document.createElement('div');
+    this.inner.className = 'logoInner';
+    Object.assign(this.inner.style, { width: L.size[0] + 'px', height: L.size[1] + 'px' });
+    this.shadow = mkImg(L.shadow, 'abs');
+    Object.assign(this.shadow.style, { left: -L.shadowPad + 'px', top: -L.shadowPad + 'px' });
+    this.inner.appendChild(this.shadow);
+    this.inner.appendChild(mkImg(L.src, 'fill'));
+    this.sheen = document.createElement('div');
+    this.sheen.className = 'sheen';
+    const m = `url(${L.src})`;
+    Object.assign(this.sheen.style, { maskImage: m, webkitMaskImage: m });
+    this.inner.appendChild(this.sheen);
+    this.el.appendChild(this.inner);
+    $('#text').appendChild(this.el);
+    this.w = L.size[0]; this.h = L.size[1];
+  }
+  // x, y: centre in screen px; h: rendered height; sheen: 0..1 sweep position (null = hidden)
+  set({ x = 540, y = 960, h = 300, rx = 0, ry = 0, rz = 0, o = 1, blur = 0, sheen = null, shadow = 1 }) {
+    const k = h / this.h;
+    const st = this.inner.style;
+    this.el.style.display = o > 0.002 ? '' : 'none';
+    this.el.style.perspectiveOrigin = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+    st.transform = `translate(${(x - this.w / 2).toFixed(2)}px, ${(y - this.h / 2).toFixed(2)}px) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotateZ(${rz.toFixed(3)}deg) scale(${k.toFixed(4)})`;
+    st.opacity = o >= 0.999 ? '' : o.toFixed(3);
+    st.filter = blur > 0.05 ? `blur(${(blur / k).toFixed(2)}px)` : '';
+    this.shadow.style.opacity = shadow.toFixed(3);
+    this.sheen.style.display = sheen === null ? 'none' : '';
+    if (sheen !== null) this.sheen.style.backgroundPosition = `${(120 - sheen * 140).toFixed(2)}% 50%`;
+  }
+}
+
+// "Доступен в Telegram" store-style badge
+const TG_PLANE = 'M16.906 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z';
+class TgBadge {
+  constructor(small, big) {
+    this.el = document.createElement('div');
+    this.el.className = 'tgbadge';
+    this.el.innerHTML = `<svg viewBox="0 0 24 24" width="100" height="100"><defs><linearGradient id="tgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2AABEE"/><stop offset="1" stop-color="#229ED9"/></linearGradient></defs><circle cx="12" cy="12" r="12" fill="url(#tgg)"/><path d="${TG_PLANE}" fill="#fff" transform="translate(-0.35 0.2)"/></svg><div class="tgtext"><div class="tgsmall">${small}</div><div class="tgbig">${big}</div></div>`;
+    $('#text').appendChild(this.el);
+  }
+  set({ y = 1200, o = 1, dy = 0, s = 1, blur = 0 }) {
+    const st = this.el.style;
+    st.display = o > 0.002 ? '' : 'none';
+    st.top = y + 'px';
+    st.transform = `translate(-50%, ${dy.toFixed(2)}px) scale(${s.toFixed(4)})`;
+    st.opacity = o.toFixed(3);
+    st.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : '';
   }
 }
 

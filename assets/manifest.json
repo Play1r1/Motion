@@ -399,5 +399,14 @@
   "h": 3000,
   "head": 300,
   "maxScroll": 1300
+ },
+ "logo": {
+  "src": "build/logo.png",
+  "shadow": "build/logo_shadow.png",
+  "size": [
+   733,
+   1026
+  ],
+  "shadowPad": 140
  }
 }

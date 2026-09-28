@@ -301,6 +301,35 @@ manifest["phone"] = {
     "size": [FW, FH], "screenOffset": [ox + BZ + TI, oy + BZ + TI], "screenRadius": RS, "shadowPad": 160,
 }
 
+# ---------------------------------------------------------------- brand logo (holographic boomerang)
+from scipy import ndimage
+
+src = np.asarray(Image.open(os.path.join(ROOT, "assets", "brand", "logo_source.jpg")).convert("RGB")).astype(np.float32)
+dist = 255 - src.min(axis=2)                      # how far from paper white
+lab, _ = ndimage.label(dist < 14)
+border = np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))
+bgm = np.isin(lab, border[border > 0])
+fg = ndimage.binary_fill_holes(~bgm)
+# anti-aliased edge: inside a thin band, alpha follows the distance from white
+edge = fg & ~ndimage.binary_erosion(fg, iterations=3)
+la = fg.astype(np.float32)
+la[edge] = np.clip(dist[edge] / 34.0, 0, 1)
+la = ndimage.gaussian_filter(la, 0.6) * fg + ndimage.gaussian_filter(la, 0.6) * ~fg * (ndimage.distance_transform_edt(~fg) < 2)
+la = np.clip(la, 0, 1)
+safe = np.maximum(la, 0.05)[..., None]
+col = np.clip((src - (1 - la[..., None]) * 255) / safe, 0, 255)     # remove the white fringe
+ys_, xs_ = np.where(la > 0.01)
+PADL = 24
+y0_, y1_, x0_, x1_ = ys_.min() - PADL, ys_.max() + PADL, xs_.min() - PADL, xs_.max() + PADL
+logo = to_img(col[y0_:y1_, x0_:x1_], la[y0_:y1_, x0_:x1_])
+logo.save(os.path.join(OUT, "logo.png"))
+la_c = la[y0_:y1_, x0_:x1_]
+s_rgb, s_a = contour_shadow(la_c, 140, 36, 30, SHADOW_COL, 0.36)
+c_rgb, c_a = contour_shadow(la_c, 140, 8, 6, SHADOW_COL, 0.14)
+s_rgb, s_a = over(s_rgb, s_a, c_rgb, c_a)
+to_img(s_rgb, s_a).save(os.path.join(OUT, "logo_shadow.png"))
+manifest["logo"] = {"src": "build/logo.png", "shadow": "build/logo_shadow.png", "size": [logo.width, logo.height], "shadowPad": 140}
+
 with open(os.path.join(ROOT, "assets", "manifest.json"), "w") as f:
     json.dump(manifest, f, indent=1)
 print("assets ok", len(manifest["cutouts"]), "cutouts; phone", FW, FH)
