@@ -29,7 +29,7 @@ const home = n => { const c = MANIFEST.cutouts[n], so = MANIFEST.phone.screenOff
 // Brand lock-up in the style of the INCPT IO logo sheet: logo, "INCPT WALLET" (WALLET in the
 // logo gradient), a tracked grey tagline, then the "Доступен в Telegram" badge — on brand off-white.
 // T0 is when the background starts turning white; everything else is timed from it.
-function endCard(T0, tagline, END = DURATION) {
+function endCard(T0, tagline, END = DURATION, sfx = 1) {
   scene({
     init() {
       this.logo = new LogoMark();
@@ -43,12 +43,12 @@ function endCard(T0, tagline, END = DURATION) {
       this.badge = new TgBadge('Доступен в', 'Telegram');
       this.badge.el.classList.add('dark');
       const c = T0;
-      cue(c + 0.2, 'whoosh', { dur: 0.5, gain: 0.6, up: true });
-      cue(c + 0.62, 'impact', { gain: 0.8, soft: true });
-      cue(c + 0.7, 'shimmer', { gain: 0.4 });
-      cue(c + 0.8, 'tick', { gain: 0.4 }); cue(c + 0.94, 'tick', { gain: 0.4 });
-      cue(c + 1.66, 'pop', { gain: 0.65, pitch: 0.85 });
-      cue(c + 3.4, 'shimmer', { gain: 0.22 });
+      cue(c + 0.2, 'whoosh', { dur: 0.5, gain: 0.6 * sfx, up: true });
+      cue(c + 0.62, 'impact', { gain: 0.8 * sfx, soft: true });
+      cue(c + 0.7, 'shimmer', { gain: 0.4 * sfx });
+      cue(c + 0.8, 'tick', { gain: 0.4 * sfx }); cue(c + 0.94, 'tick', { gain: 0.4 * sfx });
+      cue(c + 1.66, 'pop', { gain: 0.65 * sfx, pitch: 0.85 });
+      cue(c + 3.4, 'shimmer', { gain: 0.22 * sfx });
     },
     update(t) {
       const c = T0, on = t >= c;

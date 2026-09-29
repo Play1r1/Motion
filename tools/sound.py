@@ -23,8 +23,13 @@ rng = np.random.default_rng(7)
 
 OUTD = os.path.join(ROOT, sys.argv[1]) if len(sys.argv) > 1 else os.path.join(ROOT, "out")
 cues = json.load(open(os.path.join(OUTD, "cues.json")))
-DROP = cues.get("meta", {}).get("drop", DROP)
-END_CARD = cues.get("meta", {}).get("end", END_CARD)
+META = cues.get("meta") or {}
+DROP = META.get("drop", DROP)
+END_CARD = META.get("end", END_CARD)
+BPM = META.get("bpm", BPM)
+BEAT = 60 / BPM
+BAR = 4 * BEAT
+STYLE = META.get("music", "tech")      # "tech": 96 BPM minimal tech (reel 1); "calm": warm keys (staking)
 DUR = cues["duration"] + 0.05
 N = int(DUR * SR)
 music = np.zeros((N, 2))
@@ -161,55 +166,164 @@ CHORDS = [[53, 56, 60, 63], [49, 53, 56, 60], [56, 60, 63, 67], [51, 55, 58, 62]
 ROOTS = [29, 25, 32, 27]
 
 # ------------------------------------------------------------------ arrangement
-# intro: pad + ticking hats, filter opening toward the drop
-for b in range(max(1, round(DROP / BAR))):
-    ch = CHORDS[b % 4]
-    place(music, reverb(pad([note(n) for n in ch], BAR + 0.3, 800 + 600 * b), 0.35), b * BAR, 0.85)
-for k in range(int(DROP / (BEAT / 2))):
-    tt = k * BEAT / 2
-    place(music, hat(), tt, 0.10 + 0.20 * tt / DROP, pan=0.25)
 
-# groove
-n_bars = int(np.ceil((END_CARD - DROP) / BAR))
-side = np.ones(N)                       # sidechain envelope from the kick
-PLUCK_RHY = [0, 0.75, 1.5, 2.5, 3.0]    # beats within a bar
-for b in range(n_bars):
-    t0 = DROP + b * BAR
-    ch = CHORDS[b % 4]
-    for beat in range(4):
-        tb = t0 + beat * BEAT
-        if tb >= END_CARD:
-            break
-        place(kicks, kick(), tb, 0.95)
-        i = int(tb * SR)
-        dk = int(0.28 * SR)
-        side[i:i + dk] = np.minimum(side[i:i + dk], 1 - 0.6 * np.exp(-np.arange(min(dk, N - i)) / SR / 0.09))
-        if beat in (1, 3):
-            place(music, reverb(clap(), 0.3), tb, 0.55)
-        for h in range(4):
-            th = tb + h * BEAT / 4
-            if th < END_CARD:
-                place(music, hat(open_=(h == 2 and beat % 2 == 1)), th, 0.16 if h % 2 else 0.24, pan=0.3)
-    for rb in PLUCK_RHY:
-        tp = t0 + rb * BEAT
-        if tp < END_CARD:
-            place(music, reverb(pluck([note(n + 12) for n in ch], 0.5, 0.8 + 0.2 * (rb == 0)), 0.3), tp, 0.34, pan=-0.2)
-    d = min(BAR, END_CARD - t0)
-    place(music, sub(note(ROOTS[b % 4] + 12), d), t0, 0.9)
-    place(music, reverb(pad([note(n) for n in ch], d + 0.2, 1600), 0.3), t0, 0.28)
+def epiano(freqs, d, bright=1.0):
+    """Rhodes-like electric piano: sine body + a decaying bell tine + slow tremolo."""
+    t = t_(d)
+    out = np.zeros((len(t), 2))
+    for k, f in enumerate(freqs):
+        ph = 2 * np.pi * f * t
+        tine = np.sin(ph * 2 + 1.2 * np.exp(-t / 0.06) * np.sin(ph * 7)) * np.exp(-t / 0.35) * 0.35 * bright
+        body = np.sin(ph + 0.4 * np.exp(-t / 0.15) * np.sin(ph * 2))
+        x = (body + tine) * np.minimum(1, t / 0.006) * np.exp(-t / 1.4) * np.minimum(1, (d - t) / 0.08)
+        x *= 1 + 0.1 * np.sin(2 * np.pi * 4.6 * t + k)
+        p = -0.35 + 0.7 * k / max(1, len(freqs) - 1)
+        out[:, 0] += x * np.cos((p + 1) * np.pi / 4)
+        out[:, 1] += x * np.sin((p + 1) * np.pi / 4)
+    return out * 0.32
 
-music *= side[:, None] ** 0.8     # sidechain: the bed breathes around the kick
-music += kicks
 
-# end card: final Fm(add9) chord rings out
-fin = [note(n) for n in (41, 53, 56, 60, 63, 67)]
-place(music, reverb(pad(fin, 5.4, 2600), 0.5), END_CARD + 0.4, 2.0)
-place(music, reverb(pluck([note(n + 12) for n in (53, 56, 60, 67)], 1.2, 1.0), 0.5), END_CARD + 0.42, 0.6)
-# soft pulse keeps the end card alive: muted plucks on the beat, fading
-for k in range(1, 7):
-    place(music, reverb(pluck([note(n + 12) for n in (53, 60, 63)], 0.35, 0.5), 0.45), END_CARD + 0.42 + k * BEAT, 0.5 * 0.88 ** k, pan=(-0.3 if k % 2 else 0.3))
-place(music, sub(note(29), 2.2) * np.exp(-t_(2.2) / 0.9), END_CARD + 0.42, 0.9)
+def bell(f, d=1.4):
+    t = t_(d)
+    x = sum(np.sin(2 * np.pi * f * m * t) * a * np.exp(-t / (0.9 / m ** 0.5)) for m, a in ((1, 1), (2.76, 0.35), (5.4, 0.12)))
+    return x * np.minimum(1, t / 0.003) * 0.4
 
+
+def soft_kick():
+    return lp(kick(), 900) * 0.8
+
+
+def rim():
+    d = 0.12
+    t = t_(d)
+    x = bp(rng.standard_normal(len(t)), 1500, 5000) * env_exp(d, 0.018, 0.0005) + np.sin(2 * np.pi * 1850 * t) * env_exp(d, 0.012) * 0.4
+    return x * 0.5
+
+
+def shaker():
+    d = 0.09
+    t = t_(d)
+    return hp(rng.standard_normal(len(t)), 6000, 4) * np.minimum(1, t / 0.012) * np.exp(-t / 0.03) * 0.35
+
+
+def bass(f, d):
+    t = t_(d)
+    x = np.sin(2 * np.pi * f * t) + 0.25 * np.sin(4 * np.pi * f * t) * np.exp(-t / 0.2)
+    return np.tanh(x * 1.2) * np.minimum(1, t / 0.012) * np.minimum(1, (d - t) / 0.06) * 0.5
+
+
+if STYLE == "tech":
+    # intro: pad + ticking hats, filter opening toward the drop
+    for b in range(max(1, round(DROP / BAR))):
+        ch = CHORDS[b % 4]
+        place(music, reverb(pad([note(n) for n in ch], BAR + 0.3, 800 + 600 * b), 0.35), b * BAR, 0.85)
+    for k in range(int(DROP / (BEAT / 2))):
+        tt = k * BEAT / 2
+        place(music, hat(), tt, 0.10 + 0.20 * tt / DROP, pan=0.25)
+
+    # groove
+    n_bars = int(np.ceil((END_CARD - DROP) / BAR))
+    side = np.ones(N)                       # sidechain envelope from the kick
+    PLUCK_RHY = [0, 0.75, 1.5, 2.5, 3.0]    # beats within a bar
+    for b in range(n_bars):
+        t0 = DROP + b * BAR
+        ch = CHORDS[b % 4]
+        for beat in range(4):
+            tb = t0 + beat * BEAT
+            if tb >= END_CARD:
+                break
+            place(kicks, kick(), tb, 0.95)
+            i = int(tb * SR)
+            dk = int(0.28 * SR)
+            side[i:i + dk] = np.minimum(side[i:i + dk], 1 - 0.6 * np.exp(-np.arange(min(dk, N - i)) / SR / 0.09))
+            if beat in (1, 3):
+                place(music, reverb(clap(), 0.3), tb, 0.55)
+            for h in range(4):
+                th = tb + h * BEAT / 4
+                if th < END_CARD:
+                    place(music, hat(open_=(h == 2 and beat % 2 == 1)), th, 0.16 if h % 2 else 0.24, pan=0.3)
+        for rb in PLUCK_RHY:
+            tp = t0 + rb * BEAT
+            if tp < END_CARD:
+                place(music, reverb(pluck([note(n + 12) for n in ch], 0.5, 0.8 + 0.2 * (rb == 0)), 0.3), tp, 0.34, pan=-0.2)
+        d = min(BAR, END_CARD - t0)
+        place(music, sub(note(ROOTS[b % 4] + 12), d), t0, 0.9)
+        place(music, reverb(pad([note(n) for n in ch], d + 0.2, 1600), 0.3), t0, 0.28)
+
+    music *= side[:, None] ** 0.8     # sidechain: the bed breathes around the kick
+    music += kicks
+
+    # end card: final Fm(add9) chord rings out
+    fin = [note(n) for n in (41, 53, 56, 60, 63, 67)]
+    place(music, reverb(pad(fin, 5.4, 2600), 0.5), END_CARD + 0.4, 2.0)
+    place(music, reverb(pluck([note(n + 12) for n in (53, 56, 60, 67)], 1.2, 1.0), 0.5), END_CARD + 0.42, 0.6)
+    # soft pulse keeps the end card alive: muted plucks on the beat, fading
+    for k in range(1, 7):
+        place(music, reverb(pluck([note(n + 12) for n in (53, 60, 63)], 0.35, 0.5), 0.45), END_CARD + 0.42 + k * BEAT, 0.5 * 0.88 ** k, pan=(-0.3 if k % 2 else 0.3))
+    place(music, sub(note(29), 2.2) * np.exp(-t_(2.2) / 0.9), END_CARD + 0.42, 0.9)
+
+
+
+else:
+    # ---------------- calm: warm electric piano in D major, soft drums, bell motif
+    CH = [[62, 66, 69, 73], [59, 62, 66, 69], [55, 59, 62, 66], [57, 61, 64, 71]]   # Dmaj7 Bm7 Gmaj7 Aadd9
+    RT = [50, 47, 43, 45]
+    MOTIF = [[74, 78, 81, 78], [76, 74, 71, 74], [74, 78, 83, 81], [81, 78, 76, 74]]
+    side = np.ones(N)
+    # intro: chord + pad + bells, no drums
+    for b in range(max(1, round(DROP / BAR))):
+        ch = CH[b % 4]
+        place(music, reverb(epiano([note(n) for n in ch], BAR + 0.6, 0.7), 0.4), b * BAR, 0.8)
+        place(music, reverb(pad([note(n - 12) for n in ch], BAR + 0.4, 700 + 500 * b), 0.4), b * BAR, 0.5)
+        for k, n in enumerate(MOTIF[b % 4]):
+            place(music, reverb(bell(note(n)), 0.5), b * BAR + (0.5 + k * 0.75) * BEAT, 0.3, pan=-0.3 + 0.2 * k)
+    n_bars = int(np.ceil((END_CARD - DROP) / BAR))
+    for b in range(n_bars):
+        t0 = DROP + b * BAR
+        ch = CH[b % 4]
+        d = min(BAR, END_CARD - t0)
+        # keys: beat 1 (long), the "and" of 2, a short touch on 4
+        for rb, dur, g in ((0, 2.2, 0.85), (1.5, 1.4, 0.55), (3.0, 0.9, 0.45)):
+            tp = t0 + rb * BEAT
+            if tp < END_CARD:
+                place(music, reverb(epiano([note(n) for n in ch], min(dur * BEAT + 0.4, END_CARD - tp + 0.4), 1.0 + 0.2 * (rb == 0)), 0.32), tp, g)
+        place(music, reverb(pad([note(n - 12) for n in ch], d + 0.3, 1100), 0.35), t0, 0.24)
+        # bass: root, root on the "and" of 2, fifth on 4
+        for rb, off, dur in ((0, 0, 1.4), (1.5, 0, 0.9), (3.0, 7, 0.8)):
+            tp = t0 + rb * BEAT
+            if tp < END_CARD:
+                place(music, bass(note(RT[b % 4] + off), dur * BEAT), tp, 0.65)
+        # drums: soft kick 1 & 3, rim 2 & 4, swung shaker eighths
+        for beat in range(4):
+            tb = t0 + beat * BEAT
+            if tb >= END_CARD:
+                break
+            if beat in (0, 2):
+                place(kicks, soft_kick(), tb, 0.8)
+                i = int(tb * SR)
+                dk = int(0.3 * SR)
+                side[i:i + dk] = np.minimum(side[i:i + dk], 1 - 0.28 * np.exp(-np.arange(min(dk, N - i)) / SR / 0.12))
+            if beat in (1, 3):
+                place(music, reverb(rim(), 0.35), tb, 0.45, pan=0.15)
+            for h, sw in ((0, 0.0), (1, 0.58)):
+                th = tb + sw * BEAT
+                if th < END_CARD:
+                    place(music, shaker(), th, 0.7 if h else 0.42, pan=0.35)
+        # bell motif every other bar
+        if b % 2 == 1:
+            for k, n in enumerate(MOTIF[(b // 2) % 4]):
+                tp = t0 + (0.5 + k * 0.75) * BEAT
+                if tp < END_CARD:
+                    place(music, reverb(bell(note(n)), 0.5), tp, 0.3, pan=-0.3 + 0.2 * k)
+    music *= side[:, None]
+    music += kicks
+    # end card: Dmaj9 rings out with a slow bell arpeggio
+    fin = [note(n) for n in (50, 62, 66, 69, 73, 76)]
+    place(music, reverb(epiano(fin, 5.0, 1.0), 0.5), END_CARD + 0.4, 1.0)
+    place(music, reverb(pad([note(n) for n in (50, 57, 62, 66, 69)], 5.0, 1800), 0.5), END_CARD + 0.4, 0.8)
+    for k, n in enumerate((74, 78, 81, 85, 86)):
+        place(music, reverb(bell(note(n), 1.8), 0.55), END_CARD + 0.9 + k * 0.38, 0.22 * 0.9 ** k, pan=-0.4 + 0.2 * k)
+    place(music, bass(note(38), 2.4) * np.exp(-t_(2.4) / 1.0)[:, None].ravel(), END_CARD + 0.42, 0.8)
 
 # ------------------------------------------------------------------ sound design
 def whoosh(d=0.45, up=False):

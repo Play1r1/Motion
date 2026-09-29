@@ -28,19 +28,22 @@ The copy uses only claims that are visible in the app: OneClick, NoKYC, Apple/Go
 
 ## Reel 2 — staking announcement (RU)
 
-`renders/incpt_staking_announce.mp4` (+ `_preview.mp4`), 18.1 s. Built from the team's prototype
-(`assets/staking/source/prototype.mp4`): its UI is cut out of the video frames (`tools/build_staking.py`),
-never redrawn. The $100 → $600 counter plays the prototype's own 19 in-between frames.
+`renders/incpt_staking_announce.mp4` (+ `_preview.mp4`), 27 s, calm cut at 80 BPM with its own
+warm electric-piano track (`sound.py` style `calm`). Built as a short how-to: every big line has a
+plain-language subline. The UI is cut out of the team's prototype (`assets/staking/source/prototype.mp4`,
+`tools/build_staking.py`), never redrawn; the $100 → $600 counter plays the prototype's own 19 in-between frames.
 
-| Time | Headline | Picture |
+| Time | Headline / subline | Picture |
 |---|---|---|
-| 0.0 | НОВОЕ В INCPT WALLET → СТЕЙКИНГ USDT | The vault spins in from depth; staking UI floats around it |
-| 2.5 | 20–40% ГОДОВЫХ | Drop: phone rises with the staking screen, the vault lifts off |
-| 3.75 | ВЫПЛАТЫ КАЖДЫЙ ДЕНЬ | «+$161.00 сегодня» lifts |
-| 5.0 | ВЫБЕРИТЕ СУММУ → ОТ $10 ДО $20 000 | Amount panel lifts, tap on +$500, counter $100 → $600, «≈ $780 · профит +$180» lifts |
-| 8.75 | ОДИН ТАП — И ДЕПОЗИТ РАБОТАЕТ | Tap «Открыть стейкинг» → «Стейкинг открыт», check + «$600 USDT» card lift |
-| 11.25 | ПОПОЛНЕНИЕ И ВЫВОД → В ЛЮБОЙ МОМЕНТ → БЕЗ БЛОКИРОВКИ СРЕДСТВ | Checklist rows lift, then the card |
-| 14.4 | INCPT WALLET · СТЕЙКИНГ USDT · 20–40% ГОДОВЫХ | Brand end card + «Доступен в Telegram» |
+| 0.0 | СТЕЙКИНГ USDT / Новое в INCPT Wallet | The vault drifts in from depth; staking UI floats around it |
+| 3.0 | 20–40% ГОДОВЫХ / Ваши USDT начинают приносить доход | Phone rises with the staking screen, the vault lifts off |
+| 5.25 | ВЫПЛАТЫ КАЖДЫЙ ДЕНЬ / Профит начисляется ежедневно | «+$161.00 сегодня» lifts |
+| 7.5 | ШАГ 1 ВЫБЕРИТЕ СУММУ / От $10 до $20 000 | Amount panel lifts, tap on +$500, counter $100 → $600 |
+| 11.25 | +$180 ЗА ГОД / Пример: $600 → ≈ $780 через год | «Через год получите ≈ $780 · профит +$180» lifts |
+| 13.5 | ШАГ 2 ОДИН ТАП / Нажмите «Открыть стейкинг» | Same phone: the button lifts, tap |
+| 16.5 | ГОТОВО — ДЕПОЗИТ РАБОТАЕТ / $600 USDT под 20–40% годовых | «Стейкинг открыт», check + «$600 USDT» card |
+| 18.75 | ВЫВОД В ЛЮБОЙ МОМЕНТ / Пополнение и вывод без блокировки средств | Checklist rows lift |
+| 22.5 | INCPT WALLET · СТЕЙКИНГ USDT · 20–40% ГОДОВЫХ | Brand end card + «Доступен в Telegram» |
 
 ```bash
 python3 tools/build_staking.py
@@ -59,7 +62,7 @@ src/common.js               shared helpers + brand end card
 src/scenes.js               reel 1 edit (all timing lives here, beat = 0.625 s)
 src/scenes_staking.js       reel 2 edit (?reel=staking)
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
-tools/sound.py              procedural 96 BPM bed + SFX placed from the timeline's cue list
+tools/sound.py              procedural music (96 BPM tech / 80 BPM calm) + SFX placed from the timeline's cue list
 tools/finalize.sh           concat + grain + sharpen + AAC mux → H.264 mp4
 ```
 
