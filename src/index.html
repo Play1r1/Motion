@@ -10,10 +10,10 @@
 <style>
   :root { --ink: #0a1022; }
   html, body { margin: 0; background: #000; overflow: hidden; }
-  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #d6e7fc; }
-  #bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
-  #world { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; perspective: 2600px; perspective-origin: 540px 960px; }
-  #cam { position: absolute; left: 540px; top: 960px; width: 0; height: 0; transform-style: preserve-3d; }
+  #stage { position: relative; width: var(--W); height: var(--H); overflow: hidden; background: #d6e7fc; }
+  #bg { position: absolute; left: 0; top: 0; width: var(--W); height: var(--H); }
+  #world { position: absolute; left: 0; top: 0; width: var(--W); height: var(--H); perspective: 2600px; perspective-origin: calc(var(--W) / 2) calc(var(--H) / 2); }
+  #cam { position: absolute; left: calc(var(--W) / 2); top: calc(var(--H) / 2); width: 0; height: 0; transform-style: preserve-3d; }
   .node { position: absolute; transform-style: preserve-3d; }
   .node.flat { transform-style: flat; }
   img.fill { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
@@ -24,7 +24,7 @@
   .tap .disc { position: absolute; inset: 0; border-radius: 50%; background: rgba(168, 208, 255, 0.58); border: 4px solid rgba(255, 255, 255, 0.96); box-sizing: border-box; }
   .tap .halo { position: absolute; inset: -14px; border-radius: 50%; border: 3px solid rgba(150, 196, 255, 0.55); box-sizing: border-box; }
   .glass { border-radius: 72px; background: linear-gradient(170deg, rgba(255,255,255,0.62), rgba(255,255,255,0.34) 55%, rgba(236,244,255,0.42)); border: 3px solid rgba(255,255,255,0.92); box-sizing: border-box; box-shadow: 0 30px 70px -20px rgba(22,48,104,0.28), inset 0 2px 0 rgba(255,255,255,0.9); }
-  #text { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; }
+  #text { position: absolute; left: 0; top: 0; width: var(--W); height: var(--H); pointer-events: none; }
   .headline { position: absolute; text-align: center; font-family: 'Roboto Flex Variable', sans-serif; text-transform: uppercase; white-space: nowrap; }
   .headline .line { display: block; }
   .headline .word { display: inline-block; margin: 0 0.12em; will-change: transform; }
@@ -33,7 +33,7 @@
   .headline .band { position: absolute; left: -0.1em; right: -0.1em; top: 0.06em; height: 0.8em; border-radius: 0.13em; transform-origin: 0 50%;
     background: linear-gradient(100deg, #a3e6d8 0%, #93cbee 22%, #a4aeec 44%, #c6b6f0 62%, #9fd9ee 80%, #a3e6d8 100%); background-size: 220% 100%;
     box-shadow: inset 0 0 0 2px rgba(255,255,255,0.75), inset 0 3px 0 rgba(255,255,255,0.55), 0 14px 34px -14px rgba(26,56,128,0.45); }
-  .logo3d { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; perspective: 1600px; perspective-origin: 540px 700px; pointer-events: none; }
+  .logo3d { position: absolute; left: 0; top: 0; width: var(--W); height: var(--H); perspective: 1600px; perspective-origin: 540px 700px; pointer-events: none; }
   .logoInner { position: absolute; left: 0; top: 0; transform-origin: 50% 50%; }
   .logoInner .sheen { position: absolute; inset: 0; mask-size: 100% 100%; -webkit-mask-size: 100% 100%; background: linear-gradient(105deg, rgba(255,255,255,0) 42%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 58%); background-size: 300% 100%; mix-blend-mode: soft-light; }
   .tgbadge { position: absolute; left: 540px; display: flex; align-items: center; gap: 24px; padding: 20px 56px 20px 24px; background: #ffffff; border-radius: 999px; box-shadow: 0 24px 60px -24px rgba(6,20,60,0.55), inset 0 0 0 2px rgba(255,255,255,0.9); transform-origin: 50% 50%; white-space: nowrap; }
@@ -41,13 +41,36 @@
   .tgbadge.dark { background: #0e1014; box-shadow: 0 26px 60px -26px rgba(10,20,50,0.55), inset 0 0 0 2px rgba(255,255,255,0.08); }
   .tgbadge.dark .tgsmall { color: #a7adb8; }
   .tgbadge.dark .tgbig { color: #ffffff; }
-  .lockup { position: absolute; left: 0; top: 968px; width: 1080px; text-align: center; font-family: 'Montserrat Variable', sans-serif; }
+  .lockup { position: absolute; left: 0; top: 968px; width: var(--W); text-align: center; font-family: 'Montserrat Variable', sans-serif; }
   .lk-title { font-size: 86px; font-weight: 500; line-height: 1; color: #15130f; white-space: nowrap; }
   .lk-w { display: inline-block; }
   .lk-io { margin-left: 0.34em; background: linear-gradient(90deg, #8fa0e2 0%, #7fb3ea 38%, #6fc8e6 64%, #7fd8cc 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
   .lk-tag { margin-top: 42px; font-size: 31px; font-weight: 400; color: #8e8c86; white-space: nowrap; }
   .tgsmall { font-size: 31px; font-weight: 500; color: #5d6679; letter-spacing: -0.005em; }
   .tgbig { font-size: 60px; font-weight: 700; color: #0a1022; letter-spacing: -0.02em; }
+  /* ---- tutorial (reel "topup") ---- */
+  .tu-panel { position: absolute; left: 588px; width: 452px; box-sizing: border-box; padding: 40px 40px 44px; border-radius: 48px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.82), rgba(255,255,255,0.6)); border: 2px solid rgba(255,255,255,0.96);
+    box-shadow: 0 34px 80px -30px rgba(22,48,104,0.35), inset 0 2px 0 rgba(255,255,255,0.9); font-family: 'Inter Variable', sans-serif; font-variation-settings: 'opsz' 32; }
+  .tu-chip { display: inline-block; font-family: 'Inter Variable', sans-serif; font-variation-settings: 'opsz' 32; padding: 10px 20px 9px; border-radius: 999px; font-weight: 700; font-size: 22px; letter-spacing: 0.1em; color: #0f1733;
+    background: linear-gradient(95deg, #a8ebdc, #9ccff2 40%, #aeb4f1 70%, #cdb8f4); white-space: nowrap; }
+  .tu-prog { display: flex; gap: 8px; margin-top: 22px; }
+  .tu-seg { flex: 1; height: 8px; border-radius: 4px; background: rgba(22,33,70,0.12); overflow: hidden; position: relative; }
+  .tu-seg i { position: absolute; inset: 0; background: linear-gradient(90deg, #5fd3c0, #5aa9f2, #8a8bf1, #bf8cf3); transform-origin: 0 50%; transform: scaleX(0); }
+  .tu-body { position: relative; height: 330px; margin-top: 30px; }
+  .tu-step { position: absolute; left: 0; top: 0; width: 100%; }
+  .tu-head { font-family: 'Roboto Flex Variable', sans-serif; font-variation-settings: 'wght' 1000, 'wdth' 118, 'opsz' 60; text-transform: uppercase;
+    font-size: 60px; line-height: 0.95; letter-spacing: -0.03em; color: #0a1022; white-space: nowrap; }
+  .tu-head .l { display: block; width: fit-content; }
+  .tu-head .w { display: inline-block; margin-right: 0.2em; }
+  .tu-desc { margin-top: 24px; font-size: 29px; line-height: 1.34; font-weight: 560; color: #2a3453; }
+  .tu-desc b { font-weight: 720; color: #0a1022; }
+  .tu-ring { position: absolute; box-sizing: border-box; padding: 9px; border-radius: 40px; pointer-events: none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .tu-hole { position: absolute; border-radius: 40px; }
+  .tu-rip { position: absolute; inset: 0; border-radius: 50%; box-sizing: border-box; padding: 10px;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .tu-disc { position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.75), rgba(170,200,255,0.25) 70%, rgba(170,200,255,0)); }
 </style>
 </head>
 <body>
@@ -56,7 +79,12 @@
   <div id="world"><div id="cam"></div></div>
   <div id="text"></div>
 </div>
-<script>window.REEL = new URLSearchParams(location.search).get('reel') || 'wallet';</script>
+<script>
+  window.REEL = new URLSearchParams(location.search).get('reel') || 'wallet';
+  window.STAGE = { topup: [1080, 1080] }[REEL] || [1080, 1920];
+  document.documentElement.style.setProperty('--W', STAGE[0] + 'px');
+  document.documentElement.style.setProperty('--H', STAGE[1] + 'px');
+</script>
 <script src="/src/engine.js"></script>
 <script src="/src/common.js"></script>
 <script>document.write(`<script src="/src/${REEL === 'wallet' ? 'scenes' : 'scenes_' + REEL}.js"><\/script>`);</script>

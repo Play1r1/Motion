@@ -269,6 +269,10 @@ else:
     CH = [[62, 66, 69, 73], [59, 62, 66, 69], [55, 59, 62, 66], [57, 61, 64, 71]]   # Dmaj7 Bm7 Gmaj7 Aadd9
     RT = [50, 47, 43, 45]
     MOTIF = [[74, 78, 81, 78], [76, 74, 71, 74], [74, 78, 83, 81], [81, 78, 76, 74]]
+    KEY = META.get("key", 0)                     # transpose the whole calm arrangement (semitones)
+    CH = [[n + KEY for n in c] for c in CH]
+    RT = [n + KEY for n in RT]
+    MOTIF = [[n + KEY for n in m] for m in MOTIF]
     side = np.ones(N)
     # intro: chord + pad + bells, no drums
     for b in range(max(1, round(DROP / BAR))):
@@ -318,12 +322,12 @@ else:
     music *= side[:, None]
     music += kicks
     # end card: Dmaj9 rings out with a slow bell arpeggio
-    fin = [note(n) for n in (50, 62, 66, 69, 73, 76)]
+    fin = [note(n + KEY) for n in (50, 62, 66, 69, 73, 76)]
     place(music, reverb(epiano(fin, 5.0, 1.0), 0.5), END_CARD + 0.4, 1.0)
-    place(music, reverb(pad([note(n) for n in (50, 57, 62, 66, 69)], 5.0, 1800), 0.5), END_CARD + 0.4, 0.8)
+    place(music, reverb(pad([note(n + KEY) for n in (50, 57, 62, 66, 69)], 5.0, 1800), 0.5), END_CARD + 0.4, 0.8)
     for k, n in enumerate((74, 78, 81, 85, 86)):
-        place(music, reverb(bell(note(n), 1.8), 0.55), END_CARD + 0.9 + k * 0.38, 0.22 * 0.9 ** k, pan=-0.4 + 0.2 * k)
-    place(music, bass(note(38), 2.4) * np.exp(-t_(2.4) / 1.0)[:, None].ravel(), END_CARD + 0.42, 0.8)
+        place(music, reverb(bell(note(n + KEY), 1.8), 0.55), END_CARD + 0.9 + k * 0.38, 0.22 * 0.9 ** k, pan=-0.4 + 0.2 * k)
+    place(music, bass(note(38 + KEY), 2.4) * np.exp(-t_(2.4) / 1.0)[:, None].ravel(), END_CARD + 0.42, 0.8)
 
 # ------------------------------------------------------------------ sound design
 def whoosh(d=0.45, up=False):

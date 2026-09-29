@@ -29,7 +29,9 @@ const home = n => { const c = MANIFEST.cutouts[n], so = MANIFEST.phone.screenOff
 // Brand lock-up in the style of the INCPT IO logo sheet: logo, "INCPT WALLET" (WALLET in the
 // logo gradient), a tracked grey tagline, then the "Доступен в Telegram" badge — on brand off-white.
 // T0 is when the background starts turning white; everything else is timed from it.
-function endCard(T0, tagline, END = DURATION, sfx = 1) {
+// L: layout (logo centre / height, lock-up top, badge top) — defaults are the 9:16 frame
+function endCard(T0, tagline, END = DURATION, sfx = 1, L = {}) {
+  L = { logoY: 640, logoH: 520, lockTop: 968, badgeY: 1300, ...L };
   scene({
     init() {
       this.logo = new LogoMark();
@@ -37,6 +39,7 @@ function endCard(T0, tagline, END = DURATION, sfx = 1) {
       this.lock.className = 'lockup';
       this.lock.innerHTML = `<div class="lk-title"><span class="lk-w lk-incpt">INCPT</span><span class="lk-w lk-io">WALLET</span></div><div class="lk-tag">${tagline}</div>`;
       $('#text').appendChild(this.lock);
+      if (L.lockTop !== 968) this.lock.style.top = L.lockTop + 'px';
       this.title = this.lock.querySelector('.lk-title');
       this.words = [...this.lock.querySelectorAll('.lk-w')];
       this.tag = this.lock.querySelector('.lk-tag');
@@ -60,7 +63,7 @@ function endCard(T0, tagline, END = DURATION, sfx = 1) {
       const pin = oX(prog(t, c + 0.16, c + 0.8));
       const fl = Math.max(0, t - (c + 0.8));
       this.logo.set({
-        x: 540, y: 640 + (1 - pin) * 120 - fl * 5, h: lerp(80, 520, pin),
+        x: W / 2, y: L.logoY + (1 - pin) * 120 - fl * 5, h: lerp(80, L.logoH, pin),
         ry: lerp(-160, -6, pin) + fl * 3, rz: lerp(-40, -2, pin) + fl * 0.4,
         rx: Math.sin(fl * 0.9) * 3, o: clamp((t - (c + 0.16)) * 7), blur: (1 - pin) * 12,
         sheen: vis(t, c + 0.75, c + 1.7) ? prog(t, c + 0.75, c + 1.7) : vis(t, c + 3.3, c + 4.2) ? prog(t, c + 3.3, c + 4.2) : null, shadow: 0.55,
@@ -79,7 +82,7 @@ function endCard(T0, tagline, END = DURATION, sfx = 1) {
       const pt = prog(t, c + 1.25, c + 1.9);
       Object.assign(this.tag.style, { letterSpacing: ts + 'em', paddingLeft: ts + 'em', opacity: clamp(pt * 1.6).toFixed(3) });
       const pb = oX(prog(t, c + 1.62, c + 2.3));
-      this.badge.set({ y: 1300, o: clamp((t - (c + 1.62)) * 6), dy: (1 - pb) * 60, s: lerp(0.92, 1, pb), blur: (1 - pb) * 8 });
+      this.badge.set({ y: L.badgeY, o: clamp((t - (c + 1.62)) * 6), dy: (1 - pb) * 60, s: lerp(0.92, 1, pb), blur: (1 - pb) * 8 });
     },
   });
 }

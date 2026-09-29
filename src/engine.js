@@ -2,7 +2,7 @@
 // the renderer calls window.seek(t, frame) and screenshots the result.
 'use strict';
 
-const W = 1080, H = 1920, FPS = 30;
+const W = (window.STAGE || [1080, 1920])[0], H = (window.STAGE || [1080, 1920])[1], FPS = 30;
 const BPM = 96, BEAT = 60 / BPM;
 
 // ------------------------------------------------------------------ math
@@ -375,7 +375,8 @@ class TgBadge {
 const CAM = { x: 0, y: 0, s: 1, rz: 0 };
 const BGP = { deep: 0, white: 0 };   // deep: end-card blue; white: brand off-white (logo sheet)
 let bgCtx, fieldCv, fieldCtx, fieldImg, dotsCv, dotsCtx;
-const FW_ = 72, FH_ = 128;
+const FW_ = 72, FH_ = H === 1920 ? 128 : Math.round(72 * H / W);
+const VS_ = H === 1920 ? 3.9 : 2.2 * H / W;      // background field height in noise units
 let VIG;
 function initBg() {
   const cv = $('#bg');
@@ -415,11 +416,11 @@ function foil(h) {
 }
 function drawBg(t) {
   // parallax: background moves ~35% of the camera and scales a third as much
-  const px = -CAM.x * 0.35 / W * 2.2, py = -CAM.y * 0.35 / H * 3.9, ps = 1 / (1 + (CAM.s - 1) * 0.3);
+  const px = -CAM.x * 0.35 / W * 2.2, py = -CAM.y * 0.35 / H * VS_, ps = 1 / (1 + (CAM.s - 1) * 0.3);
   const d = fieldImg.data;
   for (let j = 0; j < FH_; j++) {
     for (let i = 0; i < FW_; i++) {
-      const u = (i / FW_ - 0.5) * 2.2 * ps + px, v = (j / FH_ - 0.5) * 3.9 * ps + py;
+      const u = (i / FW_ - 0.5) * 2.2 * ps + px, v = (j / FH_ - 0.5) * VS_ * ps + py;
       // hue flows along diagonal bands like the logo's foil
       const h = 0.3 + 0.34 * sn(u * 0.8, v * 0.55, t * 0.7, 1.3) + 0.16 * sn(u * 1.7 + 2, v * 1.3, t * 1.1, 3.7) + (u * 0.5 + v * 0.35) * 0.2;
       let c = foil(h);
@@ -460,6 +461,7 @@ async function boot() {
     for (const k of ['cutouts', 'slots']) Object.assign(MANIFEST[k] = MANIFEST[k] || {}, R[k] || {});
     MANIFEST.screens = R.screens || {};
     MANIFEST.flip = R.flip || {};
+    MANIFEST.reel = R;           // reel-specific extras (rects, pointer, sheet, ...)
   }
   initBg();
   for (const s of SCENES) s.init && s.init();

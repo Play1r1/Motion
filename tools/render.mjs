@@ -14,12 +14,12 @@ import sharp from 'sharp';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const CHROME = process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
-const W = 1080, H = 1920;
 const args = process.argv.slice(2);
 const mode = args[0];
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };
 const flag = k => args.includes('--' + k);
 const REEL = opt('reel', 'wallet');
+const [W, H] = { topup: [1080, 1080] }[REEL] || [1080, 1920];
 const OUTD = REEL === 'wallet' ? path.join(ROOT, 'out') : path.join(ROOT, 'out', REEL);
 fs.mkdirSync(OUTD, { recursive: true });
 
@@ -102,7 +102,7 @@ if (mode === 'stills') {
   const ctx = await openPage();
   const fps = ctx.info.fps;
   const tiles = [];
-  const tw = 270, th = 480;
+  const tw = 270, th = Math.round(tw * H / W);
   for (let t = a; t <= b + 1e-6; t += st) {
     const f = Math.round(t * fps);
     const r = await renderFrame(ctx, f, fps, flag('mb'));

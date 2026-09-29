@@ -1,0 +1,187 @@
+{
+ "screens": {
+  "tu_home": "topup/build/tu_home.png",
+  "tu_wallet": "topup/build/tu_wallet.png",
+  "tu_sheet": "topup/build/tu_sheet.png",
+  "tu_qr": "topup/build/tu_qr.png"
+ },
+ "cutouts": {
+  "tu_toggle": {
+   "src": "topup/build/tu_toggle.png",
+   "screen": "tu_qr",
+   "box": [
+    283,
+    1158,
+    354,
+    91
+   ],
+   "pad": 90,
+   "size": [
+    534,
+    271
+   ],
+   "r": 46
+  },
+  "tu_addr": {
+   "src": "topup/build/tu_addr.png",
+   "screen": "tu_qr",
+   "box": [
+    23,
+    1366,
+    872,
+    180
+   ],
+   "pad": 90,
+   "size": [
+    1052,
+    360
+   ],
+   "r": 44
+  },
+  "tu_warn": {
+   "src": "topup/build/tu_warn.png",
+   "screen": "tu_qr",
+   "box": [
+    70,
+    1590,
+    780,
+    104
+   ],
+   "pad": 90,
+   "size": [
+    960,
+    284
+   ],
+   "r": 34
+  }
+ },
+ "slots": {
+  "qr_toggle": {
+   "src": "topup/build/slot_qr_toggle.png",
+   "x": 277,
+   "y": 1152,
+   "w": 366,
+   "h": 103
+  },
+  "qr_addr": {
+   "src": "topup/build/slot_qr_addr.png",
+   "x": 17,
+   "y": 1360,
+   "w": 884,
+   "h": 192
+  },
+  "qr_warn": {
+   "src": "topup/build/slot_qr_warn.png",
+   "x": 66,
+   "y": 1586,
+   "w": 788,
+   "h": 112
+  }
+ },
+ "rects": {
+  "home_tab": [
+   361,
+   1769,
+   198,
+   197,
+   99
+  ],
+  "recv": [
+   24,
+   787,
+   424,
+   124,
+   62
+  ],
+  "row_tether": [
+   25,
+   1205,
+   870,
+   180,
+   36
+  ],
+  "row_usdc": [
+   25,
+   1385,
+   870,
+   180,
+   36
+  ],
+  "row_eth": [
+   25,
+   1565,
+   870,
+   181,
+   36
+  ],
+  "row_btc": [
+   25,
+   1746,
+   870,
+   181,
+   36
+  ],
+  "toggle": [
+   283,
+   1158,
+   354,
+   91,
+   46
+  ],
+  "trc": [
+   289,
+   1165,
+   166,
+   77,
+   38
+  ],
+  "qr": [
+   160,
+   500,
+   600,
+   602,
+   52
+  ],
+  "addr": [
+   23,
+   1366,
+   872,
+   180,
+   44
+  ],
+  "copy": [
+   800,
+   1426,
+   62,
+   62,
+   31
+  ],
+  "warn": [
+   70,
+   1590,
+   780,
+   104,
+   34
+  ]
+ },
+ "headerY": 302,
+ "dim": 0.345,
+ "sheet": {
+  "src": "topup/build/tu_sheet_panel.png",
+  "y": 996,
+  "h": 1004
+ },
+ "pointer": {
+  "src": "build/logo.png",
+  "shadow": "build/logo_shadow.png",
+  "size": [
+   733,
+   1026
+  ],
+  "tip": [
+   708,
+   474
+  ],
+  "shadowPad": 140
+ }
+}

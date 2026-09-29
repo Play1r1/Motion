@@ -52,6 +52,36 @@ python3 tools/sound.py out/staking
 bash tools/finalize.sh renders/incpt_staking_announce.mp4 out/staking
 ```
 
+## Reel 3 — top-up tutorial (RU, 1:1)
+
+`renders/incpt_topup_tutorial.mp4` (+ `_preview.mp4`), 1080×1080, 40.5 s, calm track in F (80 BPM).
+Rebuilt from the team's beta (`assets/topup/source/beta.mp4`); editing reference: a MetaMask card tutorial
+(`reference/`, not committed). The UI is cut out of the beta frames (`tools/build_topup.py`: every screen is aligned
+to the Telegram sheet edge, the beta's island/recording outline is painted out, one clean status bar for all states).
+
+Instruction design, all in the INCPT logo's foil colours:
+- **Pointer** — an arrowhead with the logo boomerang's concave back, foil-filled with a white outline; it glides between targets and presses.
+- **Highlight** — a rotating foil ring around the target, with the rest of the screen dimmed.
+- **Tap** — foil ripples.
+- **Progress** — a glass step card: «ШАГ N ИЗ 5», foil progress bar, heading, plain-language explanation.
+
+| Time | Step | On the phone |
+|---|---|---|
+| 0.0 | ИНСТРУКЦИЯ · КАК ПОПОЛНИТЬ КОШЕЛЁК · 5 простых шагов | Logo spins in |
+| 3.0 | 1 · ОТКРОЙТЕ КОШЕЛЁК | Pointer flies in, ring on the round wallet tab, tap → wallet screen |
+| 9.0 | 2 · НАЖМИТЕ «ПОЛУЧИТЬ» | Ring + tap on «Получить», the «Пополнение криптовалюты» sheet slides up |
+| 15.0 | 3 · ВЫБЕРИТЕ МОНЕТУ | Ring walks Tether → USDC → Ethereum → Bitcoin, back to Tether, tap → push to the QR page |
+| 22.5 | 4 · ВЫБЕРИТЕ СЕТЬ | TRC-20 / ERC-20 toggle lifts (tap TRC-20), then the app's own warning lifts |
+| 28.5 | 5 · СКОПИРУЙТЕ АДРЕС | Address row lifts, tap on the copy icon; then the QR code is highlighted |
+| 34.5 | INCPT WALLET · ПОПОЛНИТЬ КОШЕЛЁК СТАЛО ПРОЩЕ | End card + «Доступен в Telegram» |
+
+```bash
+python3 tools/build_topup.py
+node tools/render.mjs video --workers 3 --reel topup        # -> out/topup/
+python3 tools/sound.py out/topup
+bash tools/finalize.sh renders/incpt_topup_tutorial.mp4 out/topup
+```
+
 ## Pipeline
 
 ```
@@ -61,6 +91,7 @@ src/engine.js               seekable timeline: easing, 3D nodes, phone, tap, hea
 src/common.js               shared helpers + brand end card
 src/scenes.js               reel 1 edit (all timing lives here, beat = 0.625 s)
 src/scenes_staking.js       reel 2 edit (?reel=staking)
+src/scenes_topup.js         reel 3 edit, 1:1 (?reel=topup)
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
 tools/sound.py              procedural music (96 BPM tech / 80 BPM calm) + SFX placed from the timeline's cue list
 tools/finalize.sh           concat + grain + sharpen + AAC mux → H.264 mp4
