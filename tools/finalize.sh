@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Join rendered segments, add film grain + a touch of sharpening, mux the soundtrack.
-#   bash tools/finalize.sh [master.mp4]  -> master (~14 Mbps) + *_preview.mp4 (~6.5 Mbps, < 25 MB, for chats)
+#   bash tools/finalize.sh [master.mp4] [out-dir]  -> master (~14 Mbps) + *_preview.mp4 (~6.5 Mbps, < 25 MB, for chats)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 OUT=${1:-out/incpt_wallet_reel.mp4}
-ffmpeg -v error -y -f concat -safe 0 -i out/seg/list.txt -i out/soundtrack.wav \
+D=${2:-out}
+ffmpeg -v error -y -f concat -safe 0 -i "$D/seg/list.txt" -i "$D/soundtrack.wav" \
   -vf "unsharp=5:5:0.35:5:5:0,noise=c0s=4:c0f=t,format=yuv420p" \
   -c:v libx264 -preset slow -crf 19 -maxrate 14M -bufsize 28M -profile:v high -level 4.2 -tune film \
   -color_primaries bt709 -color_trc bt709 -colorspace bt709 \

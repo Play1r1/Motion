@@ -26,13 +26,38 @@ A 27.5 s, 1080×1920 @ 30 fps promo reel for the INCPT Wallet Telegram mini app 
 
 The copy uses only claims that are visible in the app: OneClick, NoKYC, Apple/Google Pay, «онлайн-платежи по всему миру», and the Telegram mini app. "AI" comes from the product positioning.
 
+## Reel 2 — staking announcement (RU)
+
+`renders/incpt_staking_announce.mp4` (+ `_preview.mp4`), 18.1 s. Built from the team's prototype
+(`assets/staking/source/prototype.mp4`): its UI is cut out of the video frames (`tools/build_staking.py`),
+never redrawn. The $100 → $600 counter plays the prototype's own 19 in-between frames.
+
+| Time | Headline | Picture |
+|---|---|---|
+| 0.0 | НОВОЕ В INCPT WALLET → СТЕЙКИНГ USDT | The vault spins in from depth; staking UI floats around it |
+| 2.5 | 20–40% ГОДОВЫХ | Drop: phone rises with the staking screen, the vault lifts off |
+| 3.75 | ВЫПЛАТЫ КАЖДЫЙ ДЕНЬ | «+$161.00 сегодня» lifts |
+| 5.0 | ВЫБЕРИТЕ СУММУ → ОТ $10 ДО $20 000 | Amount panel lifts, tap on +$500, counter $100 → $600, «≈ $780 · профит +$180» lifts |
+| 8.75 | ОДИН ТАП — И ДЕПОЗИТ РАБОТАЕТ | Tap «Открыть стейкинг» → «Стейкинг открыт», check + «$600 USDT» card lift |
+| 11.25 | ПОПОЛНЕНИЕ И ВЫВОД → В ЛЮБОЙ МОМЕНТ → БЕЗ БЛОКИРОВКИ СРЕДСТВ | Checklist rows lift, then the card |
+| 14.4 | INCPT WALLET · СТЕЙКИНГ USDT · 20–40% ГОДОВЫХ | Brand end card + «Доступен в Telegram» |
+
+```bash
+python3 tools/build_staking.py
+node tools/render.mjs video --workers 3 --reel staking      # -> out/staking/
+python3 tools/sound.py out/staking
+bash tools/finalize.sh renders/incpt_staking_announce.mp4 out/staking
+```
+
 ## Pipeline
 
 ```
 assets/screens/*.jpg        real app screenshots (source of truth — never redrawn)
 tools/build_assets.py       phone mockup, alpha cut-outs with contour shadows, stitched scroll page
 src/engine.js               seekable timeline: easing, 3D nodes, phone, tap, headlines, background
-src/scenes.js               the edit (all timing lives here, beat = 0.625 s)
+src/common.js               shared helpers + brand end card
+src/scenes.js               reel 1 edit (all timing lives here, beat = 0.625 s)
+src/scenes_staking.js       reel 2 edit (?reel=staking)
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
 tools/sound.py              procedural 96 BPM bed + SFX placed from the timeline's cue list
 tools/finalize.sh           concat + grain + sharpen + AAC mux → H.264 mp4

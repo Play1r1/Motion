@@ -4,32 +4,10 @@
 'use strict';
 
 DURATION = 27.5;
+META = { drop: 5.0, end: 22.2 };
 const TXT_TOP = 236;                // headline block top when UI sits below
 const PHONE_S = 0.64;               // resting phone scale (~644 px wide)
 const PHONE_Y = 290;                // resting phone centre (world y; screen = +960)
-const vis = (t, a, b) => t >= a && t < b;
-const lin = Ease.linear, oX = Ease.outExpo, iX = Ease.inExpo, ioC = Ease.inOutCubic;
-
-// lift a cut-out off the phone: rest -> target (outExpo), optional move to a second pose
-function lift(node, t, t0, dur, to, back = null) {
-  const p = Ease.outExpo(prog(t, t0, t0 + dur));
-  const st = { x: 0, y: 0, z: 0, s: 1, rx: 0, ry: 0, rz: 0 };
-  const q = {};
-  for (const k in st) q[k] = lerp(st[k], to[k] ?? st[k], p);
-  if (back) {
-    const pb = (back.ease || Ease.inOutCubic)(prog(t, back.t, back.t + back.dur));
-    const tgt = back.to || st;
-    for (const k in st) q[k] = lerp(q[k], tgt[k] ?? st[k], pb);
-  }
-  return node.set(q);
-}
-// press: 0 -> 1 -> 0 around a tap
-const press = (t, t0) => (t < t0 ? 0 : t < t0 + 0.12 ? prog(t, t0, t0 + 0.12) : 1 - prog(t, t0 + 0.12, t0 + 0.34));
-// show/hide an empty-slot patch
-const slotO = (im, o) => { im.style.opacity = clamp(o).toFixed(3); };
-// centre of a cut-out in phone-local px
-const home = n => { const c = MANIFEST.cutouts[n], so = MANIFEST.phone.screenOffset; return [so[0] + c.box[0] + c.box[2] / 2, so[1] + c.box[1] + c.box[3] / 2]; };
-
 // ======================================================================= 1–2. HOOK
 // "ОПЛАТИТЬ ПОДПИСКУ С КРИПТЫ?" over drifting subscription chips, then "И БЕЗ KYC?"
 scene({
@@ -346,56 +324,4 @@ scene({
 });
 
 // ======================================================================= 10. END CARD
-// Brand lock-up in the style of the INCPT IO logo sheet: logo, "INCPT WALLET" (WALLET in the
-// logo gradient), a tracked grey tagline, then the "Доступен в Telegram" badge — on brand off-white.
-scene({
-  init() {
-    this.logo = new LogoMark();
-    this.lock = document.createElement('div');
-    this.lock.className = 'lockup';
-    this.lock.innerHTML = '<div class="lk-title"><span class="lk-w lk-incpt">INCPT</span><span class="lk-w lk-io">WALLET</span></div><div class="lk-tag">AI-КРИПТОКОШЕЛЁК И КАРТЫ</div>';
-    $('#text').appendChild(this.lock);
-    this.title = this.lock.querySelector('.lk-title');
-    this.words = [...this.lock.querySelectorAll('.lk-w')];
-    this.tag = this.lock.querySelector('.lk-tag');
-    this.badge = new TgBadge('Доступен в', 'Telegram');
-    this.badge.el.classList.add('dark');
-    cue(22.4, 'whoosh', { dur: 0.5, gain: 0.6, up: true });
-    cue(22.82, 'impact', { gain: 0.8, soft: true });
-    cue(22.9, 'shimmer', { gain: 0.4 });
-    cue(23.0, 'tick', { gain: 0.4 }); cue(23.14, 'tick', { gain: 0.4 });
-    cue(23.86, 'pop', { gain: 0.65, pitch: 0.85 });
-    cue(25.6, 'shimmer', { gain: 0.22 });
-  },
-  update(t) {
-    const on = t >= 22.2;
-    this.lock.style.display = on ? '' : 'none';
-    if (!on) { this.logo.set({ o: 0 }); this.badge.set({ o: 0 }); return; }
-    BGP.white = tw(t, 22.2, 22.95, 0, 1, ioC);
-    CAM.s = kf(t, [[22.6, 1.0], [27.5, 1.05, lin]]);
-    // logo flies in from depth, spinning to face camera, then floats
-    const pin = oX(prog(t, 22.36, 23.0));
-    const fl = Math.max(0, t - 23.0);
-    this.logo.set({
-      x: 540, y: 640 + (1 - pin) * 120 - fl * 5, h: lerp(80, 520, pin),
-      ry: lerp(-160, -6, pin) + fl * 3, rz: lerp(-40, -2, pin) + fl * 0.4,
-      rx: Math.sin(fl * 0.9) * 3, o: clamp((t - 22.36) * 7), blur: (1 - pin) * 12,
-      sheen: vis(t, 22.95, 23.9) ? prog(t, 22.95, 23.9) : vis(t, 25.5, 26.4) ? prog(t, 25.5, 26.4) : null, shadow: 0.55,
-    });
-    // "INCPT WALLET": words rise + un-blur while the tracking settles from wide to the logo's spacing
-    const ls = lerp(0.34, 0.12, Ease.outCubic(prog(t, 22.98, 24.0)));
-    Object.assign(this.title.style, { letterSpacing: ls + 'em', paddingLeft: ls + 'em' });
-    this.words.forEach((w, i) => {
-      const p = prog(t, 22.98 + i * 0.14, 22.98 + i * 0.14 + 0.6), e = Ease.outExpo(p);
-      w.style.opacity = clamp(p * 3).toFixed(3);
-      w.style.transform = `translateY(${((1 - e) * 0.45).toFixed(4)}em)`;
-      w.style.filter = e < 0.99 ? `blur(${((1 - e) * 12).toFixed(2)}px)` : '';
-    });
-    this.words[1].style.backgroundPosition = `${(t * 18) % 200}% 50%`;
-    const ts = lerp(0.62, 0.3, Ease.outCubic(prog(t, 23.45, 24.5)));
-    const pt = prog(t, 23.45, 24.1);
-    Object.assign(this.tag.style, { letterSpacing: ts + 'em', paddingLeft: ts + 'em', opacity: clamp(pt * 1.6).toFixed(3) });
-    const pb = oX(prog(t, 23.82, 24.5));
-    this.badge.set({ y: 1300, o: clamp((t - 23.82) * 6), dy: (1 - pb) * 60, s: lerp(0.92, 1, pb), blur: (1 - pb) * 8 });
-  },
-});
+endCard(22.2, 'AI-КРИПТОКОШЕЛЁК И КАРТЫ');

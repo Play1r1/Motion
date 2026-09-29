@@ -4,6 +4,7 @@
 //   node tools/render.mjs stills 1.0,2.5,5.2 [--mb]      -> out/stills/*.png
 //   node tools/render.mjs sheet 0:8:0.25                -> out/sheet_0-8.jpg (contact sheet)
 //   node tools/render.mjs video [--workers 3] [--from 0 --to 30] [--scale 1]
+//   add --reel staking to any mode for another reel (outputs go to out/<reel>/)
 import { chromium } from 'playwright-core';
 import http from 'http';
 import fs from 'fs';
@@ -18,7 +19,9 @@ const args = process.argv.slice(2);
 const mode = args[0];
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };
 const flag = k => args.includes('--' + k);
-fs.mkdirSync(path.join(ROOT, 'out'), { recursive: true });
+const REEL = opt('reel', 'wallet');
+const OUTD = REEL === 'wallet' ? path.join(ROOT, 'out') : path.join(ROOT, 'out', REEL);
+fs.mkdirSync(OUTD, { recursive: true });
 
 // ---------------------------------------------------------------- static server
 const MIME = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.woff2': 'font/woff2', '.woff': 'font/woff', '.png': 'image/png', '.jpg': 'image/jpeg', '.json': 'application/json' };
@@ -31,7 +34,7 @@ const server = http.createServer((req, res) => {
   });
 });
 await new Promise(r => server.listen(0, '127.0.0.1', r));
-const URL_ = `http://127.0.0.1:${server.address().port}/src/index.html`;
+const URL_ = `http://127.0.0.1:${server.address().port}/src/index.html?reel=${REEL}`;
 
 async function openPage() {
   const browser = await chromium.launch({ executablePath: CHROME, args: ['--disable-lcd-text', '--font-render-hinting=none', '--force-color-profile=srgb'] });
@@ -41,7 +44,7 @@ async function openPage() {
   await page.goto(URL_);
   await page.waitForFunction(() => window.READY === true, null, { timeout: 60000 });
   const cdp = await page.context().newCDPSession(page);
-  const info = await page.evaluate(() => ({ dur: window.DURATION, fps: window.FPS, cues: window.CUES }));
+  const info = await page.evaluate(() => ({ dur: window.DURATION, fps: window.FPS, cues: window.CUES, meta: window.META }));
   return { browser, page, cdp, info };
 }
 
@@ -85,7 +88,7 @@ const toPng = (buf, file, scale = 1) =>
 if (mode === 'stills') {
   const ctx = await openPage();
   const fps = ctx.info.fps;
-  const dir = path.join(ROOT, 'out', 'stills');
+  const dir = path.join(OUTD, 'stills');
   fs.mkdirSync(dir, { recursive: true });
   for (const s of args[1].split(',')) {
     const f = Math.round(parseFloat(s) * fps);
@@ -113,7 +116,7 @@ if (mode === 'stills') {
     const svg = `<svg width="${tw}" height="24"><rect width="100%" height="100%" fill="white"/><text x="6" y="17" font-size="15" font-family="monospace">${tl.t.toFixed(2)}s</text></svg>`;
     comps.push({ input: Buffer.from(svg), left: x, top: y });
   });
-  const out = path.join(ROOT, 'out', `sheet_${a}-${b}.jpg`);
+  const out = path.join(OUTD, `sheet_${a}-${b}.jpg`);
   await sharp({ create: { width: cols * tw, height: rows * (th + 24), channels: 3, background: '#fff' } }).composite(comps).jpeg({ quality: 88 }).toFile(out);
   console.log('sheet', out);
   await ctx.browser.close();
@@ -122,11 +125,11 @@ if (mode === 'stills') {
   const probe = await openPage();
   const fps = probe.info.fps;
   const from = parseFloat(opt('from', '0')), to = parseFloat(opt('to', String(probe.info.dur)));
-  fs.writeFileSync(path.join(ROOT, 'out', 'cues.json'), JSON.stringify({ duration: probe.info.dur, fps, cues: probe.info.cues }, null, 1));
+  fs.writeFileSync(path.join(OUTD, 'cues.json'), JSON.stringify({ duration: probe.info.dur, fps, meta: probe.info.meta, cues: probe.info.cues }, null, 1));
   await probe.browser.close();
   const F0 = Math.round(from * fps), F1 = Math.round(to * fps);
   const per = Math.ceil((F1 - F0) / workers);
-  const segDir = path.join(ROOT, 'out', 'seg');
+  const segDir = path.join(OUTD, 'seg');
   fs.mkdirSync(segDir, { recursive: true });
   const t0 = Date.now();
   let done = 0, samples = 0;

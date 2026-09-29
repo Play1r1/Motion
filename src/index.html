@@ -56,8 +56,10 @@
   <div id="world"><div id="cam"></div></div>
   <div id="text"></div>
 </div>
+<script>window.REEL = new URLSearchParams(location.search).get('reel') || 'wallet';</script>
 <script src="/src/engine.js"></script>
-<script src="/src/scenes.js"></script>
+<script src="/src/common.js"></script>
+<script>document.write(`<script src="/src/${REEL === 'wallet' ? 'scenes' : 'scenes_' + REEL}.js"><\/script>`);</script>
 <script>boot();</script>
 </body>
 </html>

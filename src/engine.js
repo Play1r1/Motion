@@ -128,7 +128,9 @@ class Tap extends Node {
 
 // iPhone mockup with titanium frame, thickness layers and a live screen
 class Phone extends Node {
-  constructor(parent, screen) {
+  // opts.screens: extra screen states to pre-decode (switched with setScreen, slots survive);
+  // opts.islandTop / opts.islandScale: fit our Dynamic Island to a screen's status-bar layout
+  constructor(parent, screen, opts = {}) {
     const P = MANIFEST.phone;
     super(parent, { w: P.size[0], h: P.size[1], cls: 'phone' });
     const [sx, sy] = P.screenOffset;
@@ -150,18 +152,44 @@ class Phone extends Node {
     Object.assign(this.screenEl.style, { left: sx + 'px', top: sy + 'px', borderRadius: P.screenRadius + 'px' });
     this.el.appendChild(this.screenEl);
     this.layers = {};
+    for (const n of opts.screens || []) this.addLayer(n);
     this.setScreen(screen);
     // island + frame on top
     const isl = mkImg(P.island, 'abs');
-    Object.assign(isl.style, { left: sx + 460 - P.islandSize[0] / 2 + 'px', top: sy + P.islandTop + 'px' });
+    const iS = opts.islandScale ?? 1;
+    Object.assign(isl.style, {
+      left: sx + 460 - P.islandSize[0] * iS / 2 + 'px', top: sy + (opts.islandTop ?? P.islandTop) + 'px',
+      width: P.islandSize[0] * iS + 'px', height: P.islandSize[1] * iS + 'px',
+    });
     this.el.appendChild(isl);
     const fr = mkImg(P.frame, 'fill');
     fr.style.transform = 'translateZ(0.5px)';
     this.el.appendChild(fr);
     this.scroll = 0;
   }
+  addLayer(name) {
+    const im = mkImg(MANIFEST.screens[name], 'fill');
+    im.style.display = 'none';
+    this.screenEl.insertBefore(im, this.screenEl.firstChild);
+    this.layers[name] = im;
+  }
+  // white flash over the screen content (screen changes happen under it)
+  flash(o) {
+    if (!this.flashEl) {
+      this.flashEl = document.createElement('div');
+      Object.assign(this.flashEl.style, { position: 'absolute', inset: '0', background: '#f4f6fb' });
+      this.screenEl.appendChild(this.flashEl);
+    }
+    this.flashEl.style.opacity = clamp(o).toFixed(3);
+  }
   setScreen(name) {
     if (this.screenName === name) return;
+    if (MANIFEST.screens && MANIFEST.screens[name]) {
+      if (!this.layers[name]) this.addLayer(name);
+      for (const k in this.layers) this.layers[k].style.display = k === name ? '' : 'none';
+      this.screenName = name;
+      return;
+    }
     this.screenName = name;
     this.screenEl.innerHTML = '';
     if (name === 'home') {
@@ -204,7 +232,8 @@ class Phone extends Node {
 // words appear one by one (rise + un-blur), leave with a quick lift + blur
 class Headline {
   // hl: holographic highlight band (logo gradient) behind every line; align: 'center' | 'left'
-  constructor(text, { y = 0, size = 118, color = 'var(--ink)', width = 1000, lh = 0.9, weight = 1000, wdth = 125, track = -0.035, cls = '', hl = false, align = 'center', left = null } = {}) {
+  // fit: widest line is scaled down to this many px (measured once fonts are ready)
+  constructor(text, { y = 0, size = 118, color = 'var(--ink)', width = 1000, lh = 0.9, weight = 1000, wdth = 125, track = -0.035, cls = '', hl = false, align = 'center', left = null, fit = 0 } = {}) {
     this.el = document.createElement('div');
     this.el.className = 'headline ' + cls;
     Object.assign(this.el.style, {
@@ -237,6 +266,15 @@ class Headline {
     }
     $('#text').appendChild(this.el);
     this.size = size;
+    this.fit = fit;
+  }
+  fitNow() {
+    this.fitted = true;
+    const prev = this.el.style.display;
+    this.el.style.display = '';
+    const w = Math.max(...[...this.el.querySelectorAll('.lineInner')].map(e => e.offsetWidth));
+    if (w > this.fit) { this.size *= this.fit / w; this.el.style.fontSize = this.size + 'px'; }
+    this.el.style.display = prev;
   }
   // highlight bands wipe in left -> right; the gradient keeps drifting like the logo's foil
   bandsAt(t, tin, tout = null, { stagger = 0.08, dur = 0.5 } = {}) {
@@ -252,6 +290,7 @@ class Headline {
   }
   // tin: time first word lands; stagger: seconds between words; tout: exit start (null = stays)
   at(t, tin, tout = null, { stagger = 0.1, dur = 0.55, outDur = 0.2, outStagger = 0.03, dy = 0.42, outDy = -0.3, blur = 16, from = 'below' } = {}) {
+    if (this.fit && !this.fitted) this.fitNow();
     let any = false;
     const n = this.words.length;
     this.words.forEach((w, i) => {
@@ -412,15 +451,23 @@ function drawBg(t) {
 const SCENES = [];
 const scene = s => SCENES.push(s);
 let DURATION = 30;
+let META = {};                 // timing landmarks for the soundtrack (drop, end card)
 
 async function boot() {
   MANIFEST = await (await fetch('manifest.json')).json();
+  if (window.REEL && window.REEL !== 'wallet') {
+    const R = await (await fetch(`manifest_${window.REEL}.json`)).json();
+    for (const k of ['cutouts', 'slots']) Object.assign(MANIFEST[k] = MANIFEST[k] || {}, R[k] || {});
+    MANIFEST.screens = R.screens || {};
+    MANIFEST.flip = R.flip || {};
+  }
   initBg();
   for (const s of SCENES) s.init && s.init();
   await document.fonts.ready;
   await Promise.all(IMGS.map(im => (im.complete ? im.decode().catch(() => {}) : new Promise(r => { im.onload = () => im.decode().then(r, r); im.onerror = r; }))));
   window.CUES = CUES.sort((a, b) => a.t - b.t);
   window.DURATION = DURATION;
+  window.META = META;
   window.FPS = FPS;
   window.READY = true;
 }

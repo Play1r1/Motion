@@ -1,0 +1,625 @@
+{
+ "screens": {
+  "stk_top": "staking/build/stk_top.png",
+  "stk_amount": "staking/build/stk_amount.png",
+  "stk_amount600": "staking/build/stk_amount600.png",
+  "stk_success": "staking/build/stk_success.png"
+ },
+ "cutouts": {
+  "stk_chip_today": {
+   "src": "staking/build/stk_chip_today.png",
+   "screen": "stk_top",
+   "box": [
+    295,
+    821,
+    331,
+    64
+   ],
+   "pad": 90,
+   "size": [
+    511,
+    244
+   ],
+   "r": 32
+  },
+  "stk_panel_top": {
+   "src": "staking/build/stk_panel_top.png",
+   "screen": "stk_top",
+   "box": [
+    75,
+    1022,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_safe": {
+   "src": "staking/build/stk_safe.png",
+   "screen": "stk_top",
+   "box": [
+    280,
+    280,
+    360,
+    360
+   ],
+   "pad": 120,
+   "size": [
+    600,
+    600
+   ],
+   "r": 0
+  },
+  "stk_chip500": {
+   "src": "staking/build/stk_chip500.png",
+   "screen": "stk_amount",
+   "box": [
+    468,
+    674,
+    181,
+    81
+   ],
+   "pad": 90,
+   "size": [
+    361,
+    261
+   ],
+   "r": 26
+  },
+  "stk_profit130": {
+   "src": "staking/build/stk_profit130.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    783,
+    771,
+    89
+   ],
+   "pad": 90,
+   "size": [
+    951,
+    269
+   ],
+   "r": 26
+  },
+  "stk_profit780": {
+   "src": "staking/build/stk_profit780.png",
+   "screen": "stk_amount600",
+   "box": [
+    75,
+    783,
+    771,
+    89
+   ],
+   "pad": 90,
+   "size": [
+    951,
+    269
+   ],
+   "r": 26
+  },
+  "stk_button": {
+   "src": "staking/build/stk_button.png",
+   "screen": "stk_amount600",
+   "box": [
+    75,
+    900,
+    771,
+    98
+   ],
+   "pad": 90,
+   "size": [
+    951,
+    278
+   ],
+   "r": 49
+  },
+  "stk_panel_150": {
+   "src": "staking/build/stk_panel_150.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_167": {
+   "src": "staking/build/stk_panel_167.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_168": {
+   "src": "staking/build/stk_panel_168.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_169": {
+   "src": "staking/build/stk_panel_169.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_170": {
+   "src": "staking/build/stk_panel_170.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_171": {
+   "src": "staking/build/stk_panel_171.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_172": {
+   "src": "staking/build/stk_panel_172.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_173": {
+   "src": "staking/build/stk_panel_173.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_174": {
+   "src": "staking/build/stk_panel_174.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_175": {
+   "src": "staking/build/stk_panel_175.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_176": {
+   "src": "staking/build/stk_panel_176.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_177": {
+   "src": "staking/build/stk_panel_177.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_178": {
+   "src": "staking/build/stk_panel_178.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_179": {
+   "src": "staking/build/stk_panel_179.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_180": {
+   "src": "staking/build/stk_panel_180.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_181": {
+   "src": "staking/build/stk_panel_181.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_182": {
+   "src": "staking/build/stk_panel_182.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_183": {
+   "src": "staking/build/stk_panel_183.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_184": {
+   "src": "staking/build/stk_panel_184.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_panel_185": {
+   "src": "staking/build/stk_panel_185.png",
+   "screen": "stk_amount",
+   "box": [
+    75,
+    390,
+    771,
+    251
+   ],
+   "pad": 110,
+   "size": [
+    991,
+    471
+   ],
+   "r": 34
+  },
+  "stk_check": {
+   "src": "staking/build/stk_check.png",
+   "screen": "stk_success",
+   "box": [
+    332,
+    310,
+    256,
+    256
+   ],
+   "pad": 90,
+   "size": [
+    436,
+    436
+   ],
+   "r": 0
+  },
+  "stk_card600": {
+   "src": "staking/build/stk_card600.png",
+   "screen": "stk_success",
+   "box": [
+    74,
+    766,
+    773,
+    482
+   ],
+   "pad": 120,
+   "size": [
+    1013,
+    722
+   ],
+   "r": 36
+  },
+  "stk_row0": {
+   "src": "staking/build/stk_row0.png",
+   "screen": "stk_success",
+   "box": [
+    70,
+    1300,
+    570,
+    66
+   ],
+   "pad": 90,
+   "size": [
+    750,
+    246
+   ],
+   "r": 33
+  },
+  "stk_row1": {
+   "src": "staking/build/stk_row1.png",
+   "screen": "stk_success",
+   "box": [
+    70,
+    1378,
+    510,
+    66
+   ],
+   "pad": 90,
+   "size": [
+    690,
+    246
+   ],
+   "r": 33
+  },
+  "stk_row2": {
+   "src": "staking/build/stk_row2.png",
+   "screen": "stk_success",
+   "box": [
+    70,
+    1456,
+    530,
+    66
+   ],
+   "pad": 90,
+   "size": [
+    710,
+    246
+   ],
+   "r": 33
+  }
+ },
+ "slots": {
+  "top_chip": {
+   "src": "staking/build/slot_top_chip.png",
+   "x": 287,
+   "y": 813,
+   "w": 347,
+   "h": 80
+  },
+  "top_safe": {
+   "src": "staking/build/slot_top_safe.png",
+   "x": 292,
+   "y": 288,
+   "w": 336,
+   "h": 342
+  },
+  "amt_panel": {
+   "src": "staking/build/slot_amt_panel.png",
+   "x": 67,
+   "y": 382,
+   "w": 787,
+   "h": 267
+  },
+  "amt_chip500": {
+   "src": "staking/build/slot_amt_chip500.png",
+   "x": 462,
+   "y": 668,
+   "w": 193,
+   "h": 93
+  },
+  "amt_profit": {
+   "src": "staking/build/slot_amt_profit.png",
+   "x": 69,
+   "y": 777,
+   "w": 783,
+   "h": 101
+  },
+  "amt_button": {
+   "src": "staking/build/slot_amt_button.png",
+   "x": 69,
+   "y": 894,
+   "w": 783,
+   "h": 110
+  },
+  "succ_row0": {
+   "src": "staking/build/slot_succ_row0.png",
+   "x": 66,
+   "y": 1296,
+   "w": 578,
+   "h": 74
+  },
+  "succ_row1": {
+   "src": "staking/build/slot_succ_row1.png",
+   "x": 66,
+   "y": 1374,
+   "w": 518,
+   "h": 74
+  },
+  "succ_row2": {
+   "src": "staking/build/slot_succ_row2.png",
+   "x": 66,
+   "y": 1452,
+   "w": 538,
+   "h": 74
+  },
+  "succ_check": {
+   "src": "staking/build/slot_succ_check.png",
+   "x": 326,
+   "y": 304,
+   "w": 268,
+   "h": 268
+  },
+  "succ_card": {
+   "src": "staking/build/slot_succ_card.png",
+   "x": 68,
+   "y": 760,
+   "w": 785,
+   "h": 506
+  }
+ },
+ "flip": {
+  "amount": [
+   "stk_panel_150",
+   "stk_panel_167",
+   "stk_panel_168",
+   "stk_panel_169",
+   "stk_panel_170",
+   "stk_panel_171",
+   "stk_panel_172",
+   "stk_panel_173",
+   "stk_panel_174",
+   "stk_panel_175",
+   "stk_panel_176",
+   "stk_panel_177",
+   "stk_panel_178",
+   "stk_panel_179",
+   "stk_panel_180",
+   "stk_panel_181",
+   "stk_panel_182",
+   "stk_panel_183",
+   "stk_panel_184",
+   "stk_panel_185"
+  ]
+ }
+}

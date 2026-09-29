@@ -1,12 +1,13 @@
 """Procedural soundtrack for the INCPT reel: a 96 BPM minimal-tech bed plus sound design
 driven by the cue list the timeline exports (out/cues.json).
 
-    python3 tools/sound.py            -> out/soundtrack.wav (48 kHz stereo)
+    python3 tools/sound.py [out/<reel>]   -> <dir>/soundtrack.wav (48 kHz stereo)
 
 Everything is synthesised here, so there is nothing to license.
 """
 import json
 import os
+import sys
 
 import numpy as np
 from scipy import signal
@@ -20,7 +21,10 @@ DROP = 5.0                       # first downbeat of the groove
 END_CARD = 22.2                  # groove stops, final chord rings out
 rng = np.random.default_rng(7)
 
-cues = json.load(open(os.path.join(ROOT, "out", "cues.json")))
+OUTD = os.path.join(ROOT, sys.argv[1]) if len(sys.argv) > 1 else os.path.join(ROOT, "out")
+cues = json.load(open(os.path.join(OUTD, "cues.json")))
+DROP = cues.get("meta", {}).get("drop", DROP)
+END_CARD = cues.get("meta", {}).get("end", END_CARD)
 DUR = cues["duration"] + 0.05
 N = int(DUR * SR)
 music = np.zeros((N, 2))
@@ -158,7 +162,7 @@ ROOTS = [29, 25, 32, 27]
 
 # ------------------------------------------------------------------ arrangement
 # intro: pad + ticking hats, filter opening toward the drop
-for b in range(2):
+for b in range(max(1, round(DROP / BAR))):
     ch = CHORDS[b % 4]
     place(music, reverb(pad([note(n) for n in ch], BAR + 0.3, 800 + 600 * b), 0.35), b * BAR, 0.85)
 for k in range(int(DROP / (BEAT / 2))):
@@ -322,7 +326,7 @@ mix *= fade[:, None]
 mix = hp(mix.T, 25).T
 peak = np.abs(mix).max()
 mix = np.tanh(mix / peak * 1.25) / np.tanh(1.25) * 0.89   # gentle saturation + -1 dBFS ceiling
-out = os.path.join(ROOT, "out", "soundtrack.wav")
+out = os.path.join(OUTD, "soundtrack.wav")
 from scipy.io import wavfile
 wavfile.write(out, SR, (mix * 32767).astype(np.int16))
 print("soundtrack", out, f"{DUR:.2f}s", "cues", len(cues["cues"]))
