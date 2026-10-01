@@ -13,7 +13,7 @@ import os
 import sys
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter
 from scipy import ndimage
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,10 +65,21 @@ def slot(name, img, box, m=6, fy=3):
     M["slots"][name] = {"src": save_rgba("slot_" + name, patch, np.clip(edge / 3.0, 0, 1)), "x": x0, "y": y0, "w": x1 - x0, "h": h}
 
 
-def matte(name, img, box, pad=70, thr=(7, 34), lift_floor=0.22):
+def polygon_mask(shape, pts, ox, oy, ss=4, round_px=6):
+    """Anti-aliased polygon coverage (screen-coordinate points) with its corners rounded."""
+    h, w = shape
+    im = Image.new("L", (w * ss, h * ss), 0)
+    ImageDraw.Draw(im).polygon([((x - ox) * ss, (y - oy) * ss) for x, y in pts], fill=255)
+    im = im.filter(ImageFilter.GaussianBlur(round_px * ss / 2)).point(lambda v: 255 if v >= 128 else 0)
+    return np.asarray(im.resize((w, h), Image.BOX)).astype(np.float32) / 255
+
+
+def matte(name, img, box, pad=70, thr=(7, 34), lift_floor=0.22, solid=None):
     """3D illustration on a soft gradient: background from the surroundings (normalized
     convolution with the object masked out), alpha from the colour distance to it, colours
-    de-contaminated at the edge. The slot is that background itself."""
+    de-contaminated at the edge. The slot is that background itself.
+    solid: polygons (screen px) that are object for sure: pale, reflective parts whose colour
+    is too close to the page for a colour matte (the iridescent cards in the holder)."""
     x0, y0, x1, y1 = box
     E = 40
     reg = img[y0 - E:y1 + E, x0 - E:x1 + E]
@@ -76,7 +87,10 @@ def matte(name, img, box, pad=70, thr=(7, 34), lift_floor=0.22):
     ring[E:-E, E:-E] = False
     ref = np.median(reg[ring], axis=0)
     obj = np.abs(reg - ref).max(2) > 18
-    obj = ndimage.binary_dilation(obj, iterations=8)
+    force = np.zeros(reg.shape[:2], np.float32)
+    for poly in solid or []:
+        force = np.maximum(force, polygon_mask(reg.shape[:2], poly, x0 - E, y0 - E))
+    obj = ndimage.binary_dilation(obj | (force > 0), iterations=8)
     keep = (~obj).astype(np.float32)
     w = ndimage.gaussian_filter(keep, 30)
     bg = np.stack([ndimage.gaussian_filter(reg[..., c] * keep, 30) for c in range(3)], -1) / np.maximum(w, 1e-3)[..., None]
@@ -85,6 +99,7 @@ def matte(name, img, box, pad=70, thr=(7, 34), lift_floor=0.22):
     a = np.maximum(a, ndimage.binary_fill_holes(a > 0.5).astype(np.float32))   # reflections inside the object stay opaque
     a = np.where(a < lift_floor, 0, a)                      # drop the faint cast shadow: it stays on the page
     a = ndimage.gaussian_filter(a, 0.7)
+    a = np.maximum(a, force)
     fg = (reg - (1 - a[..., None]) * bg) / np.maximum(a[..., None], 0.05)
     fg = np.where(a[..., None] > 0.05, fg, reg)
     core = (slice(E, -E), slice(E, -E))
@@ -155,15 +170,30 @@ for n, x0, x1 in [("recv", 47, 309), ("swap", 329, 591), ("send", 611, 873)]:
     slot("btn_" + n, S["wallet_s1"], (x0, 556, x1, 684), m=4)
 
 # ------------------------------------------------------------------ swap
-cut("pr_give", S["swap"], (43, 557, 877, 894), 46)
-cut("pr_get", S["swap"], (43, 920, 877, 1238), 46)
+# the round arrows button sits on the seam between the panels: take it out of the panels' pixels
+# (their edges are horizontal there, so each row is rebuilt from the columns either side of it)
+SWP = S["swap"].copy()
+for ya, yb, ea, eb in ((830, 895, 830, 884), (919, 992, 930, 992)):    # (patch rows, rows away from the panel edge)
+    lft = np.median(SWP[ya:yb, 376:386], axis=1)
+    rgt = np.median(SWP[ya:yb, 534:544], axis=1)
+    k = np.linspace(0, 1, 534 - 386)[None, :, None]
+    patch = lft[:, None] * (1 - k) + rgt[:, None] * k
+    # away from the panel's edge the surface is flat: smooth the row-to-row streaks of the JPEG
+    sm = np.stack([ndimage.gaussian_filter(patch[..., c], (4, 2), mode="nearest") for c in range(3)], -1)
+    patch[ea - ya:eb - ya] = sm[ea - ya:eb - ya]
+    SWP[ya:yb, 386:534] = patch
+cut("pr_give", SWP, (43, 557, 877, 894), 46)
+cut("pr_get", SWP, (43, 920, 877, 1238), 46)
 yy, xx = np.mgrid[848:950, 409:511].astype(np.float32)
 circ = np.clip(0.5 - (np.sqrt((xx + 0.5 - 460) ** 2 + (yy + 0.5 - 899) ** 2) - 49.5), 0, 1)
 cut("pr_swapbtn", S["swap"], (409, 848, 511, 950), 0, pad=50, blur=14, dy=10, op=0.22, alpha=circ)
 slot("swap_panels", S["swap"], (43, 557, 877, 1238), m=6, fy=12)
 
 # ------------------------------------------------------------------ cards
-matte("pr_holder", S["cards"], (276, 452, 660, 782))
+# the two cards (measured edges): back card 320..608, top edge 492 -> 462; front card top edge
+# 544 -> 500 up to x 632; both go down into the holder, which the colour matte already holds
+CARDS = [(320, 492.5), (608, 461.5), (609.5, 503), (632, 499.5), (633, 585), (320, 600)]
+matte("pr_holder", S["cards"], (276, 452, 660, 782), solid=[CARDS])
 cut("pr_today", S["cards"], (200, 983, 719, 1051), 34, pad=60, blur=18, dy=12, op=0.2)
 slot("today", S["cards"], (200, 983, 719, 1051), m=4)
 OPS = [("starbucks", 700, 886), ("topup", 907, 1091), ("topcard", 1113, 1298), ("usdt", 1320, 1504), ("nike", 1527, 1711)]
