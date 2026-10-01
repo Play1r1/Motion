@@ -120,6 +120,37 @@ python3 tools/sound.py out/tour
 bash tools/finalize.sh renders/incpt_tour_tutorial.mp4 out/tour
 ```
 
+## Reel 5: product promo on the new interface (RU, 9:16)
+
+`renders/incpt_promo.mp4` (+ `_preview.mp4`), 1080×1920, 29 s.
+
+It follows the editing language of the first reel at a faster cut, to a new 120 BPM track (`sound.py` style `drive`):
+- four-on-the-floor kick, rolling 16th bass, supersaw stabs, 16th hats;
+- an arp from the third bar;
+- crashes and snare fills on every section change.
+
+Every claim on screen is visible in the app.
+
+| Time | Headline | Picture (new UI only) |
+|---|---|---|
+| 0.0 | КРИПТА · КАРТЫ · СТЕЙКИНГ · В ОДНОМ МЕСТЕ | One word per beat; coin rows, the card, the safe and «20–40% APY» fly in, then fall into one point |
+| 4.0 | INCPT WALLET | Drop. The phone rises with the home screen; the total balance lifts |
+| 7.0 | АКТИВЫ ПОД ЗАЩИТОЙ | Wallet: the shield leaves the screen, the page scrolls, the five coins fan out |
+| 10.0 | ПОЛУЧАЙ · ОБМЕНИВАЙ · ОТПРАВЛЯЙ | One action button per beat; tap on «Обменять» |
+| 12.0 | ОБМЕН В ОДИН ТАП | Swap screen: the panels lift and trade places on each tap of the arrows button |
+| 15.0 | ВИРТУАЛЬНЫЕ И МЕТАЛЛИЧЕСКИЕ КАРТЫ | The card holder leaves the screen |
+| 16.5 | ПЛАТИ КРИПТОЙ | The card lifts; the real operations fan out under it (USDT → card, top-up, Starbucks, Nike) |
+| 18.0 | СТЕЙКИНГ 20–40% APY | The safe, the APY badge and «прогноз $14.42 сегодня» lift |
+| 21.0 | ВСЁ ПРЯМО В TELEGRAM | Home scrolls from the balance to the operations |
+| 23.0 | INCPT WALLET · AI-КРИПТОКОШЕЛЁК И КАРТЫ | End card + «Доступен в Telegram» |
+
+```bash
+python3 tools/build_promo.py
+node tools/render.mjs video --workers 3 --reel promo        # -> out/promo/
+python3 tools/sound.py out/promo
+MAXRATE=12 bash tools/finalize.sh renders/incpt_promo.mp4 out/promo
+```
+
 ### App screen library (`assets/app/`): new interface
 
 There are 17 screenshots of the new interface (Telegram header «INCEPTION mini app»), 920×2000, ready for the phone mockup:
@@ -164,9 +195,11 @@ src/scenes_staking.js       reel 2 edit (?reel=staking)
 src/scenes_topup.js         reel 3 edit, 1:1 (?reel=topup)
 src/tutorial.js             tutorial toolkit: foil ring + spotlight, lift rings, pointer with taps / drags
 src/scenes_tour.js          reel 4 edit, 9:16 app tour (?reel=tour)
+src/scenes_promo.js         reel 5 edit, product promo on the new interface (?reel=promo)
+tools/build_promo.py        promo cut-outs, mattes of the 3D illustrations, stitched pages
 tools/import_app.py         app screenshots (PDF) -> assets/app, AI artefacts cleaned
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
-tools/sound.py              procedural music (96 BPM tech / 80 BPM calm) + SFX placed from the timeline's cue list
+tools/sound.py              procedural music (96 BPM tech / 80 BPM calm / 120 BPM drive) + SFX from the timeline's cue list
 tools/finalize.sh           concat + grain + sharpen + AAC mux → H.264 mp4
 ```
 

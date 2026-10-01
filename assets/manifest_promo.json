@@ -1,0 +1,554 @@
+{
+ "screens": {
+  "pr_home": "promo/build/pr_home.jpg",
+  "pr_wallet": "promo/build/pr_wallet.jpg",
+  "pr_wallet_s1": "promo/build/pr_wallet_s1.jpg",
+  "pr_swap": "promo/build/pr_swap.jpg",
+  "pr_cards": "promo/build/pr_cards.jpg",
+  "pr_stake": "promo/build/pr_stake.jpg",
+  "pr_home_s1": "promo/build/pr_home_s1.jpg"
+ },
+ "cutouts": {
+  "pr_row_usdt": {
+   "src": "promo/build/pr_row_usdt.png",
+   "box": [
+    48,
+    834,
+    824,
+    167
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    327
+   ],
+   "r": 30
+  },
+  "pr_row_usdc": {
+   "src": "promo/build/pr_row_usdc.png",
+   "box": [
+    48,
+    1006,
+    824,
+    172
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    332
+   ],
+   "r": 30
+  },
+  "pr_row_btc": {
+   "src": "promo/build/pr_row_btc.png",
+   "box": [
+    48,
+    1183,
+    824,
+    172
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    332
+   ],
+   "r": 30
+  },
+  "pr_row_eth": {
+   "src": "promo/build/pr_row_eth.png",
+   "box": [
+    48,
+    1360,
+    824,
+    171
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    331
+   ],
+   "r": 30
+  },
+  "pr_row_trx": {
+   "src": "promo/build/pr_row_trx.png",
+   "box": [
+    48,
+    1536,
+    824,
+    166
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    326
+   ],
+   "r": 30
+  },
+  "pr_card": {
+   "src": "promo/build/pr_card.png",
+   "box": [
+    47,
+    1078,
+    826,
+    523
+   ],
+   "pad": 90,
+   "size": [
+    1006,
+    703
+   ],
+   "r": 50
+  },
+  "pr_balance": {
+   "src": "promo/build/pr_balance.png",
+   "box": [
+    128,
+    518,
+    684,
+    306
+   ],
+   "pad": 90,
+   "size": [
+    864,
+    486
+   ],
+   "r": 56
+  },
+  "pr_shield": {
+   "src": "promo/build/pr_shield.png",
+   "box": [
+    292,
+    440,
+    356,
+    260
+   ],
+   "pad": 70,
+   "size": [
+    496,
+    400
+   ],
+   "r": 0
+  },
+  "pr_btn_recv": {
+   "src": "promo/build/pr_btn_recv.png",
+   "box": [
+    47,
+    556,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "pr_btn_swap": {
+   "src": "promo/build/pr_btn_swap.png",
+   "box": [
+    329,
+    556,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "pr_btn_send": {
+   "src": "promo/build/pr_btn_send.png",
+   "box": [
+    611,
+    556,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "pr_give": {
+   "src": "promo/build/pr_give.png",
+   "box": [
+    43,
+    557,
+    834,
+    337
+   ],
+   "pad": 90,
+   "size": [
+    1014,
+    517
+   ],
+   "r": 46
+  },
+  "pr_get": {
+   "src": "promo/build/pr_get.png",
+   "box": [
+    43,
+    920,
+    834,
+    318
+   ],
+   "pad": 90,
+   "size": [
+    1014,
+    498
+   ],
+   "r": 46
+  },
+  "pr_swapbtn": {
+   "src": "promo/build/pr_swapbtn.png",
+   "box": [
+    409,
+    848,
+    102,
+    102
+   ],
+   "pad": 50,
+   "size": [
+    202,
+    202
+   ],
+   "r": 0
+  },
+  "pr_holder": {
+   "src": "promo/build/pr_holder.png",
+   "box": [
+    276,
+    452,
+    384,
+    330
+   ],
+   "pad": 70,
+   "size": [
+    524,
+    470
+   ],
+   "r": 0
+  },
+  "pr_today": {
+   "src": "promo/build/pr_today.png",
+   "box": [
+    200,
+    983,
+    519,
+    68
+   ],
+   "pad": 60,
+   "size": [
+    639,
+    188
+   ],
+   "r": 34
+  },
+  "pr_op_starbucks": {
+   "src": "promo/build/pr_op_starbucks.png",
+   "box": [
+    37,
+    700,
+    846,
+    186
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    346
+   ],
+   "r": 44
+  },
+  "pr_op_topup": {
+   "src": "promo/build/pr_op_topup.png",
+   "box": [
+    37,
+    907,
+    846,
+    184
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    344
+   ],
+   "r": 44
+  },
+  "pr_op_topcard": {
+   "src": "promo/build/pr_op_topcard.png",
+   "box": [
+    37,
+    1113,
+    846,
+    185
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    345
+   ],
+   "r": 44
+  },
+  "pr_op_usdt": {
+   "src": "promo/build/pr_op_usdt.png",
+   "box": [
+    37,
+    1320,
+    846,
+    184
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    344
+   ],
+   "r": 44
+  },
+  "pr_op_nike": {
+   "src": "promo/build/pr_op_nike.png",
+   "box": [
+    37,
+    1527,
+    846,
+    184
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    344
+   ],
+   "r": 44
+  },
+  "pr_safe": {
+   "src": "promo/build/pr_safe.png",
+   "box": [
+    322,
+    418,
+    282,
+    284
+   ],
+   "pad": 70,
+   "size": [
+    422,
+    424
+   ],
+   "r": 0
+  },
+  "pr_apy": {
+   "src": "promo/build/pr_apy.png",
+   "box": [
+    636,
+    1060,
+    212,
+    52
+   ],
+   "pad": 50,
+   "size": [
+    312,
+    152
+   ],
+   "r": 14
+  },
+  "pr_forecast": {
+   "src": "promo/build/pr_forecast.png",
+   "box": [
+    238,
+    926,
+    442,
+    72
+   ],
+   "pad": 60,
+   "size": [
+    562,
+    192
+   ],
+   "r": 36
+  },
+  "pr_staked": {
+   "src": "promo/build/pr_staked.png",
+   "box": [
+    226,
+    748,
+    468,
+    154
+   ],
+   "pad": 70,
+   "size": [
+    608,
+    294
+   ],
+   "r": 40
+  }
+ },
+ "slots": {
+  "row_usdt": {
+   "src": "promo/build/slot_row_usdt.png",
+   "x": 46,
+   "y": 832,
+   "w": 828,
+   "h": 171
+  },
+  "row_usdc": {
+   "src": "promo/build/slot_row_usdc.png",
+   "x": 46,
+   "y": 1004,
+   "w": 828,
+   "h": 176
+  },
+  "row_btc": {
+   "src": "promo/build/slot_row_btc.png",
+   "x": 46,
+   "y": 1181,
+   "w": 828,
+   "h": 176
+  },
+  "row_eth": {
+   "src": "promo/build/slot_row_eth.png",
+   "x": 46,
+   "y": 1358,
+   "w": 828,
+   "h": 175
+  },
+  "row_trx": {
+   "src": "promo/build/slot_row_trx.png",
+   "x": 46,
+   "y": 1534,
+   "w": 828,
+   "h": 170
+  },
+  "card": {
+   "src": "promo/build/slot_card.png",
+   "x": 43,
+   "y": 1074,
+   "w": 834,
+   "h": 531
+  },
+  "balance": {
+   "src": "promo/build/slot_balance.png",
+   "x": 124,
+   "y": 514,
+   "w": 692,
+   "h": 314
+  },
+  "pr_shield": {
+   "src": "promo/build/slot_pr_shield.png",
+   "x": 292,
+   "y": 440,
+   "w": 356,
+   "h": 260
+  },
+  "btn_recv": {
+   "src": "promo/build/slot_btn_recv.png",
+   "x": 43,
+   "y": 552,
+   "w": 270,
+   "h": 136
+  },
+  "btn_swap": {
+   "src": "promo/build/slot_btn_swap.png",
+   "x": 325,
+   "y": 552,
+   "w": 270,
+   "h": 136
+  },
+  "btn_send": {
+   "src": "promo/build/slot_btn_send.png",
+   "x": 607,
+   "y": 552,
+   "w": 270,
+   "h": 136
+  },
+  "swap_panels": {
+   "src": "promo/build/slot_swap_panels.png",
+   "x": 37,
+   "y": 551,
+   "w": 846,
+   "h": 693
+  },
+  "pr_holder": {
+   "src": "promo/build/slot_pr_holder.png",
+   "x": 276,
+   "y": 452,
+   "w": 384,
+   "h": 330
+  },
+  "today": {
+   "src": "promo/build/slot_today.png",
+   "x": 196,
+   "y": 979,
+   "w": 527,
+   "h": 76
+  },
+  "pr_safe": {
+   "src": "promo/build/slot_pr_safe.png",
+   "x": 322,
+   "y": 418,
+   "w": 282,
+   "h": 284
+  },
+  "apy": {
+   "src": "promo/build/slot_apy.png",
+   "x": 633,
+   "y": 1057,
+   "w": 218,
+   "h": 58
+  },
+  "forecast": {
+   "src": "promo/build/slot_forecast.png",
+   "x": 234,
+   "y": 922,
+   "w": 450,
+   "h": 80
+  },
+  "staked": {
+   "src": "promo/build/slot_staked.png",
+   "x": 222,
+   "y": 744,
+   "w": 476,
+   "h": 162
+  }
+ },
+ "overlays": {
+  "page_wallet": {
+   "src": "promo/build/page_wallet.jpg",
+   "h": 2215,
+   "scroll": 503
+  },
+  "page_home": {
+   "src": "promo/build/page_home.jpg",
+   "h": 3011,
+   "scroll": 1299
+  },
+  "bar_home": {
+   "src": "promo/build/ov_bar_home.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_home2": {
+   "src": "promo/build/ov_bar_home2.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_wallet": {
+   "src": "promo/build/ov_bar_wallet.png",
+   "y": 1700,
+   "h": 210
+  },
+  "corners": {
+   "src": "promo/build/ov_corners.png",
+   "y": 1780,
+   "h": 220
+  },
+  "header": {
+   "src": "promo/build/ov_header.png",
+   "y": 0,
+   "h": 302
+  }
+ },
+ "headerY": 302
+}

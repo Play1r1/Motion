@@ -264,6 +264,102 @@ if STYLE == "tech":
 
 
 
+elif STYLE == "drive":
+    # ---------------- drive: 120 BPM driving electro (promo). F minor i-VI-III-VII, four-on-the-floor,
+    # rolling 16th bass, supersaw stabs, 16th hats + open offbeats, an arp that joins halfway
+    def supersaw(freqs, d, cutoff=5200, decay=0.16):
+        x = sum(saw(f, d, dt) for f in freqs for dt in (-0.012, -0.006, 0.0, 0.006, 0.012)) / (5 * len(freqs))
+        out = np.zeros_like(x)
+        blk, zi = 480, None
+        for s in range(0, len(x), blk):
+            fc = 700 + cutoff * np.exp(-s / SR / 0.07)
+            b, a = signal.butter(2, min(fc, 18000), fs=SR)
+            if zi is None:
+                zi = signal.lfilter_zi(b, a) * 0
+            out[s:s + blk], zi = signal.lfilter(b, a, x[s:s + blk], zi=zi)
+        return out * env_exp(d, decay, 0.002)
+
+    def snare():
+        d = 0.3
+        t = t_(d)
+        body = np.sin(2 * np.pi * (190 + 60 * np.exp(-t / 0.02)) * t) * env_exp(d, 0.07, 0.001)
+        noise = bp(rng.standard_normal(len(t)), 1200, 9000) * env_exp(d, 0.09, 0.0008)
+        return np.tanh((body * 0.7 + noise) * 1.5) * 0.6
+
+    def roll_bass(f, d):
+        t = t_(d)
+        x = lp(saw(f, d) * 0.8 + np.sin(2 * np.pi * f / 2 * t) * 0.9, 900)
+        return np.tanh(x * 1.6) * np.minimum(1, t / 0.004) * np.exp(-t / 0.09) * 0.55
+
+    side = np.ones(N)
+    # intro (hook): filtered stabs on the offbeats, hats rising, a snare roll into the drop
+    n_in = int(round(DROP / BAR))
+    for b in range(n_in):
+        ch = CHORDS[b % 4]
+        place(music, reverb(pad([note(n) for n in ch], BAR + 0.2, 700 + 900 * b), 0.3), b * BAR, 0.7)
+        for k in range(4):
+            tb = b * BAR + (k + 0.5) * BEAT
+            if tb < DROP - 0.05:
+                place(music, reverb(supersaw([note(n + 12) for n in ch], 0.25, 900 + 1500 * (b * 4 + k) / (4 * n_in)), 0.25), tb, 0.32)
+        for k in range(4):
+            tk = b * BAR + k * BEAT
+            place(kicks, lp(kick(), 300 + 500 * b), tk, 0.55 + 0.15 * b)
+    for k in range(int(DROP / (BEAT / 2))):
+        place(music, hat(), k * BEAT / 2, 0.08 + 0.2 * k * BEAT / 2 / DROP, pan=0.25)
+    roll_t = DROP - BAR / 2
+    k, tt = 0, roll_t
+    while tt < DROP - BEAT / 4:
+        place(music, snare(), tt, 0.18 + 0.4 * (tt - roll_t) / (BAR / 2))
+        tt += BEAT / 4 if tt < DROP - BEAT else BEAT / 8
+        k += 1
+    # groove
+    n_bars = int(np.ceil((END_CARD - DROP) / BAR))
+    STAB = [0, 0.75, 1.5, 2.5, 3.0]
+    for b in range(n_bars):
+        t0 = DROP + b * BAR
+        ch = CHORDS[b % 4]
+        root = ROOTS[b % 4] + 12
+        for beat in range(4):
+            tb = t0 + beat * BEAT
+            if tb >= END_CARD:
+                break
+            place(kicks, kick(), tb, 1.0)
+            i = int(tb * SR)
+            dk = int(0.24 * SR)
+            side[i:i + dk] = np.minimum(side[i:i + dk], 1 - 0.65 * np.exp(-np.arange(min(dk, N - i)) / SR / 0.08))
+            if beat in (1, 3):
+                place(music, reverb(snare(), 0.22), tb, 0.55)
+                place(music, reverb(clap(), 0.3), tb, 0.35)
+            for h in range(4):
+                th = tb + h * BEAT / 4
+                if th < END_CARD:
+                    place(music, hat(open_=(h == 2)), th, 0.3 if h == 2 else (0.12 if h % 2 else 0.18), pan=0.3 if h % 2 else -0.15)
+            for h in (1, 2, 3):                      # rolling bass between the kicks
+                th = tb + h * BEAT / 4
+                if th < END_CARD:
+                    place(music, roll_bass(note(root + (7 if (beat == 3 and h == 3) else 0)), BEAT / 4 + 0.02), th, 0.75)
+        for rb in STAB:
+            tp = t0 + rb * BEAT
+            if tp < END_CARD:
+                place(music, reverb(supersaw([note(n + 12) for n in ch], 0.32, 5200 if rb == 0 else 3800), 0.28), tp, 0.38, pan=-0.15)
+        if b >= 2:                                    # arp joins on the third bar
+            for s16 in range(16):
+                tp = t0 + s16 * BEAT / 4
+                if tp < END_CARD:
+                    n = ch[[0, 1, 2, 3, 2, 1][s16 % 6]] + 24
+                    place(music, reverb(pluck([note(n)], 0.18, 0.7), 0.3), tp, 0.13, pan=0.35 if s16 % 2 else -0.35)
+        d = min(BAR, END_CARD - t0)
+        place(music, reverb(pad([note(n) for n in ch], d + 0.2, 1800), 0.3), t0, 0.22)
+    music *= side[:, None] ** 0.85
+    music += kicks
+    # end card: one big stab, then the chord rings out over muted pulses
+    fin = [note(n) for n in (41, 53, 56, 60, 63, 67)]
+    place(music, reverb(supersaw([note(n + 12) for n in (53, 56, 60, 67)], 1.2, 6000, 0.5), 0.45), END_CARD + 0.4, 0.8)
+    place(music, reverb(pad(fin, 5.4, 2600), 0.5), END_CARD + 0.4, 1.8)
+    place(music, sub(note(29), 2.4) * np.exp(-t_(2.4) / 0.9), END_CARD + 0.42, 1.0)
+    for k in range(1, 9):
+        place(music, reverb(pluck([note(n + 12) for n in (53, 60, 63)], 0.3, 0.5), 0.45), END_CARD + 0.42 + k * BEAT, 0.45 * 0.86 ** k, pan=(-0.3 if k % 2 else 0.3))
+
 else:
     # ---------------- calm: warm electric piano in D major, soft drums, bell motif
     CH = [[62, 66, 69, 73], [59, 62, 66, 69], [55, 59, 62, 66], [57, 61, 64, 71]]   # Dmaj7 Bm7 Gmaj7 Aadd9
@@ -434,6 +530,21 @@ for c in cues["cues"]:
     elif k == "shimmer":
         for i, n in enumerate([84, 87, 91, 94, 96]):
             place(sfx, reverb(chime([note(n)], 0.8), 0.45), at + i * 0.06, g * 0.35 * (0.9 ** i), pan=-0.4 + 0.2 * i)
+    elif k == "crash":                       # cymbal on a section change
+        d = 1.8
+        tc = t_(d)
+        x = hp(rng.standard_normal(len(tc)), 4500, 2) * env_exp(d, 0.55, 0.001)
+        x += sum(np.sin(2 * np.pi * f * tc) for f in (3150, 4420, 5830)) * env_exp(d, 0.4, 0.001) * 0.04
+        place(sfx, reverb(x, 0.35), at, g * 0.5, pan)
+    elif k == "fill":                        # snare 16ths into a section change, rising
+        n_ = c.get("n", 4)
+        step = c.get("step", BEAT / 4)
+        for i in range(n_):
+            d = 0.25
+            tc = t_(d)
+            s = bp(rng.standard_normal(len(tc)), 1300 + 250 * i, 9000) * env_exp(d, 0.07, 0.0008)
+            s += np.sin(2 * np.pi * (200 + 30 * i) * tc) * env_exp(d, 0.05, 0.001) * 0.6
+            place(sfx, s, at + i * step, g * (0.45 + 0.55 * i / max(1, n_ - 1)) * 0.5)
 
 # ------------------------------------------------------------------ mix + master
 mix = music * 0.62 + sfx * 0.9
