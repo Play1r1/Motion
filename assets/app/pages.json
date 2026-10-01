@@ -1,0 +1,33 @@
+{
+ "size": [
+  920,
+  2000
+ ],
+ "headerY": 302,
+ "pages": [
+  "stake",
+  "home_s1",
+  "send",
+  "receive_trc20",
+  "send_pick",
+  "receive_erc20",
+  "stake_s1",
+  "stake_s1_alt",
+  "cards_s1",
+  "cards",
+  "home",
+  "wallet_s1",
+  "receive_pick",
+  "swap_s1",
+  "profile",
+  "swap",
+  "wallet"
+ ],
+ "back": [
+  "receive_erc20",
+  "receive_trc20",
+  "send",
+  "swap",
+  "swap_s1"
+ ]
+}

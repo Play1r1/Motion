@@ -1,7 +1,7 @@
 # INCPT Wallet — motion reel
 
 > **Interface update (Oct 2026):** INCPT Wallet has a new interface, so every asset built from the old UI was removed:
-> - the screenshots (`assets/screens`, `assets/app`);
+> - the old screenshots (`assets/screens` and the first `assets/app`);
 > - the staking prototype and the top-up beta video;
 > - every cut-out, slot, page and manifest made from them.
 >
@@ -10,7 +10,7 @@
 > - all code (engine, tutorial toolkit, builders);
 > - the four finished renders in `renders/`, which show the old UI.
 >
-> No reel below re-renders until it is rebuilt from the new interface material. The old files are still in git history.
+> No reel below re-renders until it is rebuilt from the new interface material (now in `assets/app`, see below). The old files are still in git history.
 
 A 27.5 s, 1080×1920 @ 30 fps promo reel for the INCPT Wallet Telegram mini app (AI crypto wallet and crypto cards). Its pacing follows the editing language of the Tangem 6.1 "Address Book" reel, with INCPT's own look:
 - a slow holographic foil background in the INCPT logo palette (mint, sky, periwinkle, lavender, lilac)
@@ -113,28 +113,44 @@ All tutorials from here on are 9:16 (Reels). The step card sits at the top, and 
 | 51.0 | INCPT WALLET · ВАШ КРИПТОКОШЕЛЁК В TELEGRAM | End card + «Доступен в Telegram» |
 
 ```bash
-python3 tools/import_app.py reference/app/IMG_2489.pdf     # once: screenshots -> assets/app (personal data swapped)
+python3 tools/import_app.py reference/app/IMG_2489.pdf     # (old UI, since removed) screenshots -> assets/app
 python3 tools/build_tour.py
 node tools/render.mjs video --workers 3 --reel tour         # -> out/tour/
 python3 tools/sound.py out/tour
 bash tools/finalize.sh renders/incpt_tour_tutorial.mp4 out/tour
 ```
 
-### App screen library (`assets/app/`)
+### App screen library (`assets/app/`): new interface
 
-The team's screenshots (an iOS PDF, kept in git-ignored `reference/app/`) are imported once by `tools/import_app.py`:
-- **home** (`home`, `home_s1`, `home_s2`)
-- **cards** (`cards`, `cards_add`, `card_mc`, `card_visa`)
-- **wallet** (`wallet`, `wallet_recv`)
-- **send**
-- **stake**
-- **profile** (`profile`, `profile_s1`)
+There are 17 screenshots of the new interface (Telegram header «INCEPTION mini app»), 920×2000, ready for the phone mockup:
 
-Pages leave the PDF without re-encoding.
+| Section | Pages |
+|---|---|
+| Home | `home`, `home_s1` |
+| Cards | `cards`, `cards_s1` |
+| Wallet | `wallet`, `wallet_s1` |
+| Coin sheets | `send_pick`, `receive_pick` |
+| Send | `send` |
+| Receive | `receive_trc20`, `receive_erc20` |
+| Swap | `swap`, `swap_s1` |
+| Staking | `stake`, `stake_s1`, `stake_s1_alt` |
+| Profile | `profile` |
 
-**Personal data:**
-- The import swaps it before anything is written. On the profile, the @username line is removed and the Telegram ID becomes 1234567890, re-set in the app's font (Inter, `tools/textpng.mjs`).
-- The QR receive page is not imported yet: it needs a demo address and a regenerated QR first.
+`pages.json` lists the pages and the ones with «< Back».
+
+The team raised the balances in an AI editor, and that pass left artefacts. `tools/import_app.py` (PDF in git-ignored `reference/app_v2/`) removes them deterministically:
+
+| AI artefact | Fix |
+|---|---|
+| A halo around every glyph and icon (over-sharpening) | De-ringing on neutral text and line icons only; coloured shapes such as card logos are left alone |
+| JPEG mottling | Smoothed in flat areas |
+| Staking deposits: tab bar 35 px low | Content and bar moved up |
+| Wallet top: coin list squeezed (row pitch 147 px instead of 176), tab bar off-screen | Rebuilt under its hero from `wallet_s1`, which has the true geometry; this also fixes the BTC row, where $84,000.01 contradicted 0.5 BTC = $41,996.01 |
+| Time and battery differ per screenshot | One status bar (16:48, 27 %) and one Telegram header (Close / Back) for all pages |
+| QR codes undecodable and full of holes | Crisp, valid QR with a demo payload (`INCPT WALLET DEMO TRC-20/ERC-20`), so a scanned frame never yields an address |
+| Big balances redrawn with a slab-footed «1» | `$148,450.75` and `$103,450.75` re-set in Inter 600, the app's font (`tools/textpng.mjs`) |
+
+`out/app_clean/sheet.jpg` shows every page before | after.
 
 ## Pipeline
 
@@ -148,7 +164,7 @@ src/scenes_staking.js       reel 2 edit (?reel=staking)
 src/scenes_topup.js         reel 3 edit, 1:1 (?reel=topup)
 src/tutorial.js             tutorial toolkit: foil ring + spotlight, lift rings, pointer with taps / drags
 src/scenes_tour.js          reel 4 edit, 9:16 app tour (?reel=tour)
-tools/import_app.py         app screenshots (PDF) -> assets/app, personal data swapped
+tools/import_app.py         app screenshots (PDF) -> assets/app, AI artefacts cleaned
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
 tools/sound.py              procedural music (96 BPM tech / 80 BPM calm) + SFX placed from the timeline's cue list
 tools/finalize.sh           concat + grain + sharpen + AAC mux → H.264 mp4
