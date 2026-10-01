@@ -516,12 +516,12 @@
  "overlays": {
   "page_wallet": {
    "src": "promo/build/page_wallet.jpg",
-   "h": 2215,
+   "h": 2503,
    "scroll": 503
   },
   "page_home": {
    "src": "promo/build/page_home.jpg",
-   "h": 3011,
+   "h": 3299,
    "scroll": 1299
   },
   "bar_home": {

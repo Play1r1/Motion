@@ -126,12 +126,25 @@ def offset(a, b, guess, rows, xs=(40, 880)):
 
 # wallet: top screen down to just under the balance, then the scrolled screen (same layout, 503 px lower)
 WD = 503
-page = np.concatenate([S["wallet"][:805], S["wallet_s1"][805 - WD:1712]], axis=0)
+
+
+def page_tail(src):
+    """What lies under the fixed tab bar at the page's end: the scrolled shot down to the bar's
+    top, then its own bottom strip (below the bar) stretched to fill the rest of the screen, so
+    the scrolled page never runs out above the screen's bottom edge."""
+    B = S[src]
+    strip = np.asarray(Image.fromarray(B[1892:SH].astype(np.uint8)).resize((SW, 270), Image.BILINEAR)).astype(np.float32)
+    return [B[:1730], strip]
+
+
+tail = page_tail("wallet_s1")
+page = np.concatenate([S["wallet"][:805], tail[0][805 - WD:], tail[1]], axis=0)
 M["overlays"]["page_wallet"] = {"src": save_rgb("page_wallet", page), "h": int(page.shape[0]), "scroll": WD}
 # home: top screen, then the scrolled screen with the operations
 hd, err = offset(S["home"], S["home_s1"], 1300, (1610, 1700), xs=(40, 660))   # matched on the card
 SEAM = 1600
-page = np.concatenate([S["home"][:SEAM], S["home_s1"][SEAM - hd:1712]], axis=0)
+tail = page_tail("home_s1")
+page = np.concatenate([S["home"][:SEAM], tail[0][SEAM - hd:], tail[1]], axis=0)
 M["overlays"]["page_home"] = {"src": save_rgb("page_home", page), "h": int(page.shape[0]), "scroll": int(hd)}
 print(f"home scroll {hd} (err {err:.2f}); pages ok")
 
