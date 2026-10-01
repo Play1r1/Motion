@@ -82,6 +82,48 @@ python3 tools/sound.py out/topup
 bash tools/finalize.sh renders/incpt_topup_tutorial.mp4 out/topup
 ```
 
+## Reel 4 — app tour «Знакомство с INCPT Wallet» (RU, 9:16)
+
+`renders/incpt_tour_tutorial.mp4` (+ `_preview.mp4`), 1080×1920, 57 s, calm track in G (80 BPM). The first video in the tutorial series.
+All tutorials from here on are 9:16 (Reels). The step card sits at the top, and the phone sits under it, clear of the caption area.
+- **Step card:** «РАЗДЕЛ N ИЗ 5», the section's real tab icon, its name and one plain-language line per beat.
+- **Pointer, foil ring and taps:** `src/tutorial.js`, shared with reel 3.
+
+| Time | Section | On the phone |
+|---|---|---|
+| 0.0 | ИНСТРУКЦИЯ · ЗНАКОМСТВО С INCPT WALLET · 5 разделов приложения за минуту | Logo spins in |
+| 3.0 | НИЖНЕЕ МЕНЮ | The tab bar lifts off the dimmed screen, a label pops on every tab |
+| 8.25 | 1 · ГЛАВНАЯ | Balance lifts; ring on Получить / Отправить; the page scrolls: DeFi wallet → card → operations |
+| 18.75 | 2 · КАРТЫ | Tap on the cards tab; the action row lifts; the finger swipes card #2 away to «Добавить карту» |
+| 28.5 | 3 · КОШЕЛЁК | Tap on the round centre button; the ring walks USDT → USDC → ETH → BTC |
+| 36.0 | 4 · СТЕЙКИНГ | Tap on Stake; the app's own «Скоро» card lifts |
+| 40.5 | 5 · ПРОФИЛЬ | Tap on the profile; Telegram ID / Email; PIN, биометрия, сид-фраза lift; scroll to language and support |
+| 51.0 | INCPT WALLET · ВАШ КРИПТОКОШЕЛЁК В TELEGRAM | End card + «Доступен в Telegram» |
+
+```bash
+python3 tools/import_app.py reference/app/IMG_2489.pdf     # once: screenshots -> assets/app (personal data swapped)
+python3 tools/build_tour.py
+node tools/render.mjs video --workers 3 --reel tour         # -> out/tour/
+python3 tools/sound.py out/tour
+bash tools/finalize.sh renders/incpt_tour_tutorial.mp4 out/tour
+```
+
+### App screen library (`assets/app/`)
+
+The team's screenshots (an iOS PDF, kept in git-ignored `reference/app/`) are imported once by `tools/import_app.py`:
+- **home** (`home`, `home_s1`, `home_s2`)
+- **cards** (`cards`, `cards_add`, `card_mc`, `card_visa`)
+- **wallet** (`wallet`, `wallet_recv`)
+- **send**
+- **stake**
+- **profile** (`profile`, `profile_s1`)
+
+Pages leave the PDF without re-encoding.
+
+**Personal data:**
+- The import swaps it before anything is written. On the profile, the @username line is removed and the Telegram ID becomes 1234567890, re-set in the app's font (Inter, `tools/textpng.mjs`).
+- The QR receive page is not imported yet: it needs a demo address and a regenerated QR first.
+
 ## Pipeline
 
 ```
@@ -92,6 +134,9 @@ src/common.js               shared helpers + brand end card
 src/scenes.js               reel 1 edit (all timing lives here, beat = 0.625 s)
 src/scenes_staking.js       reel 2 edit (?reel=staking)
 src/scenes_topup.js         reel 3 edit, 1:1 (?reel=topup)
+src/tutorial.js             tutorial toolkit: foil ring + spotlight, lift rings, pointer with taps / drags
+src/scenes_tour.js          reel 4 edit, 9:16 app tour (?reel=tour)
+tools/import_app.py         app screenshots (PDF) -> assets/app, personal data swapped
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
 tools/sound.py              procedural music (96 BPM tech / 80 BPM calm) + SFX placed from the timeline's cue list
 tools/finalize.sh           concat + grain + sharpen + AAC mux → H.264 mp4

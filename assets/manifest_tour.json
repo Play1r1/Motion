@@ -1,0 +1,365 @@
+{
+ "screens": {
+  "tr_cards": "tour/build/tr_cards.jpg",
+  "tr_cards_add": "tour/build/tr_cards_add.jpg",
+  "tr_wallet": "tour/build/tr_wallet.jpg",
+  "tr_stake": "tour/build/tr_stake.jpg"
+ },
+ "cutouts": {
+  "tr_tabbar": {
+   "src": "tour/build/tr_tabbar.png",
+   "box": [
+    0,
+    1700,
+    920,
+    210
+   ],
+   "pad": 80,
+   "size": [
+    1080,
+    370
+   ],
+   "r": 0
+  },
+  "tr_balance": {
+   "src": "tour/build/tr_balance.png",
+   "box": [
+    232,
+    518,
+    456,
+    308
+   ],
+   "pad": 90,
+   "size": [
+    636,
+    488
+   ],
+   "r": 52
+  },
+  "tr_actions": {
+   "src": "tour/build/tr_actions.png",
+   "box": [
+    52,
+    950,
+    816,
+    212
+   ],
+   "pad": 90,
+   "size": [
+    996,
+    392
+   ],
+   "r": 56
+  },
+  "tr_soon": {
+   "src": "tour/build/tr_soon.png",
+   "box": [
+    186,
+    888,
+    548,
+    389
+   ],
+   "pad": 90,
+   "size": [
+    728,
+    569
+   ],
+   "r": 46
+  },
+  "tr_secure": {
+   "src": "tour/build/tr_secure.png",
+   "box": [
+    37,
+    1271,
+    846,
+    462
+   ],
+   "pad": 90,
+   "size": [
+    1026,
+    642
+   ],
+   "r": 48
+  },
+  "tr_card2": {
+   "src": "tour/build/tr_card2.png",
+   "box": [
+    69,
+    397,
+    782,
+    495
+   ],
+   "pad": 60,
+   "size": [
+    902,
+    615
+   ],
+   "r": 56
+  },
+  "tr_cardadd": {
+   "src": "tour/build/tr_cardadd.png",
+   "box": [
+    69,
+    397,
+    782,
+    495
+   ],
+   "pad": 60,
+   "size": [
+    902,
+    615
+   ],
+   "r": 56
+  }
+ },
+ "slots": {
+  "balance": {
+   "src": "tour/build/slot_balance.png",
+   "x": 228,
+   "y": 514,
+   "w": 464,
+   "h": 316
+  },
+  "actions": {
+   "src": "tour/build/slot_actions.png",
+   "x": 48,
+   "y": 946,
+   "w": 824,
+   "h": 220
+  },
+  "soon": {
+   "src": "tour/build/slot_soon.png",
+   "x": 180,
+   "y": 882,
+   "w": 560,
+   "h": 401
+  },
+  "secure": {
+   "src": "tour/build/slot_secure.png",
+   "x": 33,
+   "y": 1267,
+   "w": 854,
+   "h": 470
+  }
+ },
+ "rects": {
+  "tab_home": [
+   50.5,
+   1744,
+   128.0,
+   128,
+   64
+  ],
+  "tab_cards": [
+   206,
+   1744,
+   128,
+   128,
+   64
+  ],
+  "tab_stake": [
+   586,
+   1744,
+   128,
+   128,
+   64
+  ],
+  "tab_profile": [
+   741,
+   1744,
+   128,
+   128,
+   64
+  ],
+  "tab_wallet": [
+   368,
+   1714,
+   183,
+   183,
+   92
+  ],
+  "tabbar": [
+   36,
+   1714,
+   847,
+   183,
+   77
+  ],
+  "balance": [
+   232,
+   518,
+   456,
+   308,
+   52
+  ],
+  "buttons": [
+   30,
+   869,
+   860,
+   139,
+   69
+  ],
+  "defi": [
+   37,
+   422,
+   846,
+   150,
+   42
+  ],
+  "card": [
+   37,
+   737,
+   629,
+   397,
+   44
+  ],
+  "ops": [
+   30,
+   1205,
+   860,
+   507,
+   44
+  ],
+  "actions": [
+   52,
+   950,
+   816,
+   212,
+   56
+  ],
+  "addcard": [
+   69,
+   397,
+   782,
+   495,
+   56
+  ],
+  "assets": [
+   37,
+   1062,
+   846,
+   668,
+   44
+  ],
+  "row_usdt": [
+   37,
+   1064,
+   846,
+   174,
+   40
+  ],
+  "row_usdc": [
+   37,
+   1240,
+   846,
+   172,
+   40
+  ],
+  "row_eth": [
+   37,
+   1414,
+   846,
+   172,
+   40
+  ],
+  "row_btc": [
+   37,
+   1588,
+   846,
+   142,
+   40
+  ],
+  "soon": [
+   186,
+   888,
+   548,
+   389,
+   46
+  ],
+  "idcard": [
+   37,
+   921,
+   846,
+   312,
+   48
+  ],
+  "secure": [
+   37,
+   1271,
+   846,
+   462,
+   48
+  ],
+  "lang": [
+   37,
+   703,
+   846,
+   165,
+   48
+  ],
+  "settings": [
+   37,
+   904,
+   846,
+   612,
+   48
+  ]
+ },
+ "overlays": {
+  "page_home": {
+   "src": "tour/build/page_home.jpg",
+   "h": 3024,
+   "scroll": 1024
+  },
+  "page_profile": {
+   "src": "tour/build/page_profile.jpg",
+   "h": 3066,
+   "scroll": 1066
+  },
+  "header": {
+   "src": "tour/build/ov_header.png",
+   "y": 0,
+   "h": 302
+  },
+  "corners": {
+   "src": "tour/build/ov_corners.png",
+   "y": 1780,
+   "h": 220
+  },
+  "bar_home": {
+   "src": "tour/build/ov_bar_home.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_home2": {
+   "src": "tour/build/ov_bar_home2.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_profile": {
+   "src": "tour/build/ov_bar_profile.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_profile2": {
+   "src": "tour/build/ov_bar_profile2.png",
+   "y": 1700,
+   "h": 210
+  },
+  "card_band": {
+   "src": "tour/build/ov_card_band.jpg",
+   "y": 380,
+   "h": 572
+  }
+ },
+ "icons": {
+  "home": "tour/build/icon_home.png",
+  "cards": "tour/build/icon_cards.png",
+  "wallet": "tour/build/icon_wallet.png",
+  "stake": "tour/build/icon_stake.png",
+  "profile": "tour/build/icon_profile.png"
+ },
+ "headerY": 302,
+ "cardPitch": 809,
+ "homeScroll": 700
+}
