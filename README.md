@@ -1,5 +1,17 @@
 # INCPT Wallet — motion reel
 
+> **Interface update (Oct 2026):** INCPT Wallet has a new interface, so every asset built from the old UI was removed:
+> - the screenshots (`assets/screens`, `assets/app`);
+> - the staking prototype and the top-up beta video;
+> - every cut-out, slot, page and manifest made from them.
+>
+> What is left:
+> - the brand logo and the phone mockup (`assets/build`: `phone_*`, `dynamic_island`, `logo*`);
+> - all code (engine, tutorial toolkit, builders);
+> - the four finished renders in `renders/`, which show the old UI.
+>
+> No reel below re-renders until it is rebuilt from the new interface material. The old files are still in git history.
+
 A 27.5 s, 1080×1920 @ 30 fps promo reel for the INCPT Wallet Telegram mini app (AI crypto wallet and crypto cards). Its pacing follows the editing language of the Tangem 6.1 "Address Book" reel, with INCPT's own look:
 - a slow holographic foil background in the INCPT logo palette (mint, sky, periwinkle, lavender, lilac)
 - heavy, word-by-word headlines
