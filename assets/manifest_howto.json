@@ -1,0 +1,957 @@
+{
+ "screens": {
+  "stake": "app/stake.jpg",
+  "home_s1": "app/home_s1.jpg",
+  "send": "app/send.jpg",
+  "receive_trc20": "app/receive_trc20.jpg",
+  "send_pick": "app/send_pick.jpg",
+  "receive_erc20": "app/receive_erc20.jpg",
+  "stake_s1": "app/stake_s1.jpg",
+  "stake_s1_alt": "app/stake_s1_alt.jpg",
+  "cards_s1": "app/cards_s1.jpg",
+  "cards": "app/cards.jpg",
+  "home": "app/home.jpg",
+  "wallet_s1": "app/wallet_s1.jpg",
+  "receive_pick": "app/receive_pick.jpg",
+  "swap_s1": "app/swap_s1.jpg",
+  "profile": "app/profile.jpg",
+  "swap": "app/swap.jpg",
+  "wallet": "app/wallet.jpg"
+ },
+ "cutouts": {
+  "w_recv": {
+   "src": "howto/build/w_recv.png",
+   "box": [
+    47,
+    1057,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "w_swap": {
+   "src": "howto/build/w_swap.png",
+   "box": [
+    329,
+    1057,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "w_send": {
+   "src": "howto/build/w_send.png",
+   "box": [
+    610,
+    1057,
+    263,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    403,
+    268
+   ],
+   "r": 64
+  },
+  "rc_toggle": {
+   "src": "howto/build/rc_toggle.png",
+   "box": [
+    288,
+    1135,
+    344,
+    87
+   ],
+   "pad": 70,
+   "size": [
+    484,
+    227
+   ],
+   "r": 44
+  },
+  "rc_toggle_erc": {
+   "src": "howto/build/rc_toggle_erc.png",
+   "box": [
+    288,
+    1135,
+    344,
+    87
+   ],
+   "pad": 70,
+   "size": [
+    484,
+    227
+   ],
+   "r": 44
+  },
+  "rc_addr": {
+   "src": "howto/build/rc_addr.png",
+   "box": [
+    37,
+    1338,
+    845,
+    174
+   ],
+   "pad": 90,
+   "size": [
+    1025,
+    354
+   ],
+   "r": 44
+  },
+  "rc_addr_erc": {
+   "src": "howto/build/rc_addr_erc.png",
+   "box": [
+    37,
+    1338,
+    845,
+    174
+   ],
+   "pad": 90,
+   "size": [
+    1025,
+    354
+   ],
+   "r": 44
+  },
+  "rc_tgid": {
+   "src": "howto/build/rc_tgid.png",
+   "box": [
+    37,
+    1611,
+    845,
+    123
+   ],
+   "pad": 90,
+   "size": [
+    1025,
+    303
+   ],
+   "r": 40
+  },
+  "rc_warn": {
+   "src": "howto/build/rc_warn.png",
+   "box": [
+    90,
+    1772,
+    740,
+    98
+   ],
+   "pad": 90,
+   "size": [
+    920,
+    278
+   ],
+   "r": 30
+  },
+  "rc_warn_erc": {
+   "src": "howto/build/rc_warn_erc.png",
+   "box": [
+    90,
+    1772,
+    740,
+    98
+   ],
+   "pad": 90,
+   "size": [
+    920,
+    278
+   ],
+   "r": 30
+  },
+  "sw_table": {
+   "src": "howto/build/sw_table.png",
+   "box": [
+    42,
+    1110,
+    836,
+    430
+   ],
+   "pad": 90,
+   "size": [
+    1016,
+    610
+   ],
+   "r": 44
+  },
+  "sd_toggle": {
+   "src": "howto/build/sd_toggle.png",
+   "box": [
+    38,
+    838,
+    344,
+    87
+   ],
+   "pad": 70,
+   "size": [
+    484,
+    227
+   ],
+   "r": 44
+  },
+  "sd_addr": {
+   "src": "howto/build/sd_addr.png",
+   "box": [
+    38,
+    952,
+    844,
+    111
+   ],
+   "pad": 90,
+   "size": [
+    1024,
+    291
+   ],
+   "r": 55
+  },
+  "st_amount": {
+   "src": "howto/build/st_amount.png",
+   "box": [
+    83,
+    1138,
+    754,
+    266
+   ],
+   "pad": 90,
+   "size": [
+    934,
+    446
+   ],
+   "r": 44
+  },
+  "st_year": {
+   "src": "howto/build/st_year.png",
+   "box": [
+    83,
+    1531,
+    754,
+    99
+   ],
+   "pad": 90,
+   "size": [
+    934,
+    279
+   ],
+   "r": 30
+  },
+  "st_btn": {
+   "src": "howto/build/st_btn.png",
+   "box": [
+    83,
+    1657,
+    754,
+    112
+   ],
+   "pad": 80,
+   "size": [
+    914,
+    272
+   ],
+   "r": 34
+  },
+  "st_deposit": {
+   "src": "howto/build/st_deposit.png",
+   "box": [
+    46,
+    672,
+    828,
+    236
+   ],
+   "pad": 90,
+   "size": [
+    1008,
+    416
+   ],
+   "r": 44
+  },
+  "cd_card": {
+   "src": "howto/build/cd_card.png",
+   "box": [
+    47,
+    1078,
+    826,
+    524
+   ],
+   "pad": 90,
+   "size": [
+    1006,
+    704
+   ],
+   "r": 50
+  },
+  "pf_ids": {
+   "src": "howto/build/pf_ids.png",
+   "box": [
+    37,
+    920,
+    846,
+    314
+   ],
+   "pad": 90,
+   "size": [
+    1026,
+    494
+   ],
+   "r": 48
+  },
+  "pf_sec": {
+   "src": "howto/build/pf_sec.png",
+   "box": [
+    37,
+    1270,
+    846,
+    456
+   ],
+   "pad": 90,
+   "size": [
+    1026,
+    636
+   ],
+   "r": 48
+  }
+ },
+ "slots": {
+  "w_recv": {
+   "src": "howto/build/slot_w_recv.png",
+   "x": 42,
+   "y": 1052,
+   "w": 272,
+   "h": 138
+  },
+  "w_swap": {
+   "src": "howto/build/slot_w_swap.png",
+   "x": 324,
+   "y": 1052,
+   "w": 272,
+   "h": 138
+  },
+  "w_send": {
+   "src": "howto/build/slot_w_send.png",
+   "x": 605,
+   "y": 1052,
+   "w": 273,
+   "h": 138
+  },
+  "rc_toggle": {
+   "src": "howto/build/slot_rc_toggle.png",
+   "x": 283,
+   "y": 1130,
+   "w": 354,
+   "h": 97
+  },
+  "rc_addr": {
+   "src": "howto/build/slot_rc_addr.png",
+   "x": 32,
+   "y": 1333,
+   "w": 855,
+   "h": 184
+  },
+  "rc_tgid": {
+   "src": "howto/build/slot_rc_tgid.png",
+   "x": 32,
+   "y": 1606,
+   "w": 855,
+   "h": 133
+  },
+  "rc_warn": {
+   "src": "howto/build/slot_rc_warn.png",
+   "x": 88,
+   "y": 1770,
+   "w": 744,
+   "h": 102
+  },
+  "sw_table": {
+   "src": "howto/build/slot_sw_table.png",
+   "x": 37,
+   "y": 1105,
+   "w": 846,
+   "h": 440
+  },
+  "sd_toggle": {
+   "src": "howto/build/slot_sd_toggle.png",
+   "x": 33,
+   "y": 833,
+   "w": 354,
+   "h": 97
+  },
+  "sd_addr": {
+   "src": "howto/build/slot_sd_addr.png",
+   "x": 33,
+   "y": 947,
+   "w": 854,
+   "h": 121
+  },
+  "st_amount": {
+   "src": "howto/build/slot_st_amount.png",
+   "x": 78,
+   "y": 1133,
+   "w": 764,
+   "h": 276
+  },
+  "st_year": {
+   "src": "howto/build/slot_st_year.png",
+   "x": 78,
+   "y": 1526,
+   "w": 764,
+   "h": 109
+  },
+  "st_btn": {
+   "src": "howto/build/slot_st_btn.png",
+   "x": 83,
+   "y": 1649,
+   "w": 754,
+   "h": 87
+  },
+  "st_deposit": {
+   "src": "howto/build/slot_st_deposit.png",
+   "x": 41,
+   "y": 667,
+   "w": 838,
+   "h": 246
+  },
+  "cd_card": {
+   "src": "howto/build/slot_cd_card.png",
+   "x": 42,
+   "y": 1073,
+   "w": 836,
+   "h": 534
+  },
+  "pf_ids": {
+   "src": "howto/build/slot_pf_ids.png",
+   "x": 32,
+   "y": 915,
+   "w": 856,
+   "h": 324
+  },
+  "pf_sec": {
+   "src": "howto/build/slot_pf_sec.png",
+   "x": 32,
+   "y": 1265,
+   "w": 856,
+   "h": 466
+  }
+ },
+ "overlays": {
+  "hdr_close": {
+   "src": "howto/build/ov_hdr_close.png",
+   "y": 0,
+   "h": 302
+  },
+  "hdr_back": {
+   "src": "howto/build/ov_hdr_back.png",
+   "y": 0,
+   "h": 302
+  },
+  "corners": {
+   "src": "howto/build/ov_corners.png",
+   "y": 1780,
+   "h": 220
+  },
+  "bar_home": {
+   "src": "howto/build/ov_bar_home.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_cards": {
+   "src": "howto/build/ov_bar_cards.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_wallet": {
+   "src": "howto/build/ov_bar_wallet.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_stake": {
+   "src": "howto/build/ov_bar_stake.png",
+   "y": 1700,
+   "h": 210
+  },
+  "bar_profile": {
+   "src": "howto/build/ov_bar_profile.png",
+   "y": 1700,
+   "h": 210
+  }
+ },
+ "pages": {
+  "page_wallet": {
+   "src": "howto/build/page_wallet.jpg",
+   "h": 2503,
+   "scroll": 503
+  },
+  "page_swap": {
+   "src": "howto/build/page_swap.jpg",
+   "h": 2298,
+   "scroll": 298
+  },
+  "page_stake": {
+   "src": "howto/build/page_stake.jpg",
+   "h": 3531,
+   "scroll": 1531
+  },
+  "page_cards": {
+   "src": "howto/build/page_cards.jpg",
+   "h": 2450,
+   "scroll": 450
+  },
+  "page_home": {
+   "src": "howto/build/page_home.jpg",
+   "h": 3299,
+   "scroll": 1299
+  }
+ },
+ "sheets": {
+  "sheet_receive": {
+   "src": "howto/build/sheet_receive.png",
+   "y": 800,
+   "h": 1200,
+   "dim": 0.325
+  },
+  "sheet_send": {
+   "src": "howto/build/sheet_send.png",
+   "y": 800,
+   "h": 1200,
+   "dim": 0.325
+  }
+ },
+ "rects": {
+  "tab_home": [
+   50,
+   1744,
+   128,
+   128,
+   64
+  ],
+  "tab_cards": [
+   206,
+   1744,
+   128,
+   128,
+   64
+  ],
+  "tab_stake": [
+   586,
+   1744,
+   128,
+   128,
+   64
+  ],
+  "tab_profile": [
+   741,
+   1744,
+   128,
+   128,
+   64
+  ],
+  "tab_wallet": [
+   368,
+   1714,
+   183,
+   183,
+   92
+  ],
+  "w_recv": [
+   47,
+   1057,
+   262,
+   128,
+   64
+  ],
+  "w_swap": [
+   329,
+   1057,
+   262,
+   128,
+   64
+  ],
+  "w_send": [
+   610,
+   1057,
+   263,
+   128,
+   64
+  ],
+  "sheet_usdt": [
+   37,
+   1003,
+   846,
+   175,
+   30
+  ],
+  "sheet_usdc": [
+   37,
+   1178,
+   846,
+   175,
+   30
+  ],
+  "sheet_btc": [
+   37,
+   1353,
+   846,
+   177,
+   30
+  ],
+  "sheet_eth": [
+   37,
+   1530,
+   846,
+   176,
+   30
+  ],
+  "sheet_trx": [
+   37,
+   1706,
+   846,
+   176,
+   30
+  ],
+  "rc_toggle": [
+   288,
+   1135,
+   344,
+   87,
+   44
+  ],
+  "rc_trc": [
+   296,
+   1143,
+   158,
+   71,
+   34
+  ],
+  "rc_erc": [
+   466,
+   1143,
+   158,
+   71,
+   34
+  ],
+  "rc_addr": [
+   37,
+   1338,
+   845,
+   174,
+   44
+  ],
+  "rc_copy": [
+   793,
+   1396,
+   60,
+   60,
+   30
+  ],
+  "rc_tgid": [
+   37,
+   1611,
+   845,
+   123,
+   40
+  ],
+  "rc_qr": [
+   167,
+   494,
+   584,
+   586,
+   48
+  ],
+  "rc_share": [
+   37,
+   1866,
+   846,
+   130,
+   64
+  ],
+  "rc_warn": [
+   90,
+   1772,
+   740,
+   98,
+   30
+  ],
+  "sw_give_coin": [
+   80,
+   713,
+   265,
+   99,
+   50
+  ],
+  "sw_get_coin": [
+   80,
+   1066,
+   240,
+   99,
+   50
+  ],
+  "sw_flip": [
+   409,
+   848,
+   102,
+   102,
+   51
+  ],
+  "sw_amount": [
+   600,
+   676,
+   260,
+   180,
+   30
+  ],
+  "sw_25": [
+   43,
+   1276,
+   194,
+   94,
+   30
+  ],
+  "sw_50": [
+   256,
+   1276,
+   194,
+   94,
+   30
+  ],
+  "sw_75": [
+   469,
+   1276,
+   194,
+   94,
+   30
+  ],
+  "sw_max": [
+   682,
+   1276,
+   195,
+   94,
+   30
+  ],
+  "sw_table": [
+   42,
+   1110,
+   836,
+   430,
+   44
+  ],
+  "sw_button": [
+   42,
+   1775,
+   836,
+   123,
+   60
+  ],
+  "sd_toggle": [
+   38,
+   838,
+   344,
+   87,
+   44
+  ],
+  "sd_addr": [
+   38,
+   952,
+   844,
+   111,
+   55
+  ],
+  "sd_scan": [
+   790,
+   974,
+   74,
+   68,
+   37
+  ],
+  "sd_avail": [
+   192,
+   506,
+   546,
+   62,
+   30
+  ],
+  "sd_max": [
+   625,
+   511,
+   109,
+   53,
+   26
+  ],
+  "sd_button": [
+   37,
+   1098,
+   846,
+   128,
+   64
+  ],
+  "sd_keypad": [
+   37,
+   1325,
+   846,
+   630,
+   44
+  ],
+  "st_total": [
+   200,
+   740,
+   520,
+   264,
+   40
+  ],
+  "st_amount": [
+   83,
+   1138,
+   754,
+   266,
+   44
+  ],
+  "st_50": [
+   83,
+   1432,
+   175,
+   70,
+   35
+  ],
+  "st_100": [
+   276,
+   1432,
+   174,
+   70,
+   35
+  ],
+  "st_500": [
+   468,
+   1432,
+   174,
+   70,
+   35
+  ],
+  "st_max": [
+   660,
+   1432,
+   176,
+   70,
+   35
+  ],
+  "st_year": [
+   83,
+   1531,
+   754,
+   99,
+   30
+  ],
+  "st_apy": [
+   636,
+   1062,
+   212,
+   48,
+   16
+  ],
+  "st_btn": [
+   83,
+   1657,
+   754,
+   112,
+   34
+  ],
+  "st_deposit": [
+   46,
+   672,
+   828,
+   236,
+   44
+  ],
+  "cd_balance": [
+   236,
+   810,
+   448,
+   145,
+   40
+  ],
+  "cd_today": [
+   200,
+   983,
+   519,
+   68,
+   34
+  ],
+  "cd_card": [
+   47,
+   1078,
+   826,
+   524,
+   50
+  ],
+  "cd_add": [
+   47,
+   1185,
+   826,
+   520,
+   50
+  ],
+  "pf_head": [
+   250,
+   405,
+   420,
+   445,
+   60
+  ],
+  "pf_ids": [
+   37,
+   920,
+   846,
+   314,
+   48
+  ],
+  "pf_tgid": [
+   37,
+   925,
+   846,
+   152,
+   40
+  ],
+  "pf_email": [
+   37,
+   1078,
+   846,
+   150,
+   40
+  ],
+  "pf_sec": [
+   37,
+   1270,
+   846,
+   456,
+   48
+  ],
+  "pf_pin": [
+   708,
+   1324,
+   94,
+   58,
+   29
+  ],
+  "pf_bio": [
+   708,
+   1472,
+   94,
+   58,
+   29
+  ],
+  "pf_seed": [
+   37,
+   1578,
+   846,
+   146,
+   40
+  ]
+ },
+ "headerY": 302
+}

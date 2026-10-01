@@ -457,7 +457,7 @@ let META = {};                 // timing landmarks for the soundtrack (drop, end
 async function boot() {
   MANIFEST = await (await fetch('manifest.json')).json();
   if (window.REEL && window.REEL !== 'wallet') {
-    const R = await (await fetch(`manifest_${window.REEL}.json`)).json();
+    const R = await (await fetch(`manifest_${window.MANIFEST_NAME || window.REEL}.json`)).json();
     for (const k of ['cutouts', 'slots']) Object.assign(MANIFEST[k] = MANIFEST[k] || {}, R[k] || {});
     MANIFEST.screens = R.screens || {};
     MANIFEST.flip = R.flip || {};

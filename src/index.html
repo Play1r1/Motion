@@ -87,6 +87,11 @@
   .tr-head .tu-head { font-size: 86px; }
   .tr-desc { position: absolute; left: 0; top: 122px; width: 872px; font-size: 37px; line-height: 1.3; font-weight: 560; color: #2a3453; }
   .tr-desc b { font-weight: 720; color: #0a1022; }
+  .ht-body { position: relative; height: 262px; margin-top: 28px; }
+  .ht-step { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .ht-head { font-size: 84px; position: absolute; left: 0; top: 0; }
+  .ht-desc { position: absolute; left: 0; top: 112px; width: 872px; font-size: 37px; line-height: 1.3; font-weight: 560; color: #2a3453; }
+  .ht-desc b { font-weight: 720; color: #0a1022; }
   .tr-label { position: absolute; transform: translateX(-50%); white-space: nowrap; font-family: 'Inter Variable', sans-serif; font-variation-settings: 'opsz' 32;
     font-size: 36px; font-weight: 700; letter-spacing: -0.005em; color: #0f1733; padding: 10px 22px 11px; border-radius: 999px;
     background: linear-gradient(95deg, #b4eee1, #a9d6f5 40%, #b9bdf4 70%, #d6c2f6); box-shadow: 0 14px 30px -12px rgba(22,48,104,0.45), inset 0 0 0 2px rgba(255,255,255,0.7); }
@@ -101,12 +106,14 @@
 <script>
   window.REEL = new URLSearchParams(location.search).get('reel') || 'wallet';
   window.STAGE = { topup: [1080, 1080] }[REEL] || [1080, 1920];
+  window.MANIFEST_NAME = REEL.startsWith('howto_') ? 'howto' : REEL;   // the how-to series shares one manifest
   document.documentElement.style.setProperty('--W', STAGE[0] + 'px');
   document.documentElement.style.setProperty('--H', STAGE[1] + 'px');
 </script>
 <script src="/src/engine.js"></script>
 <script src="/src/common.js"></script>
 <script src="/src/tutorial.js"></script>
+<script src="/src/howto.js"></script>
 <script>document.write(`<script src="/src/${REEL === 'wallet' ? 'scenes' : 'scenes_' + REEL}.js"><\/script>`);</script>
 <script>boot();</script>
 </body>

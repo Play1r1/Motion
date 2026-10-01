@@ -151,6 +151,37 @@ python3 tools/sound.py out/promo
 MAXRATE=12 bash tools/finalize.sh renders/incpt_promo.mp4 out/promo
 ```
 
+## How-to series on the new interface (RU, 9:16)
+
+Six tutorials in `renders/incpt_howto_*.mp4` (+ `_preview.mp4`), each on the calm 80 BPM track in its own key:
+
+| Reel | Video | Steps |
+|---|---|---|
+| `howto_topup` | Как пополнить кошелёк, 44 s | wallet → «Получить» → coin → network (the address changes with it, warning) → copy / QR / «Поделиться» / Telegram ID |
+| `howto_swap` | Как обменять криптовалюту, 40.5 s | wallet → «Обменять» → give / get, ⇅ → amount, 25 / 50 / 75 % / Макс → rate and fees → «Обменять» |
+| `howto_send` | Как отправить криптовалюту, 40.5 s | wallet → «Отправить» → coin → network, address or Telegram ID, scan → keypad / MAX → «Отправить» |
+| `howto_stake` | Как открыть стейкинг, 40.5 s | Stake → total and forecast → amount, +$50 / +$100 / +$500 / Макс → 20–40% APY, one-year line → «Открыть стейкинг» → «Ваши депозиты» |
+| `howto_cards` | Ваши карты INCPT, 31.5 s | cards → balance and today's movement → the card → «Добавить карту» |
+| `howto_profile` | Профиль и безопасность, 27.5 s | profile → Telegram ID, Email → PIN, биометрия, сид-фраза |
+
+The phone runs on the screens of `assets/app`. The pages switch the way the app does:
+- tab fade;
+- iOS push;
+- sheet sliding up over the dimmed wallet;
+- in-place swap for TRC-20 / ERC-20;
+- page scroll.
+
+Each tutorial is one `howto({...})` call in `src/scenes_howto_<name>.js`, holding the copy, the screen flow, the highlights, the lifts and the pointer path. The engine lives in `src/howto.js`; the shared assets come from `tools/build_howto.py` (`assets/manifest_howto.json`).
+
+**«Открыть стейкинг».** In every screenshot the tab bar covers this button, so `build_howto.py` rebuilds it whole: the button's own top rows and grey, a mirrored bottom edge, and the label re-set in Inter at the measured size.
+
+```bash
+python3 tools/build_howto.py
+node tools/render.mjs video --workers 3 --reel howto_topup   # -> out/howto_topup/
+python3 tools/sound.py out/howto_topup
+bash tools/finalize.sh renders/incpt_howto_topup.mp4 out/howto_topup
+```
+
 ### App screen library (`assets/app/`): new interface
 
 There are 17 screenshots of the new interface (Telegram header «INCEPTION mini app»), 920×2000, ready for the phone mockup:
@@ -197,6 +228,9 @@ src/tutorial.js             tutorial toolkit: foil ring + spotlight, lift rings,
 src/scenes_tour.js          reel 4 edit, 9:16 app tour (?reel=tour)
 src/scenes_promo.js         reel 5 edit, product promo on the new interface (?reel=promo)
 tools/build_promo.py        promo cut-outs, mattes of the 3D illustrations, stitched pages
+src/howto.js                how-to engine (9:16): step card, screen flow, scrolls, lifts, pointer
+src/scenes_howto_*.js       one tutorial each (?reel=howto_topup, howto_swap, ...)
+tools/build_howto.py        how-to overlays, coin sheets, stitched pages, cut-outs and highlight rects
 tools/import_app.py         app screenshots (PDF) -> assets/app, AI artefacts cleaned
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
 tools/sound.py              procedural music (96 BPM tech / 80 BPM calm / 120 BPM drive) + SFX from the timeline's cue list
