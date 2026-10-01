@@ -24,7 +24,7 @@ howto({
   screens: {
     home: { img: 'home' },
     wallet: { img: 'wallet' },
-    pick: { sheet: 'sheet_receive', base: { img: 'wallet' } },
+    pick: { sheet: 'sheet_receive', base: { img: 'wallet_sb' } },
     trc: { img: 'receive_trc20' },
     erc: { img: 'receive_erc20' },
   },
@@ -41,7 +41,7 @@ howto({
     [13.6, 'sheet_usdt'], [14.3, 'sheet_usdc'], [15.0, 'sheet_btc'], [15.7, 'sheet_eth'], [16.4, 'sheet_trx'], [17.2, 'sheet_usdt'], [18.4, null],
     [32.8, 'rc_qr'], [33.9, 'rc_share'], [35.0, null],
   ],
-  notes: [{ t0: 30.75, t1: 32.3, text: 'Адрес скопирован ✓', rect: 'rc_addr', dy: -340, z: 300 }],
+  notes: [{ t0: 30.75, t1: 32.3, text: 'Адрес скопирован ✓', rect: 'rc_addr', dx: -40, dy: 112, z: 300, s: 1.7 }],
   ptrIn: 4.2,
   path: H => [
     H.xy(3.0, 1500, 2600),
@@ -53,6 +53,7 @@ howto({
     H.at(16.1, 'sheet_eth', 250, 0, 30, 0.5),
     H.at(16.8, 'sheet_trx', 250, 0, 30, 0.5),
     H.at(17.7, 'sheet_usdt', 250, 0, 30, 0.8),
+    H.at(19.7, 'rc_qr', 335, 40, 30, 1.0),
     H.onLift(21.3, 'rc_toggle', 'rc_erc', 10, 10, 1.0),
     H.onLift(24.1, 'rc_toggle', 'rc_trc', 10, 10, 0.8),
     H.onLift(26.6, 'rc_warn', 'rc_warn', 300, 40, 0.9),

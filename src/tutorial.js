@@ -93,7 +93,9 @@ class Pointer {
       const dur = path[i][4] ?? 0.9;
       if (t >= t1 - dur) {
         const p = Ease.inOutCubic(prog(t, t1 - dur, t1));
-        x = lerp(x, x1, p); y = lerp(y, y1, p); z = lerp(z, z1, p);
+        // depth leads the glide: up onto a lifted piece in the first third, down only at the end
+        const pz = z1 >= z ? Ease.outCubic(prog(t, t1 - dur, t1 - dur * 0.65)) : Ease.inCubic(prog(t, t1 - dur * 0.3, t1));
+        x = lerp(x, x1, p); y = lerp(y, y1, p); z = lerp(z, z1, pz);
         if (p > 0 && p < 1) mv = Math.sin(p * Math.PI) * Math.sign(x1 - path[i - 1][1] || 1);
       }
     }

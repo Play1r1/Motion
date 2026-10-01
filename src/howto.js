@@ -188,7 +188,7 @@ function howto(C) {
       // notes: small foil captions next to an action ("Адрес скопирован")
       this.N = (C.notes || []).map(n => {
         const node = new Node(this.ph, { w: 0, h: 0, flat: true });
-        node.el.innerHTML = `<div class="tr-label">${n.text}</div>`;
+        node.el.innerHTML = `<div class="tr-label" style="transform: translate(-50%, -50%)">${n.text}</div>`;
         node.set({ vis: false });
         return { ...n, node };
       });
@@ -301,7 +301,7 @@ function howto(C) {
       this.N.forEach(n => {
         const r = MANIFEST.reel.rects[n.rect];
         const pe = oX(prog(t, n.t0, n.t0 + 0.5)), q = Ease.inCubic(prog(t, n.t1, n.t1 + 0.3));
-        n.node.set({ vis: t > n.t0 && t < n.t1 + 0.3, x: so[0] + r[0] + r[2] / 2 + (n.dx || 0), y: so[1] + r[1] + r[3] / 2 + (n.dy || 0) - (1 - pe) * 30, z: n.z || 260, s: 1.9 * lerp(0.8, 1, pe), o: (1 - q) * clamp(pe * 2) });
+        n.node.set({ vis: t > n.t0 && t < n.t1 + 0.3, x: so[0] + r[0] + r[2] / 2 + (n.dx || 0), y: so[1] + r[1] + r[3] / 2 + (n.dy || 0) - (1 - pe) * 30, z: n.z || 260, s: (n.s || 1.9) * lerp(0.8, 1, pe), o: (1 - q) * clamp(pe * 2) });
       });
       this.ptr.at(t, this.path, this.taps, t > (C.ptrIn || 4.0) && t < OUT_T + 0.2, this.presses);
     },

@@ -38,6 +38,7 @@ howto({
     H.at(5.6, 'tab_cards', 8, 8, 30, 1.2),
     H.at(9.3, 'cd_balance', 120, 30, 30, 0.9),
     H.at(11.3, 'cd_today', 120, 10, 30, 0.8),
+    H.at(13.3, 'cd_today', 330, -70, 30, 0.6),
     H.onLift(14.6, 'cd_card', 'cd_card', 200, 100, 1.0),
     H.at(21.0, 'cd_add', 60, 20, 30, 0.9),
   ],

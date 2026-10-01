@@ -23,7 +23,7 @@ howto({
   screens: {
     home: { img: 'home' },
     wallet: { img: 'wallet' },
-    pick: { sheet: 'sheet_send', base: { img: 'wallet' } },
+    pick: { sheet: 'sheet_send', base: { img: 'wallet_sb' } },
     send: { img: 'send' },
   },
   flow: [[0, 'home'], [6.55, 'wallet', 'fade'], [10.75, 'pick', 'sheet'], [18.35, 'send', 'push']],

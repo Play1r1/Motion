@@ -16,7 +16,8 @@
   "swap_s1": "app/swap_s1.jpg",
   "profile": "app/profile.jpg",
   "swap": "app/swap.jpg",
-  "wallet": "app/wallet.jpg"
+  "wallet": "app/wallet.jpg",
+  "wallet_sb": "howto/build/wallet_sb.jpg"
  },
  "cutouts": {
   "w_recv": {

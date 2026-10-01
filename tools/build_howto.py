@@ -104,10 +104,20 @@ PG = {
 SHEET_Y = 800
 for key, src in [("sheet_receive", "receive_pick"), ("sheet_send", "send_pick")]:
     a = S[src][SHEET_Y:].copy()
-    a[:12] = np.median(a[12:18], axis=0)[None]              # the cleaned top rows carried a ghost of the balance
+    # the screenshot's top rows carry the backdrop and the old sheet's own corner curve (a second,
+    # broken edge inside ours): rows down to the grabber and both corner zones become sheet white
+    white = np.median(a[14:24, 60:860].reshape(-1, 3), axis=0)
+    a[:24] = white
+    a[:52, :52] = white
+    a[:52, -52:] = white
     al = sdf_rrect(SW, SH - SHEET_Y + 120, 44)[:SH - SHEET_Y]
     M["sheets"][key] = {"src": save_rgba(key, a, al), "y": SHEET_Y, "h": SH - SHEET_Y, "dim": 0.325}
 
+
+# the wallet under a coin sheet: the stem of the balance's «$» peeks 5 px above the sheet's edge
+WSB = S["wallet"].copy()
+WSB[792:802, 236:256] = np.median(WSB[786:790, 236:256].reshape(-1, 3), axis=0)
+M["screens"]["wallet_sb"] = save_rgb("wallet_sb", WSB)
 
 # ------------------------------------------------------------------ cut-outs, slots, rects
 def refine(img, box, s=10):
