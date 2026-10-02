@@ -186,6 +186,11 @@ bash tools/finalize.sh renders/incpt_howto_topup.mp4 out/howto_topup
 
 `renders/instagram/`: `incpt_ig_card.mp4`, `incpt_ig_stake.mp4` and `incpt_ig_swap.mp4` (+ `_preview.mp4`), with covers and ready post texts.
 
+Every piece in them is vector, drawn in `src/vec.js` at (or above) its display size, so nothing is an upscaled screenshot:
+- 3D coins with an edge and a sheen, with the USDT, USDC, BTC, ETH and TRON logos in SVG;
+- the holographic and the metal card, with thickness and an iridescence that follows the turn;
+- operation rows, the swap panels with ⇅, the rate table, chips, the Liquid Vault card and the action buttons, all with the app's own texts and numbers.
+
 All three share one 120 BPM drive track in a different key for each, and one layout:
 - **Structure:** a hook before the drop at 2 s, three sections of 2 s each, then the brand end card at 8 s.
 - **Motion:** every lifted piece swells on the beat.
@@ -193,9 +198,9 @@ All three share one 120 BPM drive track in a different key for each, and one lay
 
 | Reel | Hook → sections |
 |---|---|
-| `ig_card` | A USDT coin spins and, edge-on, becomes the INCPT card on the drop → ПОПОЛНИ ИЗ USDT → ПЛАТИ КАРТОЙ INCPT (Starbucks, Nike) → ВИРТУАЛЬНАЯ ИЛИ МЕТАЛЛИЧЕСКАЯ (the card slides into the holder) |
-| `ig_stake` | USDT coins orbit and pour in, the safe slams down on the drop → 20–40% ГОДОВЫХ → ДОХОД КАЖДЫЙ ДЕНЬ (daily forecast, coins rising) → ВЫВОД В ЛЮБОЙ МОМЕНТ (Liquid Vault) |
-| `ig_swap` | The five coins orbit in, then collapse into the swap panels on the drop → ОБМЕН В ОДИН ТАП → КУРС И КОМИССИИ СРАЗУ ВИДНЫ → ПОЛУЧАЙ · ОБМЕНИВАЙ · ОТПРАВЛЯЙ |
+| `ig_card` | A USDT coin spins and, edge-on, becomes the INCPT card on the drop → ПОПОЛНИ ИЗ USDT (coins pour into the card) → ПЛАТИ КАРТОЙ INCPT (Starbucks, Nike) → ВИРТУАЛЬНАЯ ИЛИ МЕТАЛЛИЧЕСКАЯ (the holographic and the metal card fan out) |
+| `ig_stake` | USDT coins land on a stack on a turning platform → 20–40% ГОДОВЫХ (three stacks grow into a bar chart, $20,000 in staking) → ДОХОД КАЖДЫЙ ДЕНЬ (a coin per beat, +$14.42) → ВЫВОД В ЛЮБОЙ МОМЕНТ (Liquid Vault, coins fly out) |
+| `ig_swap` | The five coins orbit in; USDT and BTC land in the swap panels on the drop → ОБМЕН В ОДИН ТАП (1,000 USDT ≈ 0.0119 BTC at the app's BTC price; ⇅ flips the coins) → КУРС И КОМИССИИ СРАЗУ ВИДНЫ → ПОЛУЧАЙ · ОБМЕНИВАЙ · ОТПРАВЛЯЙ |
 
 ```bash
 python3 tools/build_promo.py && python3 tools/build_howto.py && python3 tools/build_ig.py
@@ -254,6 +259,7 @@ src/howto.js                how-to engine (9:16): step card, screen flow, scroll
 src/scenes_howto_*.js       one tutorial each (?reel=howto_topup, howto_swap, ...)
 tools/build_howto.py        how-to overlays, coin sheets, stitched pages, cut-outs and highlight rects
 src/ig.js                   Instagram reels: timing, beat swell, titles, cue set; src/scenes_ig_*.js one reel each
+src/vec.js                  vector pieces for the Instagram reels: 3D coins, cards, rows, swap panels, chips
 tools/build_ig.py           Instagram manifest (promo + how-to cut-outs) and the five coin icons
 tools/import_app.py         app screenshots (PDF) -> assets/app, AI artefacts cleaned
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)

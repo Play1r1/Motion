@@ -92,6 +92,16 @@
   .ht-head { font-size: 84px; position: absolute; left: 0; top: 0; }
   .ht-desc { position: absolute; left: 0; top: 112px; width: 872px; font-size: 37px; line-height: 1.3; font-weight: 560; color: #2a3453; }
   .ht-desc b { font-weight: 720; color: #0a1022; }
+  /* ---- vector pieces (Instagram reels) ---- */
+  .v-holo { background:
+      linear-gradient(115deg, rgba(255,255,255,0) 32%, rgba(255,255,255,0.55) 47%, rgba(255,255,255,0) 62%) var(--sx, 130%) 0 / 300% 100% no-repeat,
+      radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,0) 55%, rgba(60,50,120,0.14)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0 2px, rgba(40,40,90,0.035) 2px 5px),
+      linear-gradient(100deg, #a8b6f4 0%, #ee9fd6 11%, #ffd3a8 19%, #9fe6d9 28%, #93b1f4 38%, #e9a6e3 49%, #b6f0e4 58%, #a9a1f0 68%, #f4b7d9 79%, #9ad9f0 89%, #b1b2f3 100%) var(--hx, 0%) 0 / 240% 100%; }
+  .v-metal { background:
+      linear-gradient(115deg, rgba(255,255,255,0) 32%, rgba(255,255,255,0.32) 47%, rgba(255,255,255,0) 62%) var(--sx, 130%) 0 / 300% 100% no-repeat,
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, rgba(0,0,0,0.06) 1px 3px),
+      linear-gradient(135deg, #3a3f47, #6d737d 32%, #2d3137 54%, #5f656e 78%, #363a41); }
   .tr-label { position: absolute; transform: translateX(-50%); white-space: nowrap; font-family: 'Inter Variable', sans-serif; font-variation-settings: 'opsz' 32;
     font-size: 36px; font-weight: 700; letter-spacing: -0.005em; color: #0f1733; padding: 10px 22px 11px; border-radius: 999px;
     background: linear-gradient(95deg, #b4eee1, #a9d6f5 40%, #b9bdf4 70%, #d6c2f6); box-shadow: 0 14px 30px -12px rgba(22,48,104,0.45), inset 0 0 0 2px rgba(255,255,255,0.7); }
@@ -115,6 +125,7 @@
 <script src="/src/tutorial.js"></script>
 <script src="/src/howto.js"></script>
 <script src="/src/ig.js"></script>
+<script src="/src/vec.js"></script>
 <script>document.write(`<script src="/src/${REEL === 'wallet' ? 'scenes' : 'scenes_' + REEL}.js"><\/script>`);</script>
 <script>boot();</script>
 </body>
