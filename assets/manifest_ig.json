@@ -1,0 +1,1002 @@
+{
+ "cutouts": {
+  "pr_row_usdt": {
+   "src": "promo/build/pr_row_usdt.png",
+   "box": [
+    48,
+    834,
+    824,
+    167
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    327
+   ],
+   "r": 30
+  },
+  "pr_row_usdc": {
+   "src": "promo/build/pr_row_usdc.png",
+   "box": [
+    48,
+    1006,
+    824,
+    172
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    332
+   ],
+   "r": 30
+  },
+  "pr_row_btc": {
+   "src": "promo/build/pr_row_btc.png",
+   "box": [
+    48,
+    1183,
+    824,
+    172
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    332
+   ],
+   "r": 30
+  },
+  "pr_row_eth": {
+   "src": "promo/build/pr_row_eth.png",
+   "box": [
+    48,
+    1360,
+    824,
+    171
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    331
+   ],
+   "r": 30
+  },
+  "pr_row_trx": {
+   "src": "promo/build/pr_row_trx.png",
+   "box": [
+    48,
+    1536,
+    824,
+    166
+   ],
+   "pad": 80,
+   "size": [
+    984,
+    326
+   ],
+   "r": 30
+  },
+  "pr_card": {
+   "src": "promo/build/pr_card.png",
+   "box": [
+    47,
+    1078,
+    826,
+    523
+   ],
+   "pad": 90,
+   "size": [
+    1006,
+    703
+   ],
+   "r": 50
+  },
+  "pr_balance": {
+   "src": "promo/build/pr_balance.png",
+   "box": [
+    128,
+    518,
+    684,
+    306
+   ],
+   "pad": 90,
+   "size": [
+    864,
+    486
+   ],
+   "r": 56
+  },
+  "pr_shield": {
+   "src": "promo/build/pr_shield.png",
+   "box": [
+    292,
+    440,
+    356,
+    260
+   ],
+   "pad": 70,
+   "size": [
+    496,
+    400
+   ],
+   "r": 0
+  },
+  "pr_btn_recv": {
+   "src": "promo/build/pr_btn_recv.png",
+   "box": [
+    47,
+    556,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "pr_btn_swap": {
+   "src": "promo/build/pr_btn_swap.png",
+   "box": [
+    329,
+    556,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "pr_btn_send": {
+   "src": "promo/build/pr_btn_send.png",
+   "box": [
+    611,
+    556,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "pr_give": {
+   "src": "promo/build/pr_give.png",
+   "box": [
+    43,
+    557,
+    834,
+    337
+   ],
+   "pad": 90,
+   "size": [
+    1014,
+    517
+   ],
+   "r": 46
+  },
+  "pr_get": {
+   "src": "promo/build/pr_get.png",
+   "box": [
+    43,
+    920,
+    834,
+    318
+   ],
+   "pad": 90,
+   "size": [
+    1014,
+    498
+   ],
+   "r": 46
+  },
+  "pr_swapbtn": {
+   "src": "promo/build/pr_swapbtn.png",
+   "box": [
+    409,
+    848,
+    102,
+    102
+   ],
+   "pad": 50,
+   "size": [
+    202,
+    202
+   ],
+   "r": 0
+  },
+  "pr_holder": {
+   "src": "promo/build/pr_holder.png",
+   "box": [
+    276,
+    452,
+    384,
+    330
+   ],
+   "pad": 70,
+   "size": [
+    524,
+    470
+   ],
+   "r": 0
+  },
+  "pr_today": {
+   "src": "promo/build/pr_today.png",
+   "box": [
+    200,
+    983,
+    519,
+    68
+   ],
+   "pad": 60,
+   "size": [
+    639,
+    188
+   ],
+   "r": 34
+  },
+  "pr_op_starbucks": {
+   "src": "promo/build/pr_op_starbucks.png",
+   "box": [
+    37,
+    700,
+    846,
+    186
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    346
+   ],
+   "r": 44
+  },
+  "pr_op_topup": {
+   "src": "promo/build/pr_op_topup.png",
+   "box": [
+    37,
+    907,
+    846,
+    184
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    344
+   ],
+   "r": 44
+  },
+  "pr_op_topcard": {
+   "src": "promo/build/pr_op_topcard.png",
+   "box": [
+    37,
+    1113,
+    846,
+    185
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    345
+   ],
+   "r": 44
+  },
+  "pr_op_usdt": {
+   "src": "promo/build/pr_op_usdt.png",
+   "box": [
+    37,
+    1320,
+    846,
+    184
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    344
+   ],
+   "r": 44
+  },
+  "pr_op_nike": {
+   "src": "promo/build/pr_op_nike.png",
+   "box": [
+    37,
+    1527,
+    846,
+    184
+   ],
+   "pad": 80,
+   "size": [
+    1006,
+    344
+   ],
+   "r": 44
+  },
+  "pr_safe": {
+   "src": "promo/build/pr_safe.png",
+   "box": [
+    322,
+    418,
+    282,
+    284
+   ],
+   "pad": 70,
+   "size": [
+    422,
+    424
+   ],
+   "r": 0
+  },
+  "pr_apy": {
+   "src": "promo/build/pr_apy.png",
+   "box": [
+    636,
+    1060,
+    212,
+    52
+   ],
+   "pad": 50,
+   "size": [
+    312,
+    152
+   ],
+   "r": 14
+  },
+  "pr_forecast": {
+   "src": "promo/build/pr_forecast.png",
+   "box": [
+    238,
+    926,
+    442,
+    72
+   ],
+   "pad": 60,
+   "size": [
+    562,
+    192
+   ],
+   "r": 36
+  },
+  "pr_staked": {
+   "src": "promo/build/pr_staked.png",
+   "box": [
+    226,
+    748,
+    468,
+    154
+   ],
+   "pad": 70,
+   "size": [
+    608,
+    294
+   ],
+   "r": 40
+  },
+  "w_recv": {
+   "src": "howto/build/w_recv.png",
+   "box": [
+    47,
+    1057,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "w_swap": {
+   "src": "howto/build/w_swap.png",
+   "box": [
+    329,
+    1057,
+    262,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    402,
+    268
+   ],
+   "r": 64
+  },
+  "w_send": {
+   "src": "howto/build/w_send.png",
+   "box": [
+    610,
+    1057,
+    263,
+    128
+   ],
+   "pad": 70,
+   "size": [
+    403,
+    268
+   ],
+   "r": 64
+  },
+  "rc_toggle": {
+   "src": "howto/build/rc_toggle.png",
+   "box": [
+    288,
+    1135,
+    344,
+    87
+   ],
+   "pad": 70,
+   "size": [
+    484,
+    227
+   ],
+   "r": 44
+  },
+  "rc_toggle_erc": {
+   "src": "howto/build/rc_toggle_erc.png",
+   "box": [
+    288,
+    1135,
+    344,
+    87
+   ],
+   "pad": 70,
+   "size": [
+    484,
+    227
+   ],
+   "r": 44
+  },
+  "rc_addr": {
+   "src": "howto/build/rc_addr.png",
+   "box": [
+    37,
+    1338,
+    845,
+    174
+   ],
+   "pad": 90,
+   "size": [
+    1025,
+    354
+   ],
+   "r": 44
+  },
+  "rc_addr_erc": {
+   "src": "howto/build/rc_addr_erc.png",
+   "box": [
+    37,
+    1338,
+    845,
+    174
+   ],
+   "pad": 90,
+   "size": [
+    1025,
+    354
+   ],
+   "r": 44
+  },
+  "rc_tgid": {
+   "src": "howto/build/rc_tgid.png",
+   "box": [
+    37,
+    1611,
+    845,
+    123
+   ],
+   "pad": 90,
+   "size": [
+    1025,
+    303
+   ],
+   "r": 40
+  },
+  "rc_warn": {
+   "src": "howto/build/rc_warn.png",
+   "box": [
+    90,
+    1772,
+    740,
+    98
+   ],
+   "pad": 90,
+   "size": [
+    920,
+    278
+   ],
+   "r": 30
+  },
+  "rc_warn_erc": {
+   "src": "howto/build/rc_warn_erc.png",
+   "box": [
+    90,
+    1772,
+    740,
+    98
+   ],
+   "pad": 90,
+   "size": [
+    920,
+    278
+   ],
+   "r": 30
+  },
+  "sw_table": {
+   "src": "howto/build/sw_table.png",
+   "box": [
+    42,
+    1110,
+    836,
+    430
+   ],
+   "pad": 90,
+   "size": [
+    1016,
+    610
+   ],
+   "r": 44
+  },
+  "sd_toggle": {
+   "src": "howto/build/sd_toggle.png",
+   "box": [
+    38,
+    838,
+    344,
+    87
+   ],
+   "pad": 70,
+   "size": [
+    484,
+    227
+   ],
+   "r": 44
+  },
+  "sd_addr": {
+   "src": "howto/build/sd_addr.png",
+   "box": [
+    38,
+    952,
+    844,
+    111
+   ],
+   "pad": 90,
+   "size": [
+    1024,
+    291
+   ],
+   "r": 55
+  },
+  "st_amount": {
+   "src": "howto/build/st_amount.png",
+   "box": [
+    83,
+    1138,
+    754,
+    266
+   ],
+   "pad": 90,
+   "size": [
+    934,
+    446
+   ],
+   "r": 44
+  },
+  "st_year": {
+   "src": "howto/build/st_year.png",
+   "box": [
+    83,
+    1531,
+    754,
+    99
+   ],
+   "pad": 90,
+   "size": [
+    934,
+    279
+   ],
+   "r": 30
+  },
+  "st_btn": {
+   "src": "howto/build/st_btn.png",
+   "box": [
+    83,
+    1657,
+    754,
+    112
+   ],
+   "pad": 80,
+   "size": [
+    914,
+    272
+   ],
+   "r": 34
+  },
+  "st_deposit": {
+   "src": "howto/build/st_deposit.png",
+   "box": [
+    46,
+    672,
+    828,
+    236
+   ],
+   "pad": 90,
+   "size": [
+    1008,
+    416
+   ],
+   "r": 44
+  },
+  "cd_card": {
+   "src": "howto/build/cd_card.png",
+   "box": [
+    47,
+    1078,
+    826,
+    524
+   ],
+   "pad": 90,
+   "size": [
+    1006,
+    704
+   ],
+   "r": 50
+  },
+  "pf_ids": {
+   "src": "howto/build/pf_ids.png",
+   "box": [
+    37,
+    920,
+    846,
+    314
+   ],
+   "pad": 90,
+   "size": [
+    1026,
+    494
+   ],
+   "r": 48
+  },
+  "pf_sec": {
+   "src": "howto/build/pf_sec.png",
+   "box": [
+    37,
+    1270,
+    846,
+    456
+   ],
+   "pad": 90,
+   "size": [
+    1026,
+    636
+   ],
+   "r": 48
+  },
+  "coin_usdt": {
+   "src": "ig/build/coin_usdt.png",
+   "box": [
+    69,
+    1036,
+    108,
+    108
+   ],
+   "pad": 60,
+   "size": [
+    228,
+    228
+   ],
+   "r": 54
+  },
+  "coin_usdc": {
+   "src": "ig/build/coin_usdc.png",
+   "box": [
+    70,
+    1212,
+    108,
+    108
+   ],
+   "pad": 60,
+   "size": [
+    228,
+    228
+   ],
+   "r": 54
+  },
+  "coin_btc": {
+   "src": "ig/build/coin_btc.png",
+   "box": [
+    69,
+    1388,
+    108,
+    108
+   ],
+   "pad": 60,
+   "size": [
+    228,
+    228
+   ],
+   "r": 54
+  },
+  "coin_eth": {
+   "src": "ig/build/coin_eth.png",
+   "box": [
+    69,
+    1565,
+    108,
+    108
+   ],
+   "pad": 60,
+   "size": [
+    228,
+    228
+   ],
+   "r": 54
+  },
+  "coin_trx": {
+   "src": "ig/build/coin_trx.png",
+   "box": [
+    69,
+    1741,
+    108,
+    108
+   ],
+   "pad": 60,
+   "size": [
+    228,
+    228
+   ],
+   "r": 54
+  }
+ },
+ "slots": {
+  "row_usdt": {
+   "src": "promo/build/slot_row_usdt.png",
+   "x": 46,
+   "y": 832,
+   "w": 828,
+   "h": 171
+  },
+  "row_usdc": {
+   "src": "promo/build/slot_row_usdc.png",
+   "x": 46,
+   "y": 1004,
+   "w": 828,
+   "h": 176
+  },
+  "row_btc": {
+   "src": "promo/build/slot_row_btc.png",
+   "x": 46,
+   "y": 1181,
+   "w": 828,
+   "h": 176
+  },
+  "row_eth": {
+   "src": "promo/build/slot_row_eth.png",
+   "x": 46,
+   "y": 1358,
+   "w": 828,
+   "h": 175
+  },
+  "row_trx": {
+   "src": "promo/build/slot_row_trx.png",
+   "x": 46,
+   "y": 1534,
+   "w": 828,
+   "h": 170
+  },
+  "card": {
+   "src": "promo/build/slot_card.png",
+   "x": 43,
+   "y": 1074,
+   "w": 834,
+   "h": 531
+  },
+  "balance": {
+   "src": "promo/build/slot_balance.png",
+   "x": 124,
+   "y": 514,
+   "w": 692,
+   "h": 314
+  },
+  "pr_shield": {
+   "src": "promo/build/slot_pr_shield.png",
+   "x": 292,
+   "y": 440,
+   "w": 356,
+   "h": 260
+  },
+  "btn_recv": {
+   "src": "promo/build/slot_btn_recv.png",
+   "x": 43,
+   "y": 552,
+   "w": 270,
+   "h": 136
+  },
+  "btn_swap": {
+   "src": "promo/build/slot_btn_swap.png",
+   "x": 325,
+   "y": 552,
+   "w": 270,
+   "h": 136
+  },
+  "btn_send": {
+   "src": "promo/build/slot_btn_send.png",
+   "x": 607,
+   "y": 552,
+   "w": 270,
+   "h": 136
+  },
+  "swap_panels": {
+   "src": "promo/build/slot_swap_panels.png",
+   "x": 37,
+   "y": 551,
+   "w": 846,
+   "h": 693
+  },
+  "pr_holder": {
+   "src": "promo/build/slot_pr_holder.png",
+   "x": 276,
+   "y": 452,
+   "w": 384,
+   "h": 330
+  },
+  "today": {
+   "src": "promo/build/slot_today.png",
+   "x": 196,
+   "y": 979,
+   "w": 527,
+   "h": 76
+  },
+  "pr_safe": {
+   "src": "promo/build/slot_pr_safe.png",
+   "x": 322,
+   "y": 418,
+   "w": 282,
+   "h": 284
+  },
+  "apy": {
+   "src": "promo/build/slot_apy.png",
+   "x": 633,
+   "y": 1057,
+   "w": 218,
+   "h": 58
+  },
+  "forecast": {
+   "src": "promo/build/slot_forecast.png",
+   "x": 234,
+   "y": 922,
+   "w": 450,
+   "h": 80
+  },
+  "staked": {
+   "src": "promo/build/slot_staked.png",
+   "x": 222,
+   "y": 744,
+   "w": 476,
+   "h": 162
+  },
+  "w_recv": {
+   "src": "howto/build/slot_w_recv.png",
+   "x": 42,
+   "y": 1052,
+   "w": 272,
+   "h": 138
+  },
+  "w_swap": {
+   "src": "howto/build/slot_w_swap.png",
+   "x": 324,
+   "y": 1052,
+   "w": 272,
+   "h": 138
+  },
+  "w_send": {
+   "src": "howto/build/slot_w_send.png",
+   "x": 605,
+   "y": 1052,
+   "w": 273,
+   "h": 138
+  },
+  "rc_toggle": {
+   "src": "howto/build/slot_rc_toggle.png",
+   "x": 283,
+   "y": 1130,
+   "w": 354,
+   "h": 97
+  },
+  "rc_addr": {
+   "src": "howto/build/slot_rc_addr.png",
+   "x": 32,
+   "y": 1333,
+   "w": 855,
+   "h": 184
+  },
+  "rc_tgid": {
+   "src": "howto/build/slot_rc_tgid.png",
+   "x": 32,
+   "y": 1606,
+   "w": 855,
+   "h": 133
+  },
+  "rc_warn": {
+   "src": "howto/build/slot_rc_warn.png",
+   "x": 88,
+   "y": 1770,
+   "w": 744,
+   "h": 102
+  },
+  "sw_table": {
+   "src": "howto/build/slot_sw_table.png",
+   "x": 37,
+   "y": 1105,
+   "w": 846,
+   "h": 440
+  },
+  "sd_toggle": {
+   "src": "howto/build/slot_sd_toggle.png",
+   "x": 33,
+   "y": 833,
+   "w": 354,
+   "h": 97
+  },
+  "sd_addr": {
+   "src": "howto/build/slot_sd_addr.png",
+   "x": 33,
+   "y": 947,
+   "w": 854,
+   "h": 121
+  },
+  "st_amount": {
+   "src": "howto/build/slot_st_amount.png",
+   "x": 78,
+   "y": 1133,
+   "w": 764,
+   "h": 276
+  },
+  "st_year": {
+   "src": "howto/build/slot_st_year.png",
+   "x": 78,
+   "y": 1526,
+   "w": 764,
+   "h": 109
+  },
+  "st_btn": {
+   "src": "howto/build/slot_st_btn.png",
+   "x": 83,
+   "y": 1649,
+   "w": 754,
+   "h": 87
+  },
+  "st_deposit": {
+   "src": "howto/build/slot_st_deposit.png",
+   "x": 41,
+   "y": 667,
+   "w": 838,
+   "h": 246
+  },
+  "cd_card": {
+   "src": "howto/build/slot_cd_card.png",
+   "x": 42,
+   "y": 1073,
+   "w": 836,
+   "h": 534
+  },
+  "pf_ids": {
+   "src": "howto/build/slot_pf_ids.png",
+   "x": 32,
+   "y": 915,
+   "w": 856,
+   "h": 324
+  },
+  "pf_sec": {
+   "src": "howto/build/slot_pf_sec.png",
+   "x": 32,
+   "y": 1265,
+   "w": 856,
+   "h": 466
+  }
+ },
+ "screens": {}
+}

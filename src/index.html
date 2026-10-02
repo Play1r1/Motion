@@ -106,7 +106,7 @@
 <script>
   window.REEL = new URLSearchParams(location.search).get('reel') || 'wallet';
   window.STAGE = { topup: [1080, 1080] }[REEL] || [1080, 1920];
-  window.MANIFEST_NAME = REEL.startsWith('howto_') ? 'howto' : REEL;   // the how-to series shares one manifest
+  window.MANIFEST_NAME = REEL.startsWith('howto_') ? 'howto' : REEL.startsWith('ig_') ? 'ig' : REEL;   // series share one manifest
   document.documentElement.style.setProperty('--W', STAGE[0] + 'px');
   document.documentElement.style.setProperty('--H', STAGE[1] + 'px');
 </script>
@@ -114,6 +114,7 @@
 <script src="/src/common.js"></script>
 <script src="/src/tutorial.js"></script>
 <script src="/src/howto.js"></script>
+<script src="/src/ig.js"></script>
 <script>document.write(`<script src="/src/${REEL === 'wallet' ? 'scenes' : 'scenes_' + REEL}.js"><\/script>`);</script>
 <script>boot();</script>
 </body>

@@ -182,6 +182,28 @@ python3 tools/sound.py out/howto_topup
 bash tools/finalize.sh renders/incpt_howto_topup.mp4 out/howto_topup
 ```
 
+## Instagram reels (RU, 9:16, 11 s)
+
+`renders/incpt_ig_card.mp4`, `incpt_ig_stake.mp4` and `incpt_ig_swap.mp4` (+ `_preview.mp4`). Covers and ready post texts are in `renders/instagram/`.
+
+All three share one 120 BPM drive track in a different key for each, and one layout:
+- **Structure:** a hook before the drop at 2 s, three sections of 2 s each, then the brand end card at 8 s.
+- **Motion:** every lifted piece swells on the beat.
+- **Safe areas:** headlines from y 240; products between y 600 and 1500, clear of Instagram's caption and buttons.
+
+| Reel | Hook → sections |
+|---|---|
+| `ig_card` | A USDT coin spins and, edge-on, becomes the INCPT card on the drop → ПОПОЛНИ ИЗ USDT → ПЛАТИ КАРТОЙ INCPT (Starbucks, Nike) → ВИРТУАЛЬНАЯ ИЛИ МЕТАЛЛИЧЕСКАЯ (the card slides into the holder) |
+| `ig_stake` | USDT coins orbit and pour in, the safe slams down on the drop → 20–40% ГОДОВЫХ → ДОХОД КАЖДЫЙ ДЕНЬ (daily forecast, coins rising) → ВЫВОД В ЛЮБОЙ МОМЕНТ (Liquid Vault) |
+| `ig_swap` | The five coins orbit in, then collapse into the swap panels on the drop → ОБМЕН В ОДИН ТАП → КУРС И КОМИССИИ СРАЗУ ВИДНЫ → ПОЛУЧАЙ · ОБМЕНИВАЙ · ОТПРАВЛЯЙ |
+
+```bash
+python3 tools/build_promo.py && python3 tools/build_howto.py && python3 tools/build_ig.py
+node tools/render.mjs video --workers 3 --reel ig_card      # -> out/ig_card/
+python3 tools/sound.py out/ig_card
+bash tools/finalize.sh renders/incpt_ig_card.mp4 out/ig_card
+```
+
 ### App screen library (`assets/app/`): new interface
 
 There are 17 screenshots of the new interface (Telegram header «INCEPTION mini app»), 920×2000, ready for the phone mockup:
@@ -231,6 +253,8 @@ tools/build_promo.py        promo cut-outs, mattes of the 3D illustrations, stit
 src/howto.js                how-to engine (9:16): step card, screen flow, scrolls, lifts, pointer
 src/scenes_howto_*.js       one tutorial each (?reel=howto_topup, howto_swap, ...)
 tools/build_howto.py        how-to overlays, coin sheets, stitched pages, cut-outs and highlight rects
+src/ig.js                   Instagram reels: timing, beat swell, titles, cue set; src/scenes_ig_*.js one reel each
+tools/build_ig.py           Instagram manifest (promo + how-to cut-outs) and the five coin icons
 tools/import_app.py         app screenshots (PDF) -> assets/app, AI artefacts cleaned
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
 tools/sound.py              procedural music (96 BPM tech / 80 BPM calm / 120 BPM drive) + SFX from the timeline's cue list

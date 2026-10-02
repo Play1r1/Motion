@@ -291,6 +291,9 @@ elif STYLE == "drive":
         x = lp(saw(f, d) * 0.8 + np.sin(2 * np.pi * f / 2 * t) * 0.9, 900)
         return np.tanh(x * 1.6) * np.minimum(1, t / 0.004) * np.exp(-t / 0.09) * 0.55
 
+    KEY = META.get("key", 0)                     # transpose the whole drive arrangement (semitones)
+    CHORDS = [[n + KEY for n in c] for c in CHORDS]
+    ROOTS = [n + KEY for n in ROOTS]
     side = np.ones(N)
     # intro (hook): filtered stabs on the offbeats, hats rising, a snare roll into the drop
     n_in = int(round(DROP / BAR))
@@ -353,12 +356,12 @@ elif STYLE == "drive":
     music *= side[:, None] ** 0.85
     music += kicks
     # end card: one big stab, then the chord rings out over muted pulses
-    fin = [note(n) for n in (41, 53, 56, 60, 63, 67)]
-    place(music, reverb(supersaw([note(n + 12) for n in (53, 56, 60, 67)], 1.2, 6000, 0.5), 0.45), END_CARD + 0.4, 0.8)
+    fin = [note(n + KEY) for n in (41, 53, 56, 60, 63, 67)]
+    place(music, reverb(supersaw([note(n + 12 + KEY) for n in (53, 56, 60, 67)], 1.2, 6000, 0.5), 0.45), END_CARD + 0.4, 0.8)
     place(music, reverb(pad(fin, 5.4, 2600), 0.5), END_CARD + 0.4, 1.8)
-    place(music, sub(note(29), 2.4) * np.exp(-t_(2.4) / 0.9), END_CARD + 0.42, 1.0)
+    place(music, sub(note(29 + KEY), 2.4) * np.exp(-t_(2.4) / 0.9), END_CARD + 0.42, 1.0)
     for k in range(1, 9):
-        place(music, reverb(pluck([note(n + 12) for n in (53, 60, 63)], 0.3, 0.5), 0.45), END_CARD + 0.42 + k * BEAT, 0.45 * 0.86 ** k, pan=(-0.3 if k % 2 else 0.3))
+        place(music, reverb(pluck([note(n + 12 + KEY) for n in (53, 60, 63)], 0.3, 0.5), 0.45), END_CARD + 0.42 + k * BEAT, 0.45 * 0.86 ** k, pan=(-0.3 if k % 2 else 0.3))
 
 else:
     # ---------------- calm: warm electric piano in D major, soft drums, bell motif
