@@ -184,7 +184,7 @@ bash tools/finalize.sh renders/incpt_howto_topup.mp4 out/howto_topup
 
 ## Instagram reels (RU, 9:16, 11 s)
 
-`renders/incpt_ig_card.mp4`, `incpt_ig_stake.mp4` and `incpt_ig_swap.mp4` (+ `_preview.mp4`). Covers and ready post texts are in `renders/instagram/`.
+`renders/instagram/`: `incpt_ig_card.mp4`, `incpt_ig_stake.mp4` and `incpt_ig_swap.mp4` (+ `_preview.mp4`), with covers and ready post texts.
 
 All three share one 120 BPM drive track in a different key for each, and one layout:
 - **Structure:** a hook before the drop at 2 s, three sections of 2 s each, then the brand end card at 8 s.
@@ -201,7 +201,7 @@ All three share one 120 BPM drive track in a different key for each, and one lay
 python3 tools/build_promo.py && python3 tools/build_howto.py && python3 tools/build_ig.py
 node tools/render.mjs video --workers 3 --reel ig_card      # -> out/ig_card/
 python3 tools/sound.py out/ig_card
-bash tools/finalize.sh renders/incpt_ig_card.mp4 out/ig_card
+bash tools/finalize.sh renders/instagram/incpt_ig_card.mp4 out/ig_card
 ```
 
 ### App screen library (`assets/app/`): new interface

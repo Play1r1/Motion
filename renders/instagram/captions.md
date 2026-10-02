@@ -2,8 +2,8 @@
 
 Three short reels: 9:16, 1080×1920, 11 s each, 120 BPM.
 
-- **Videos:** `renders/incpt_ig_*.mp4`, plus `_preview.mp4` for messengers.
-- **Covers:** `renders/instagram/cover_*.jpg`.
+- **Videos:** `incpt_ig_*.mp4` in this folder (`renders/instagram/`), plus `_preview.mp4` for messengers.
+- **Covers:** `cover_*.jpg`, also here.
 
 **Structure of every reel:**
 - 0–2 s: hook;
