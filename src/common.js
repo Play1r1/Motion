@@ -30,6 +30,7 @@ const home = n => { const c = MANIFEST.cutouts[n], so = MANIFEST.phone.screenOff
 // logo gradient), a tracked grey tagline, then the "Доступен в Telegram" badge — on brand off-white.
 // T0 is when the background starts turning white; everything else is timed from it.
 // L: layout (logo centre / height, lock-up top, badge top) — defaults are the 9:16 frame
+// L.title: lock-up words (html, .lk-w spans); L.badge: () => an object with set() like TgBadge
 function endCard(T0, tagline, END = DURATION, sfx = 1, L = {}) {
   L = { logoY: 640, logoH: 520, lockTop: 968, badgeY: 1300, ...L };
   scene({
@@ -37,13 +38,14 @@ function endCard(T0, tagline, END = DURATION, sfx = 1, L = {}) {
       this.logo = new LogoMark();
       this.lock = document.createElement('div');
       this.lock.className = 'lockup';
-      this.lock.innerHTML = `<div class="lk-title"><span class="lk-w lk-incpt">INCPT</span><span class="lk-w lk-io">WALLET</span></div><div class="lk-tag">${tagline}</div>`;
+      const title = L.title || '<span class="lk-w lk-incpt">INCPT</span><span class="lk-w lk-io">WALLET</span>';
+      this.lock.innerHTML = `<div class="lk-title">${title}</div><div class="lk-tag">${tagline}</div>`;
       $('#text').appendChild(this.lock);
       if (L.lockTop !== 968) this.lock.style.top = L.lockTop + 'px';
       this.title = this.lock.querySelector('.lk-title');
       this.words = [...this.lock.querySelectorAll('.lk-w')];
       this.tag = this.lock.querySelector('.lk-tag');
-      this.badge = new TgBadge('Доступен в', 'Telegram');
+      this.badge = L.badge ? L.badge() : new TgBadge('Доступен в', 'Telegram');
       this.badge.el.classList.add('dark');
       const c = T0;
       cue(c + 0.2, 'whoosh', { dur: 0.5, gain: 0.6 * sfx, up: true });

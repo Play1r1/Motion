@@ -209,6 +209,46 @@ python3 tools/sound.py out/ig_card
 bash tools/finalize.sh renders/instagram/incpt_ig_card.mp4 out/ig_card
 ```
 
+## Token presale reel (RU, 9:16)
+
+`renders/presale/incpt_presale.mp4` (+ `_preview.mp4`), 1080×1920, 27 s, with a cover and a ready post text (`captions.md`).
+
+The promo's editing language on the INCEPTION Coin page of INCPT Wallet, to the 120 BPM drive track (key +2).
+Every fact is on that page; nothing is added beyond one line of risk disclosure on the end card.
+
+| Time | Headline | Picture |
+|---|---|---|
+| 0.0 | ПРЕСЕЙЛ · ТОКЕНА · INCPT · В INCPT WALLET | One word per beat; the presale button, the coin header, the price and the TRC-20 pill fly in, then fall into one point |
+| 4.0 | INCEPTION COIN | Drop. The phone rises with the chart already off the screen; the 7-day line draws in |
+| 6.0 | ТОКЕН ЭКОСИСТЕМЫ INCEPTION | The chart lands; the coin header and «$0.50 +1.00%» lift, one per beat |
+| 8.0 | СТОИМОСТЬ — ОТ ОЦЕНКИ КОМПАНИИ | «О монете»: the Reference Value formula, then its example line by line ($50M · 100M INCPT · $0.50) |
+| 12.0 | ЦЕНА ПРЕСЕЙЛА 0.40 USDT | «Купить на пресейле» leaves the screen, wider than the phone |
+| 14.0 | ПОКУПКА ОТ $50,000 | The button holds and turns |
+| 16.0 | СЕТЬ TRC-20 · TRON | The network pill lifts |
+| 17.5 | ПЕРЕВОДЫ БЕСПЛАТНО | The note «INCPT можно бесплатно отправлять…» and «Отправить» lift |
+| 19.0 | КУПИТЬ НА ПРЕСЕЙЛЕ | Tap on the presale button; it flies at the camera into the end card |
+| 21.0 | INCEPTION COIN · ТОКЕН ЭКОСИСТЕМЫ INCEPTION | End card, «Пресейл presale.incpt.fi», «Не является инвестиционной рекомендацией» |
+
+**Source.** Two native screenshots of the coin page (1206×2622, lossless, no AI pass) in git-ignored `reference/presale/`.
+`tools/build_presale.py` makes everything from them; nothing in the UI is redrawn:
+
+| Piece | How |
+|---|---|
+| One long page | The top shot, then the scrolled one, 2506 px lower (matched on «История» and the card under it) |
+| What the fixed parts hid in between | Rebuilt from measurements: the presale button's last rows and its tinted shadow (fitted: blur 32 px, offset 17.6 px, the button's own colour), «История» in Inter 600 (calibrated on «Статистика»: 266 vs 264 px), the «Пока нет операций» card |
+| Telegram header | Alpha-black layer over a white band, so the page scrolls away under it instead of running into the clock |
+| Frosted bottom buttons | Two versions: tinted while the presale button sits behind them, white otherwise |
+| Chart | Clean base (labels, dates, the dashed grid rebuilt from its 18 px period) + the plot, revealed left to right |
+| Cut-outs | Kept at the shots' full resolution, so a piece lifted to 1.3–1.7× the phone still maps about 1:1 to source pixels |
+| Status bar | The silent-mode bell next to the clock removed (device state, not the app) |
+
+```bash
+python3 tools/build_presale.py
+node tools/render.mjs video --workers 3 --reel presale      # -> out/presale/
+python3 tools/sound.py out/presale
+MAXRATE=12 bash tools/finalize.sh renders/presale/incpt_presale.mp4 out/presale
+```
+
 ### App screen library (`assets/app/`): new interface
 
 There are 17 screenshots of the new interface (Telegram header «INCEPTION mini app»), 920×2000, ready for the phone mockup:
@@ -261,6 +301,8 @@ tools/build_howto.py        how-to overlays, coin sheets, stitched pages, cut-ou
 src/ig.js                   Instagram reels: timing, beat swell, titles, cue set; src/scenes_ig_*.js one reel each
 src/vec.js                  vector pieces for the Instagram reels: 3D coins, cards, rows, swap panels, chips
 tools/build_ig.py           Instagram manifest (promo + how-to cut-outs) and the five coin icons
+src/scenes_presale.js       token presale reel on the INCEPTION Coin page (?reel=presale)
+tools/build_presale.py      coin page from two native screenshots: stitched page, overlays, hi-res cut-outs
 tools/import_app.py         app screenshots (PDF) -> assets/app, AI artefacts cleaned
 tools/render.mjs            headless Chromium → sub-frame motion blur → ffmpeg (parallel workers)
 tools/sound.py              procedural music (96 BPM tech / 80 BPM calm / 120 BPM drive) + SFX from the timeline's cue list
