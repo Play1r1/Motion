@@ -13,7 +13,9 @@ import { spawn } from 'child_process';
 import sharp from 'sharp';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const CHROME = process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+// Chromium: $CHROME, else the newest Playwright build under /opt/pw-browsers
+const CHROME = process.env.CHROME || fs.readdirSync('/opt/pw-browsers').filter(d => /^chromium-\d+$/.test(d)).sort((a, b) => +b.split('-')[1] - +a.split('-')[1])
+  .flatMap(d => ['chrome-linux64', 'chrome-linux'].map(s => `/opt/pw-browsers/${d}/${s}/chrome`)).find(p => fs.existsSync(p));
 const args = process.argv.slice(2);
 const mode = args[0];
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };

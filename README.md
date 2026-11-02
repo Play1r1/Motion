@@ -209,6 +209,23 @@ python3 tools/sound.py out/ig_card
 bash tools/finalize.sh renders/instagram/incpt_ig_card.mp4 out/ig_card
 ```
 
+## New brand: style frames (RU, 9:16)
+
+`renders/style/`: nine 1080×1920 frames in three directions for the redesign, and `board.jpg` with all of them labelled.
+They are built from the new chrome logo render and the new interface (git-ignored `reference/app_v3/`).
+
+| Direction | Look | Type |
+|---|---|---|
+| А · ХРОМ | Pearl white, ribbed glass (the logo's own texture), the chrome mark as the hero, lime → violet only in accents | Geologica |
+| Б · НУАР | Deep black with the logo's iridescence running through it, wide white type, lime for numbers | Unbounded |
+| В · КИСЛОТА | Lime and violet fields from the logo, huge condensed type, grid, stickers, tickers | Roboto Flex condensed |
+
+```bash
+python3 tools/build_style.py        # logo matte, UI pieces, the safe and shield mattes -> assets/style/
+node tools/style_frames.mjs         # src/style/frames.html -> out/style/A1..C3.png
+node tools/style_board.mjs          # -> renders/style/board.jpg
+```
+
 ## Token presale reel (RU, 9:16)
 
 `renders/presale/incpt_presale.mp4` (+ `_preview.mp4`), 1080×1920, 27 s, with a cover and a ready post text (`captions.md`).
