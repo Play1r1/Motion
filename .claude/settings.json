@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Higgsfield__sandbox_exec",
+      "mcp__Higgsfield"
+    ]
+  }
+}
