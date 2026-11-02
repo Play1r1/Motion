@@ -1,6 +1,7 @@
 node_modules/
 out/
-reference/
+reference/*
+!reference/app_v3/
 __pycache__/
 assets/staking/build/_frames/
 assets/topup/build/_frames/
