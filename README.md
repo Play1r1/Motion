@@ -237,18 +237,13 @@ The boss picked direction А · ХРОМ from the style frames. Every new film i
 | Type | Geologica 800, uppercase, tight tracking (−0.045 em) for headlines; Geologica 500 grey for sublines. Accent words in the logo's iridescence, one gradient across the line. |
 | Mark | The official chrome render (`assets/style/logo_chrome.png`), never redrawn, **never under glass**: no lens, slab or chip may refract or bend it. Where a lens sits behind it, the logo is drawn in front (`front: true` on the `LG` texture); otherwise it is a plain DOM image with a soft drop shadow. |
 | Kit | `src/chrome.js`: `WText`, glass `chip`, `LiquidBody` (one glass body flowing through states that split, merge and jiggle), `liquidIntro` (drops melting into a lens), `chromeEnd` (lens + logo on it + title + tagline + glass pill + fine print), `glassWipe`. |
-| Motion signature | The INCPT look in motion, also in `src/chrome.js`. The logo is a boomerang, so the motion is built on that:
-- **arcs:** things fly in on boomerang arcs, spin, are caught with a small wobble and are thrown out again (`arcAt`, `flyEl`);
-- **rib shutter:** chrome ribs at the logo's −28°, shaded like its tubes and tinted in its iridescence, fan across the frame and hide every big cut (`RibShutter`);
-- **letter slams:** headlines slam in letter by letter, from big and blurred to sharp (`KText`);
-- **numbers:** every number counts up to its value (`countTo`);
-- **glints:** four-point glints flash on the chrome (`Glints`);
-- **beat:** the frame pulses on the kick. |
+| Motion signature | The INCPT look in motion, also in `src/chrome.js`. The logo is a boomerang, so the motion is built on that:<br>• **arcs:** things fly in on boomerang arcs, spin, are caught with a small wobble and are thrown out again (`arcAt`, `flyEl`);<br>• **rib shutter:** chrome ribs at the logo's −28°, shaded like its tubes and tinted in its iridescence, fan across the frame and hide every big cut (`RibShutter`);<br>• **letter slams:** headlines slam in letter by letter, from big and blurred to sharp (`KText`);<br>• **numbers:** every number counts up to its value (`countTo`);<br>• **glints:** four-point glints flash on the chrome (`Glints`);<br>• **beat:** the frame pulses on the kick. |
 | Pacing | Premium but never static: one idea per scene and a change of motion on every beat or two, so the eye always has something new. Calm films (welcome) let the glass carry the cuts; promo films use the motion signature. |
+| Music | Energetic, never a lullaby (the calm piano bed was rejected as sleepy). `tools/sound.py` has two styles for it. Both have a hook, a breakdown and build into a second drop, a moment of silence before each drop, a groove that keeps going under the end card, and the INCPT sound logo (a four-note «ta-DA-da-DAA» on the end card):<br>• `pulse`: bass house for promo cuts (120–128 BPM; four-on-the-floor, offbeat stabs, syncopated mid bass, vocal chops, a stutter edit into the CTA);<br>• `liquid`: liquid drum & bass at twice the film's tempo (90 BPM film → 180 BPM; two-step drums, reese bass, Rhodes), so every cut still lands on the beat.<br>Scenes place the sections with `META.build`, `META.drop2` and `META.stutter`. Mixed for phones: nothing under 32 Hz, a presence lift above 3 kHz, a limiter, about −13 LUFS. |
 
 ## Welcome reel in liquid glass (RU, 9:16)
 
-`renders/welcome/incpt_welcome.mp4` (+ `_preview.mp4`, `cover_welcome.jpg`, `captions.md`), 1080×1920, 27 s, 90 BPM `calm` track.
+`renders/welcome/incpt_welcome.mp4` (+ `_preview.mp4`, `cover_welcome.jpg`, `captions.md`), 1080×1920, 27 s, 90 BPM picture on a 180 BPM `liquid` drum & bass track.
 The first film in the new brand: direction А (pearl, ribbed glass, the chrome mark, Geologica) in Apple's liquid-glass
 language, which the app's own tab bar and buttons already use. No Higgsfield credits: everything is drawn by the engine.
 
@@ -281,7 +276,7 @@ bash tools/finalize.sh renders/welcome/incpt_welcome.mp4 out/welcome
 
 ## Token presale reel with the motion signature (RU, 9:16)
 
-`renders/presale3/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 27 s, 120 BPM `drive` track (key +2).
+`renders/presale3/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 27 s, 120 BPM `pulse` track (key +2).
 The presale cut in ХРОМ, rebuilt on the motion signature. The logo is never under glass: it flies in as a boomerang
 and is caught. Scene code: `src/scenes_presale3.js`.
 

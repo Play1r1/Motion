@@ -9,7 +9,7 @@
 
 DURATION = 27.0;
 const B = 0.5;
-META = { drop: 4.0, end: 21.5, bpm: 120, music: 'drive', key: 2 };
+META = { drop: 4.0, end: 21.5, bpm: 120, music: 'pulse', key: 2, build: 12.0, drop2: 16.0, stutter: [19.0] };
 const oC = Ease.outCubic, iC = Ease.inCubic;
 const kick = t => (t < 4 || t > 21.5 ? 0 : Math.exp(-((t - 4) % B) / 0.09));
 drawBg = t => LG.draw(t);

@@ -29,7 +29,8 @@ END_CARD = META.get("end", END_CARD)
 BPM = META.get("bpm", BPM)
 BEAT = 60 / BPM
 BAR = 4 * BEAT
-STYLE = META.get("music", "tech")      # "tech": 96 BPM minimal tech (reel 1); "calm": warm keys (staking)
+STYLE = META.get("music", "tech")      # "tech": 96 BPM minimal tech; "drive": 120 BPM electro; "calm": warm keys;
+                                       # "pulse": bass house (promo); "liquid": liquid drum & bass at 2x the film tempo
 DUR = cues["duration"] + 0.05
 N = int(DUR * SR)
 music = np.zeros((N, 2))
@@ -363,6 +364,481 @@ elif STYLE == "drive":
     for k in range(1, 9):
         place(music, reverb(pluck([note(n + 12 + KEY) for n in (53, 60, 63)], 0.3, 0.5), 0.45), END_CARD + 0.42 + k * BEAT, 0.45 * 0.86 ** k, pan=(-0.3 if k % 2 else 0.3))
 
+elif STYLE in ("pulse", "liquid"):
+    # ---------------- the energetic styles. pulse: 120-128 BPM bass house (promo cuts); liquid: liquid drum &
+    # bass at double the film's tempo (90 BPM film -> 180 BPM). Both: a hook, a breakdown + build into a second
+    # drop, stutter edits, a groove that keeps going under the end card and the INCPT sound logo.
+    # META: drop, end, bpm, key, build (start of the build), drop2 (second drop), stutter: [times].
+    from scipy.ndimage import maximum_filter1d
+
+    def lp_sweep(x, fc, blk=256, btype="low"):
+        """2-pole filter whose cutoff follows fc(seconds into x)."""
+        out = np.zeros_like(x)
+        zi = np.zeros(2)
+        for s in range(0, len(x), blk):
+            b, a = signal.butter(2, float(np.clip(fc(s / SR), 30, 18000)), btype=btype, fs=SR)
+            out[s:s + blk], zi = signal.lfilter(b, a, x[s:s + blk], zi=zi)
+        return out
+
+    def square(f, d, detune=0.0):
+        return np.sign(saw(f, d, detune))
+
+    def kick_punch(d=0.4, tone=52, decay=0.15, drive=2.0):
+        t = t_(d)
+        f = tone + 170 * np.exp(-t / 0.026) + 60 * np.exp(-t / 0.003)
+        body = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.minimum(1, t / 0.0006) * np.exp(-t / decay)
+        click = hp(rng.standard_normal(len(t)), 3500) * env_exp(d, 0.0025, 0.0003) * 0.5
+        return np.tanh((body + click) * drive) * 0.8
+
+    def snare_crack(d=0.3, tone=190, tau=0.11):
+        t = t_(d)
+        body = np.sin(2 * np.pi * np.cumsum(tone + 80 * np.exp(-t / 0.012)) / SR) * env_exp(d, 0.055, 0.0006)
+        nz = rng.standard_normal(len(t))
+        noise = bp(nz, 1800, 11000) * env_exp(d, tau, 0.0006)
+        crack = hp(nz, 5000) * env_exp(d, 0.012, 0.0003) * 0.6
+        return np.tanh((body * 0.8 + noise + crack) * 1.8) * 0.55
+
+    MET = (205.3, 304.4, 369.6, 522.7, 540.0, 800.0)          # 808 cymbal oscillators
+
+    def hat2(open_=False, tone=1.0):
+        d = 0.32 if open_ else 0.07
+        t = t_(d)
+        x = sum(np.sign(np.sin(2 * np.pi * f * 1.6 * tone * t + k)) for k, f in enumerate(MET)) / 6
+        x = hp(x, 7000, 4) * 0.8 + hp(rng.standard_normal(len(t)), 8000, 2) * 0.5
+        return x * env_exp(d, 0.085 if open_ else 0.016, 0.0004) * 0.45
+
+    def ride2(d=1.0):
+        t = t_(d)
+        x = sum(np.sign(np.sin(2 * np.pi * f * 2.3 * t + k)) for k, f in enumerate(MET)) / 6
+        x = bp(x, 4500, 14000) * env_exp(d, 0.35, 0.0005) + np.sin(2 * np.pi * 5100 * t) * env_exp(d, 0.25) * 0.08
+        return x * 0.3
+
+    def tom(f=150, d=0.35):
+        t = t_(d)
+        return np.tanh(np.sin(2 * np.pi * np.cumsum(f * (1 + 0.6 * np.exp(-t / 0.03))) / SR) * env_exp(d, 0.12, 0.001) * 1.5) * 0.5
+
+    def stab(freqs, d=0.3, cutoff=5000, tau=0.12, env_tau=0.14):
+        x = sum(saw(f, d, dt) for f in freqs for dt in (-0.011, -0.005, 0.0, 0.005, 0.011)) / (5 * len(freqs))
+        return lp_sweep(x, lambda s: 500 + cutoff * np.exp(-s / tau)) * env_exp(d, env_tau, 0.002)
+
+    def wide(fn):                       # two takes with different random phases = a stereo image
+        return np.stack([fn(), fn()], 1)
+
+    def wub(f, d, open_=2400, tau=0.07, drive=2.2):
+        t = t_(d)
+        x = saw(f, d) * 0.7 + square(f * 0.5, d) * 0.45 + saw(f, d, 0.007) * 0.5
+        x = np.tanh(lp_sweep(x, lambda s: 180 + open_ * np.exp(-s / tau), blk=128) * drive)
+        return hp(x, 70) * np.minimum(1, t / 0.003) * np.minimum(1, (d - t) / 0.015) * 0.5
+
+    def reese(f, d, cut=520, lfo=0.6):
+        t = t_(d)
+        x = saw(f, d, -0.0045) + saw(f, d, 0.0045) + 0.4 * saw(2 * f, d, 0.002)
+        ph = rng.random() * 6.283
+        x = hp(np.tanh(lp_sweep(x, lambda s: cut * (1 + 0.55 * np.sin(2 * np.pi * lfo * s + ph))) * 1.6), 110)
+        e = np.minimum(1, t / 0.012) * np.minimum(1, (d - t) / 0.04)
+        return (x * 0.42 + np.tanh(np.sin(2 * np.pi * f * t) * 1.2) * 0.55) * e
+
+    def lead(f, d, bright=1.0):
+        t = t_(d)
+        vib = 1 + 0.004 * np.sin(2 * np.pi * 5.5 * t) * np.minimum(1, np.maximum(0, t - 0.12) / 0.2)
+        ph = np.cumsum(f * vib) / SR
+        x = sum(2 * ((ph * (1 + dt) + rng.random()) % 1) - 1 for dt in (-0.006, 0.0, 0.006)) / 3
+        x += 0.35 * np.sign(np.sin(np.pi * ph))
+        x = lp_sweep(x, lambda s: 900 + 4200 * bright * np.exp(-s / 0.18))
+        e = np.minimum(1, t / 0.004) * (0.55 + 0.45 * np.exp(-t / 0.12)) * np.minimum(1, (d - t) / 0.03)
+        return x * e * 0.5
+
+    VOW = {"a": (800, 1150, 2900), "o": (450, 800, 2830), "e": (400, 1700, 2600), "u": (330, 700, 2500)}
+
+    def vox(f, d, v="a", bend=0.0, tau=0.25):
+        """a synthetic vocal chop: a buzz through three formant band-passes"""
+        t = t_(d)
+        fr = f * (1 + bend * np.exp(-t / 0.05)) * (1 + 0.006 * np.sin(2 * np.pi * 5.2 * t))
+        src = 2 * ((np.cumsum(fr) / SR + rng.random()) % 1) - 1
+        x = sum(bp(src, F * 0.9, F * 1.1) * g for F, g in zip(VOW[v], (1.0, 0.6, 0.3)))
+        x += hp(rng.standard_normal(len(t)), 6000) * 0.04
+        e = np.minimum(1, t / 0.008) * np.exp(-t / tau) * np.minimum(1, (d - t) / 0.02)
+        return np.tanh(x * 3) * e * 0.5
+
+    def nriser(d, f0=300, f1=9000):
+        t = t_(d)
+        x = lp_sweep(rng.standard_normal(len(t)), lambda s: f0 * (f1 / f0) ** (s / d))
+        ph = np.cumsum(note(60) * 2 ** (t / d * 1.0)) / SR
+        tone = (2 * (ph % 1) - 1) * 0.12
+        return (x * 0.5 + lp(tone, 3000)) * (t / d) ** 2
+
+    def subdrop(d=0.9, f0=110, f1=44):
+        t = t_(d)
+        return np.tanh(np.sin(2 * np.pi * np.cumsum(f1 + (f0 - f1) * np.exp(-t / 0.18)) / SR) * 1.4) * np.exp(-t / 0.5) * 0.7
+
+    def limit(x, ceil=0.92, rel=0.06, blk=32):
+        a = maximum_filter1d(np.abs(x).max(1), int(0.003 * SR))
+        a = a[: len(a) // blk * blk].reshape(-1, blk).max(1)
+        g = np.minimum(1.0, ceil / np.maximum(a, 1e-9))
+        c = np.exp(-blk / SR / rel)
+        for i in range(1, len(g)):
+            g[i] = min(g[i], g[i - 1] * c + (1 - c))
+        g = np.repeat(g, blk)
+        g = np.concatenate([g, np.full(len(x) - len(g), g[-1])])
+        return np.tanh(x * g[:, None] / ceil) * ceil
+
+    KEY = META.get("key", 0)
+    BUILD = META.get("build")
+    DROP2 = META.get("drop2")
+    BAR_ = BAR if STYLE == "pulse" else 2 * BEAT                 # liquid: a bar at double tempo
+    S16 = BAR_ / 16
+    side = np.ones(N)
+    gate = np.ones(N)
+    drums = np.zeros((N, 2))
+    revb = np.zeros((N, 2))
+    dlyb = np.zeros((N, 2))
+    outro = np.zeros((N, 2))
+
+    def put(buf, x, at, g=1.0, pan=0.0, rv=0.0, dl=0.0):
+        place(buf, x, at, g, pan)
+        if rv:
+            place(revb, x, at, g * rv, pan)
+        if dl:
+            place(dlyb, x, at, g * dl, pan)
+
+    def duck(at, depth, tau):
+        i = int((at - 0.003) * SR)
+        m = min(int(0.35 * SR), N - i)
+        if m <= 0 or i < 0:
+            return
+        n = np.arange(m)
+        r = int(0.003 * SR)
+        side[i:i + m] = np.minimum(side[i:i + m], 1 - depth * np.minimum(1, n / r) * np.exp(-np.maximum(0, n - r) / SR / tau))
+
+    def gap(t0, t1):                    # a moment of silence before a drop
+        i, j = int(t0 * SR), int(t1 * SR)
+        r = int(0.004 * SR)
+        gate[i:j] = 0
+        gate[i - r:i] = np.minimum(gate[i - r:i], np.linspace(1, 0, r))
+        gate[j:j + r] = np.minimum(gate[j:j + r], np.linspace(0, 1, r))
+
+    def roll(t0, t1, buf, g0=0.15, g1=0.6):
+        """snare roll: 8ths, then 16ths, then 32nds, rising"""
+        tt = t0
+        while tt < t1 - 1e-6:
+            p = (tt - t0) / (t1 - t0)
+            put(buf, snare_crack(0.2, 200 + 120 * p), tt, g0 + (g1 - g0) * p, rv=0.2)
+            tt += S16 * (2 if p < 0.5 else 1 if p < 0.8 else 0.5)
+
+    def section(t):
+        if t < DROP:
+            return "intro"
+        if t >= END_CARD:
+            return "end"
+        if BUILD and DROP2 and BUILD <= t < DROP2:
+            return "build"
+        if STYLE == "liquid" and BUILD and DROP2 and BUILD > DROP2 and t >= BUILD:
+            return "build"
+        return "drop2" if DROP2 and t >= DROP2 else "drop"
+
+    if STYLE == "pulse":
+        CH = [[n + KEY for n in c] for c in CHORDS]             # Fm7 Dbmaj7 Abmaj7 Ebmaj7 (+KEY)
+        RT = [n + KEY + 12 for n in ROOTS]
+        HOOK = [[(0, 72, 3), (3, 75, 3), (6, 77, 4), (10, 75, 2), (12, 72, 2), (14, 70, 2)],
+                [(0, 68, 3), (3, 70, 3), (6, 73, 4), (10, 72, 2), (12, 68, 4)],
+                [(0, 72, 3), (3, 75, 3), (6, 80, 4), (10, 79, 2), (12, 75, 2), (14, 77, 2)],
+                [(0, 79, 3), (3, 77, 3), (6, 75, 2), (8, 72, 2), (10, 70, 6)]]
+        BASS_A = [(2, 0), (3, 0), (6, 12), (7, 0), (10, 0), (11, 12), (13, 0), (14, 7)]
+        BASS_B = [(1, 0), (3, 12), (5, 0), (6, 0), (7, 12), (9, 0), (10, 7), (11, 12), (13, 0), (14, 19), (15, 12)]
+        STABS = [0, 3, 6, 10, 12]
+        LOGO = [(0, 72, 2), (2, 77, 2), (4, 75, 2), (6, 77, 10)]
+        n_bars = int(np.ceil(DUR / BAR_)) + 1
+        bar0 = DROP - round(DROP / BAR_) * BAR_                  # bars line up with the drop
+        for b in range(-1, n_bars):
+            t0 = bar0 + b * BAR_
+            if t0 + BAR_ <= 0 or t0 >= END_CARD:
+                continue
+            ci = (b % 4)
+            ch, root = CH[ci], RT[ci]
+            for st in range(16):
+                ts = t0 + st * S16
+                if ts < 0 or ts >= END_CARD:
+                    continue
+                sec = section(ts)
+                beat, sub16 = divmod(st, 4)
+                k_in = (ts - DROP) / BAR_                        # bars since the drop
+                if sec == "intro":
+                    p = ts / DROP
+                    if sub16 == 0:
+                        put(drums, lp(kick_punch(), 220 + 900 * p), ts, 0.55 + 0.3 * p)
+                    if sub16 == 2:
+                        put(drums, hat2(True), ts, 0.08 + 0.2 * p, pan=0.2)
+                    if st in (2, 6, 10, 14):
+                        put(music, lp(stab([note(n + 12) for n in ch], 0.22, 1200 + 3000 * p), 900 + 4000 * p), ts, 0.34, pan=-0.1, rv=0.35)
+                    if ts >= DROP - BAR_ and sub16 in (1, 3):
+                        put(drums, hat2(), ts, 0.1, pan=-0.2)
+                elif sec in ("drop", "drop2"):
+                    hard = sec == "drop2"
+                    if sub16 == 0:
+                        put(drums, kick_punch(), ts, 1.0)
+                        duck(ts, 0.72, 0.085)
+                    if st in (4, 12):
+                        put(drums, snare_crack(), ts, 0.5, rv=0.18)
+                        put(drums, clap(), ts, 0.42, rv=0.3)
+                    put(drums, hat2(open_=(sub16 == 2)), ts, (0.3 if sub16 == 2 else 0.14 if sub16 == 0 else 0.09), pan=0.25 if sub16 % 2 else -0.15)
+                    if hard or k_in >= 2:
+                        put(drums, shaker(), ts, 0.5 if sub16 % 2 else 0.3, pan=0.45)
+                        if st in (3, 11):
+                            put(drums, rim(), ts, 0.4, pan=-0.45, rv=0.2)
+                    if st == 14 and int(k_in) % 2 == 1:
+                        put(drums, tom(170), ts, 0.45, pan=0.3)
+                        put(drums, tom(120), ts + S16, 0.5, pan=-0.3)
+                    pat = BASS_B if (hard or k_in >= 2) else BASS_A
+                    for s_, off in pat:
+                        if s_ == st:
+                            put(music, wub(note(root + 12 + off), S16 * 1.05, 2600 if hard else 2000), ts, 0.62)
+                    if st in STABS:
+                        put(music, wide(lambda: stab([note(n + 12) for n in ch], 0.26, 5200 if st == 0 else 3800)), ts, 0.3, rv=0.25)
+                    if hard or k_in >= 2:                        # arp
+                        n_ = ch[[0, 1, 2, 3, 2, 1][st % 6]] + 24
+                        put(music, pluck([note(n_)], 0.16, 0.7), ts, 0.1, pan=0.35 if st % 2 else -0.35, dl=0.5)
+                elif sec == "build":
+                    into = (ts - BUILD) / (DROP2 - BUILD)
+                    first = ts < BUILD + BAR_
+                    if first:                                    # breakdown: half-time drums
+                        if st in (0, 10):
+                            put(drums, kick_punch(decay=0.25), ts, 0.9)
+                            duck(ts, 0.5, 0.12)
+                        if st == 8:
+                            put(drums, snare_crack(0.4, 180, 0.16), ts, 0.6, rv=0.4)
+                            put(drums, clap(), ts, 0.4, rv=0.4)
+                        if sub16 == 2:
+                            put(drums, hat2(True), ts, 0.16, pan=0.3)
+                    else:
+                        if sub16 == 0:
+                            put(drums, lp(kick_punch(), 600 + 6000 * into ** 2), ts, 0.85)
+                            duck(ts, 0.5, 0.1)
+                        put(drums, hat2(), ts, 0.06 + 0.12 * into, pan=-0.2)
+                # the hook (lead), from the drop; in the second drop doubled an octave up + vocal chops
+                if sec in ("drop", "drop2", "build"):
+                    for s_, n_, ln in HOOK[ci]:
+                        if s_ != st:
+                            continue
+                        n_ += KEY
+                        dd = ln * S16 * 0.95
+                        if sec == "build" and ts < BUILD + BAR_:
+                            put(music, vox(note(n_), dd + 0.15, "o" if s_ % 2 else "a", 0.02, 0.4), ts, 0.42, rv=0.5, dl=0.35)
+                        elif sec == "build":
+                            put(music, lp(lead(note(n_), dd), 600 + 5000 * ((ts - BUILD - BAR_) / BAR_) ** 2), ts, 0.4, rv=0.3)
+                        else:
+                            put(music, lead(note(n_), dd, 1.1 if sec == "drop2" else 0.8), ts, 0.34, pan=-0.05, rv=0.25, dl=0.3)
+                            if sec == "drop2":
+                                put(music, lead(note(n_ + 12), dd, 0.9), ts, 0.16, pan=0.2, rv=0.3)
+                                put(music, vox(note(n_), dd + 0.05, "a" if s_ % 3 else "e", 0.015), ts, 0.22, pan=-0.25, rv=0.35)
+                if sec == "intro" and ts < DROP - BAR_:              # the hook teased as vocal chops
+                    for s_, n_, ln in HOOK[ci]:
+                        if s_ == st and s_ < 10:
+                            put(music, vox(note(n_ + KEY), ln * S16 + 0.12, "a" if s_ % 2 == 0 else "o", 0.03), ts, 0.32, rv=0.5, dl=0.4)
+            sec0 = section(max(t0, 0) + 1e-3)
+            d = min(BAR_, END_CARD - max(t0, 0))
+            if d <= 0:
+                continue
+            if sec0 in ("drop", "drop2"):
+                put(music, sub(note(root), d), max(t0, 0), 0.75)
+                put(music, wide(lambda: pad([note(n) for n in ch], d + 0.2, 1500)), max(t0, 0), 0.16, rv=0.3)
+            elif sec0 == "intro":
+                p = max(t0, 0) / DROP
+                put(music, wide(lambda: pad([note(n) for n in ch], d + 0.3, 700 + 1100 * p)), max(t0, 0), 0.4, rv=0.4)
+            elif sec0 == "build":
+                cut0 = 400 if t0 < BUILD + BAR_ - 1e-3 else 1200
+                x = wide(lambda: lp_sweep(sum(saw(note(n + 12), d + 0.05, dt) for n in ch for dt in (-0.01, 0, 0.01)) / 12,
+                                          lambda s: cut0 + 6000 * (s / d) ** 2 * (0 if t0 < BUILD + BAR_ - 1e-3 else 1)))
+                put(music, x, max(t0, 0), 0.5, rv=0.35)
+                put(music, sub(note(root), d), max(t0, 0), 0.5 if t0 < BUILD + BAR_ - 1e-3 else 0.0)
+        # risers and rolls into each drop, then a 16th of silence
+        put(music, nriser(BAR_), DROP - BAR_, 0.55)
+        roll(DROP - BAR_ / 2, DROP - S16, drums, 0.12, 0.5)
+        gap(DROP - S16, DROP - 0.004)
+        if BUILD and DROP2:
+            put(music, nriser(DROP2 - BUILD), BUILD, 0.6)
+            roll(BUILD + BAR_, DROP2 - S16, drums, 0.12, 0.62)
+            gap(DROP2 - S16, DROP2 - 0.004)
+        # end card: the big chord, a sub drop, the groove keeps going under it and fades; the INCPT sound logo
+        fin = [note(n + KEY + 12) for n in (53, 56, 60, 63, 67)]
+        put(music, wide(lambda: stab(fin, 1.4, 6500, 0.4, 0.55)), END_CARD, 0.75, rv=0.5)
+        put(music, subdrop(), END_CARD, 0.6)
+        put(drums, kick_punch(decay=0.3), END_CARD, 1.0)
+        put(music, wide(lambda: pad([note(n + KEY) for n in (41, 53, 56, 60, 63, 67)], DUR - END_CARD, 2200)), END_CARD + 0.05, 0.55, rv=0.5)
+        k = 1
+        while END_CARD + k * S16 * 4 < DUR - 1.0:
+            ts = END_CARD + k * S16 * 4
+            put(outro, kick_punch(), ts, 0.9)
+            if k % 2:
+                put(outro, clap(), ts, 0.35, rv=0.3)
+            for h in range(4):
+                put(outro, hat2(open_=(h == 2)), ts + h * S16, 0.25 if h == 2 else 0.09, pan=0.2)
+            put(outro, wub(note(RT[0] + 12), S16 * 1.05, 1200), ts + 2 * S16, 0.5)
+            k += 1
+        for s_, n_, ln in LOGO:
+            at = END_CARD + 1.5 + s_ * S16
+            put(music, lead(note(n_ + KEY), ln * S16, 1.0), at, 0.3, rv=0.45, dl=0.45)
+            put(music, bell(note(n_ + KEY + 12), 1.6), at, 0.2, rv=0.5)
+        L_ = len(outro) - int(END_CARD * SR)
+        for c in range(2):
+            seg = outro[int(END_CARD * SR):, c]
+            outro[int(END_CARD * SR):, c] = lp_sweep(seg, lambda s: 300 + 9000 * np.exp(-s / 1.4)) * np.exp(-np.arange(L_) / SR / 3.2)
+
+    else:
+        # liquid drum & bass: Dbmaj9 Fm7(11) Bbm9 Gbmaj9, one chord a bar, two-step drums, reese bass, rhodes
+        LC = [[49, 53, 56, 60, 63], [53, 56, 60, 63, 70], [46, 49, 53, 56, 60], [54, 58, 61, 65, 68]]
+        LR = [37, 41, 34, 42]
+        LC = [[n + KEY for n in c] for c in LC]
+        LR = [n + KEY for n in LR]
+        LHOOK = [[(0, 80, 6), (6, 77, 2), (8, 75, 4), (12, 73, 4)],
+                 [(0, 72, 6), (6, 75, 2), (8, 77, 6), (14, 80, 2)],
+                 [(0, 82, 6), (6, 80, 2), (8, 77, 4), (12, 73, 4)],
+                 [(0, 77, 6), (6, 75, 2), (8, 73, 4), (12, 68, 4)]]
+        LOGO = [(0, 68, 3), (3, 73, 3), (6, 72, 3), (9, 73, 12)]
+        n_bars = int(np.ceil(DUR / BAR_)) + 1
+        bar0 = DROP - round(DROP / BAR_) * BAR_
+        for b in range(-1, n_bars):
+            t0 = bar0 + b * BAR_
+            if t0 + BAR_ <= 0 or t0 >= END_CARD:
+                continue
+            ci = b % 4
+            ch, root = LC[ci], LR[ci]
+            for st in range(16):
+                ts = t0 + st * S16
+                if ts < 0 or ts >= END_CARD:
+                    continue
+                sec = section(ts)
+                k_in = (ts - DROP) / BAR_
+                if sec == "intro":
+                    if ts >= DROP - 2 * BAR_:                    # the break, filtered, in the last two bars
+                        if st in (0, 10):
+                            put(drums, hp(kick_punch(0.3, 55, 0.12), 700), ts, 0.5)
+                        if st in (4, 12):
+                            put(drums, hp(snare_crack(), 900), ts, 0.4, rv=0.3)
+                        if st % 2 == 0:
+                            put(drums, hat2(), ts, 0.12, pan=0.25)
+                    if st in (0, 8):
+                        put(drums, shaker(), ts + S16 * 2, 0.18, pan=-0.35)
+                elif sec in ("drop", "drop2"):
+                    hard = sec == "drop2"
+                    kp = (0, 7, 10) if int(k_in) % 4 == 3 else (0, 10)
+                    if st in kp:
+                        put(drums, kick_punch(0.35, 55, 0.13, 2.4), ts, 0.95)
+                        duck(ts, 0.4, 0.09)
+                    if st in (4, 12):
+                        put(drums, snare_crack(0.3, 200, 0.12), ts, 0.62, rv=0.22)
+                    if st in (7, 9, 15) or (st == 14 and int(k_in) % 2):
+                        put(drums, lp(snare_crack(0.15, 210, 0.05), 5000), ts, 0.13, pan=0.15)
+                    put(drums, hat2(open_=(st == 14 and int(k_in) % 2 == 0)), ts, (0.16 if st % 2 == 0 else 0.07), pan=0.25 if st % 4 else -0.1)
+                    if hard and st % 4 == 0:
+                        put(drums, ride2(), ts, 0.4, pan=-0.3)
+                    if hard or k_in >= 2:
+                        put(drums, shaker(), ts, 0.3 if st % 2 else 0.18, pan=0.45)
+                    for s_, ln in ((0, 9.5), (10, 3.6), (14, 1.8)):
+                        if s_ == st and (s_ != 14 or hard):
+                            put(music, reese(note(root + (12 if s_ == 14 else 0)), ln * S16, 480 if hard else 380, 0.7), ts, 0.62)
+                    if st == 10:
+                        put(music, epiano([note(n + 12) for n in ch[:4]], 0.5, 1.1), ts, 0.34, rv=0.3)
+                    if hard:
+                        for s_, n_, ln in LHOOK[ci]:
+                            if s_ == st:
+                                put(music, pluck([note(n_)], ln * S16 + 0.2, 0.9), ts, 0.22, pan=0.1, rv=0.3, dl=0.35)
+                                put(music, bell(note(n_), 1.0), ts, 0.16, pan=-0.2, rv=0.4)
+                elif sec == "build":
+                    if st % 4 == 0:
+                        put(drums, lp(kick_punch(0.35, 55, 0.13), 900 + 6000 * ((ts - BUILD) / (END_CARD - BUILD)) ** 2), ts, 0.8)
+                    put(drums, hat2(), ts, 0.08, pan=0.25)
+            t0c = max(t0, 0)
+            d = min(BAR_, END_CARD - t0c)
+            if d <= 0:
+                continue
+            sec0 = section(t0c + 1e-3)
+            # rhodes on the one, pad underneath, vocal oohs in the intro
+            up = 0 if sec0 == "intro" else 12                 # in the drops the keys sit above the reese
+            put(music, epiano([note(n + up) for n in ch], d + 0.5, 1.0), t0c, 0.5 if up else 0.62, rv=0.35)
+            put(music, wide(lambda: pad([note(n) for n in ch[:4]], d + 0.3, 1800)), t0c, 0.16 if up else 0.28, rv=0.4)
+            if sec0 == "intro":
+                for k, n in enumerate(ch[1:4]):
+                    put(music, vox(note(n + 12), d + 0.2, "u", 0.0, 0.9), t0c + k * 0.03, 0.16, pan=-0.3 + 0.3 * k, rv=0.6)
+                if t0c < DROP - 2 * BAR_:
+                    for s_, n_, ln in LHOOK[ci][:2]:
+                        put(music, bell(note(n_), 1.6), t0c + s_ * S16, 0.18, pan=0.2, rv=0.5, dl=0.4)
+            if sec0 == "build":
+                put(music, sub(note(root), d), t0c, 0.4)
+        put(music, nriser(2 * BAR_), DROP - 2 * BAR_, 0.5)
+        roll(DROP - BAR_, DROP - S16, drums, 0.1, 0.5)
+        gap(DROP - S16, DROP - 0.004)
+        if BUILD:
+            put(music, nriser(END_CARD - BUILD), BUILD, 0.55)
+            roll(BUILD, END_CARD - S16, drums, 0.1, 0.6)
+            gap(END_CARD - S16, END_CARD - 0.004)
+        # end card: the chord rings, a sub drop, half-speed hats and ride under it; the INCPT sound logo
+        fin = [note(n + KEY) for n in (49, 56, 60, 63, 65, 68)]
+        put(music, epiano(fin, 4.5, 1.2), END_CARD, 0.75, rv=0.45)
+        put(music, wide(lambda: pad([note(n + KEY) for n in (37, 49, 56, 60, 63)], DUR - END_CARD, 2200)), END_CARD + 0.02, 0.55, rv=0.5)
+        put(music, subdrop(1.2, 120, 44), END_CARD, 0.6)
+        put(drums, kick_punch(0.5, 50, 0.25), END_CARD, 1.0)
+        put(drums, snare_crack(0.5, 180, 0.2), END_CARD, 0.4, rv=0.5)
+        st = 1
+        while END_CARD + st * S16 * 2 < DUR - 0.9:
+            ts = END_CARD + st * S16 * 2
+            put(outro, hat2(), ts, 0.14 if st % 2 == 0 else 0.07, pan=0.25)
+            if st % 8 == 0:
+                put(outro, kick_punch(0.35, 55, 0.13), ts, 0.7)
+            if st % 8 == 4:
+                put(outro, snare_crack(0.3, 200, 0.12), ts, 0.4, rv=0.3)
+            if st % 4 == 0:
+                put(outro, ride2(), ts, 0.3, pan=-0.3)
+            st += 1
+        for s_, n_, ln in LOGO:
+            at = END_CARD + 0.7 + s_ * S16
+            put(music, bell(note(n_ + KEY), 1.8), at, 0.34, rv=0.5, dl=0.4)
+            put(music, pluck([note(n_ + KEY)], ln * S16 + 0.3, 1.0), at, 0.22, rv=0.4)
+        L_ = len(outro) - int(END_CARD * SR)
+        for c in range(2):
+            seg = outro[int(END_CARD * SR):, c]
+            outro[int(END_CARD * SR):, c] = lp_sweep(seg, lambda s: 900 + 9000 * np.exp(-s / 1.8)) * np.exp(-np.arange(L_) / SR / 3.6)
+
+    # buses: reverb + dotted-8th ping-pong on the sends, sidechain on the tonal parts, the gaps, stutters
+    for c in range(2):
+        music[:, c] += signal.fftconvolve(revb[:, c], IR[:, c])[:N] * 0.9
+    dly = lp(dlyb.T, 4200).T
+    k_ = int(S16 * 3 * SR)
+    for i in range(1, 6):
+        if k_ * i >= N:
+            break
+        music[k_ * i:, i % 2] += dly[:N - k_ * i].sum(1) * 0.5 * 0.42 ** (i - 1)
+    music *= side[:, None] ** 0.9
+    music += drums + outro
+    music *= gate[:, None]
+    for ts in META.get("stutter", []):                        # beat-repeat into a cut: 8ths, 16ths, 32nds
+        i0 = int(ts * SR)
+        L8 = int(2 * S16 * SR)
+        src = music[i0:i0 + L8].copy()
+        pos, lens = i0, [1, 1, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25]   # one beat
+        for q, ln in enumerate(lens):
+            L = int(ln * S16 * SR)
+            seg = src[:L].copy()
+            f = min(96, L // 4)
+            seg[:f] *= np.linspace(0, 1, f)[:, None]
+            seg[-f:] *= np.linspace(1, 0, f)[:, None]
+            if pos + L > N:
+                break
+            music[pos:pos + L] = seg * (0.8 + 0.2 * q / len(lens))
+            pos += L
+    music = hp(music.T, 32, 4).T                               # nothing a phone can't play anyway
+    music += 0.45 * hp(music.T, 3000).T                        # presence: about +3 dB above 3 kHz
+    music /= np.abs(music).max() + 1e-9
+    music = limit(music * 1.7, 0.92)
+    # the drops hit harder than what leads into them
+    lvl = {"intro": 0.78, "build": 0.8, "drop": 0.95, "drop2": 1.0, "end": 0.95}
+    tt = np.arange(0, DUR, 0.01)
+    e = np.array([lvl[section(x)] for x in tt])
+    if BUILD and DROP2 and STYLE == "pulse":                   # the build itself climbs back up
+        m = (tt >= BUILD + BAR_) & (tt < DROP2)
+        e[m] = 0.8 + 0.15 * (tt[m] - BUILD - BAR_) / BAR_
+    e = np.convolve(e, np.ones(4) / 4, mode="same")
+    music *= np.interp(np.arange(N) / SR, tt, e)[:, None] * 0.9
+
 else:
     # ---------------- calm: warm electric piano in D major, soft drums, bell motif
     CH = [[62, 66, 69, 73], [59, 62, 66, 69], [55, 59, 62, 66], [57, 61, 64, 71]]   # Dmaj7 Bm7 Gmaj7 Aadd9
@@ -469,7 +945,9 @@ def pop(pitch=1.0):
 def impact(soft=False):
     d = 2.4
     t = t_(d)
-    boom = np.sin(2 * np.pi * np.cumsum(38 + 60 * np.exp(-t / 0.08)) / SR) * env_exp(d, 0.55 if not soft else 0.8, 0.002)
+    f0 = 52 if STYLE in ("pulse", "liquid") else 38           # the new beds: tuned up so phones can play it
+    ph = np.cumsum(f0 + 60 * np.exp(-t / 0.08)) / SR
+    boom = (np.sin(2 * np.pi * ph) + (0.35 * np.sin(4 * np.pi * ph) if f0 > 40 else 0)) * env_exp(d, 0.55 if not soft else 0.8, 0.002)
     noise = lp(rng.standard_normal(len(t)), 1800) * env_exp(d, 0.09, 0.001) * (0.6 if not soft else 0.25)
     return np.tanh((boom + noise) * 1.4) * 0.9
 
