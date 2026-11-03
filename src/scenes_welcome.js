@@ -68,7 +68,7 @@ scene({
   init() {
     LG.init();
     this.logo = mkImg('style/logo_chrome.png');
-    this.safe = mkImg('bank/icons/icon_safe.png');
+    this.safe = mkImg('promo/build/pr_safe.png');            // the safe from the app's own staking screen (not a generated one)
     LG.IMG = { logo: this.logo, safe: this.safe };
   },
   update(t) {
@@ -305,8 +305,8 @@ scene({
     const C = POSE.sphere;
     LG.T.push({
       img: LG.IMG.safe, x: C.x + Math.sin(fl * 0.9) * 5, y: C.y + 18 + (1 - pin) * 60 - Math.sin(fl * 1.2) * 8 + pout * 40,
-      h: lerp(260, 370, pin) * (1 - 0.3 * pout), rot: lerp(12, 0, pin) + Math.sin(fl * 0.8) * 2.5,
-      o: clamp(pin * 2.5) * (1 - pout), lod: (1 - pin) * 3 + pout * 2, shadow: 0.5,
+      h: lerp(380, 560, pin) * (1 - 0.3 * pout), rot: lerp(8, 0, pin) + Math.sin(fl * 0.8) * 1.5,
+      o: clamp(pin * 2.5) * (1 - pout), lod: (1 - pin) * 3 + pout * 2, shadow: 0.25, front: true,   // on the glass, never bent by it
     });
     if (t > T5 + 0.3) LG.G.sheen = lerp(-500, 2400, prog(t, T5 + 0.6, T5 + 2.2));
   },
