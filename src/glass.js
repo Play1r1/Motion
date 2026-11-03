@@ -277,10 +277,13 @@ function glassFilter(w, h, r, bevel = 40, scale = 70) {
   cx.putImageData(im, 0, 0);
   const id = 'lgf' + LG_N++;
   const url = cv.toDataURL('image/png');
-  const ch = (c, s) => `<feDisplacementMap in="SourceGraphic" in2="m" scale="${s}" xChannelSelector="R" yChannelSelector="G" result="d${c}"/>
+  // past the edge of the frame the backdrop is empty: fill it with pearl so the bent rim never pulls in
+  // transparent pixels (they would split into a coloured line where the glass meets the frame edge)
+  const ch = (c, s) => `<feDisplacementMap in="src" in2="m" scale="${s}" xChannelSelector="R" yChannelSelector="G" result="d${c}"/>
     <feColorMatrix in="d${c}" type="matrix" values="${c === 'r' ? '1 0 0 0 0' : '0 0 0 0 0'} ${c === 'g' ? '0 1 0 0 0' : '0 0 0 0 0'} ${c === 'b' ? '0 0 1 0 0' : '0 0 0 0 0'} 0 0 0 1 0" result="c${c}"/>`;
   LG_SVG.insertAdjacentHTML('beforeend', `<filter id="${id}" x="0" y="0" width="${w}" height="${h}" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
     <feImage href="${url}" x="0" y="0" width="${w}" height="${h}" result="m" preserveAspectRatio="none"/>
+    <feFlood flood-color="#efefec" result="pearl"/><feMerge result="src"><feMergeNode in="pearl"/><feMergeNode in="SourceGraphic"/></feMerge>
     ${ch('r', scale * 0.94)}${ch('g', scale)}${ch('b', scale * 1.1)}
     <feBlend in="cr" in2="cg" mode="screen" result="rg"/><feBlend in="rg" in2="cb" mode="screen"/></filter>`);
   return id;
