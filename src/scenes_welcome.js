@@ -84,7 +84,7 @@ scene({
 });
 
 // ======================================================================= 1. INTRO (0 – 5.3)
-// four drops drift in and melt into a lens; the logo surfaces inside it; «Добро пожаловать в INCPT»
+// four drops drift in and melt into a lens; the logo lands on it (never under the glass); «Добро пожаловать в INCPT»
 scene({
   init() {
     this.hello = new WText('Добро пожаловать в', { y: 1262, size: 50, cls: 'wl-s' });
@@ -146,7 +146,7 @@ scene({
       LG.T.push({
         img: LG.IMG.logo, x: C.x + Math.sin(fl * 0.8) * 4, y: C.y + 10 - fl * 3 + (1 - pin) * 40 + pout * 60,
         h: lerp(470, 610, pin) * (1 - 0.25 * pout), rot: lerp(-10, 0, pin) + Math.sin(fl * 0.9) * 1.2,
-        o: clamp(pin * 2) * (1 - pout), lod: (1 - pin) * 4 + pout * 3, shadow: 0.55,
+        o: clamp(pin * 2) * (1 - pout), lod: (1 - pin) * 4 + pout * 3, shadow: 0.55, front: true,   // on the lens, never bent by it
       });
     }
   },

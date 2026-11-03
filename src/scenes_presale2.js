@@ -81,7 +81,7 @@ scene({
       LG.T.push({
         img: LG.IMG.logo, x: LENS.x + Math.sin(fl * 0.8) * 4, y: LENS.y + 10 - fl * 3 + (1 - pin) * 40 + pout * 60,
         h: lerp(470, 610, pin) * (1 - 0.25 * pout), rot: lerp(-10, 0, pin) + Math.sin(fl * 0.9) * 1.2,
-        o: clamp(pin * 2) * (1 - pout), lod: (1 - pin) * 4 + pout * 3, shadow: 0.55,
+        o: clamp(pin * 2) * (1 - pout), lod: (1 - pin) * 4 + pout * 3, shadow: 0.55, front: true,   // on the lens, never bent by it
       });
     }
   },

@@ -119,7 +119,7 @@ function glassWipe(t0, dur = 0.55, dir = 1, { w = 560, tilt = 12, sfx = true } =
 }
 
 // ------------------------------------------------------------------ end card
-// The chrome mark in a glass lens, a Geologica title, a tagline, a glass pill and an optional fine
+// The chrome mark resting on a glass lens (drawn in front of it, never refracted), a Geologica title, a tagline, a glass pill and an optional fine
 // print. T0: the lens starts to grow (from `from` of its size); everything else is timed from it.
 function chromeEnd(T0, { title = 'INCPT', tag, pill, pillW = 560, risk = null, from = 0.4, lens = { x: 540, y: 780, d: 760 }, titleSize = 236, y = { title: 1236, tag: 1498, pill: 1690, risk: 1800 } } = {}) {
   scene({
@@ -163,7 +163,7 @@ function chromeEnd(T0, { title = 'INCPT', tag, pill, pillW = 560, risk = null, f
       const lh = lens.d * 0.776;
       LG.T.push({
         img: this.logo, x: lens.x + Math.sin(fl * 0.8) * 4, y: lens.y + 10 - fl * 3 + (1 - pin) * 50,
-        h: lerp(lh * 0.71, lh, pin), rot: lerp(-12, 0, pin) + Math.sin(fl * 0.9) * 1.2, o: clamp(pin * 2), lod: (1 - pin) * 4, shadow: 0.55,
+        h: lerp(lh * 0.71, lh, pin), rot: lerp(-12, 0, pin) + Math.sin(fl * 0.9) * 1.2, o: clamp(pin * 2), lod: (1 - pin) * 4, shadow: 0.55, front: true,   // on the lens, never bent by it
       });
     },
   });
@@ -247,3 +247,161 @@ function liquidIntro(t, L = { x: 540, y: 800, d: 790 }, t0 = 0) {
   Object.assign(LG.G, GLASS.lens);
   LG.G.sheen = lerp(-600, 2600, prog(t, 3.0, 4.6));
 }
+
+// ================================================================== INCPT MOTION SIGNATURE
+// The mark is a ribbed chrome boomerang, so the motion language comes from it:
+//   - boomerang arcs: things fly in on a curve, spinning, are caught with a little wobble, and fly back out;
+//   - the rib shutter: diagonal chrome ribs at the logo's −28° fan across the frame and hide every cut;
+//   - kinetic type: letters slam in, numbers count up, glints flash on chrome.
+// The logo itself is never put under glass or bent.
+
+// a point on a boomerang arc from A to Bp: a quadratic curve bowed sideways by `bend`, spinning down to rest
+function arcAt(t, t0, dur, A, Bp, { bend = 0.35, spin = 540, ease = Ease.outCubic, catchAmp = 7 } = {}) {
+  const raw = prog(t, t0, t0 + dur), p = ease(raw);
+  const dx = Bp.x - A.x, dy = Bp.y - A.y;
+  const cx = (A.x + Bp.x) / 2 - dy * bend, cy = (A.y + Bp.y) / 2 + dx * bend;
+  const u = 1 - p;
+  const x = u * u * A.x + 2 * u * p * cx + p * p * Bp.x, y = u * u * A.y + 2 * u * p * cy + p * p * Bp.y;
+  const tl = t - (t0 + dur);
+  const wob = tl > 0 ? Math.exp(-tl * 4.2) * Math.sin(tl * 13) : 0;    // the catch
+  return { x, y, rot: (1 - p) * spin + wob * catchAmp, s: (A.s ?? 1) + ((Bp.s ?? 1) - (A.s ?? 1)) * p, squash: wob * 0.035, p: raw };
+}
+// fly a DOM element (w x h) along arcs: in at t0, out at t1 (null = stays); opts.in / opts.out: {from, to, ...}
+function flyEl(el, w, h, t, legs) {
+  let q = null, cur = null;
+  for (const L of legs) if (t >= L.t0 - 1e-6) { q = arcAt(t, L.t0, L.dur, L.from, L.to, L); cur = L; }
+  const vis = q && !(cur.exit && q.p >= 1);
+  el.style.display = vis ? '' : 'none';
+  if (!vis) return null;
+  el.style.left = (q.x - w / 2).toFixed(2) + 'px';
+  el.style.top = (q.y - h / 2).toFixed(2) + 'px';
+  el.style.transform = `rotate(${q.rot.toFixed(3)}deg) scale(${(q.s * (1 + q.squash)).toFixed(4)}, ${(q.s * (1 - q.squash)).toFixed(4)})`;
+  el.style.transformOrigin = '50% 50%';
+  return q;
+}
+
+// the rib shutter: chrome ribs fan in, cover the frame exactly at each time in `times`, fan out
+class RibShutter {
+  constructor(times, { n = 34, step = 118 } = {}) {
+    this.times = times; this.n = n;
+    this.el = document.createElement('div');
+    Object.assign(this.el.style, { position: 'absolute', left: (W / 2 - 1800) + 'px', top: (H / 2 - 1800) + 'px', width: '3600px', height: '3600px',
+      transform: 'rotate(-28deg)', zIndex: '30', pointerEvents: 'none', overflow: 'hidden' });
+    this.bars = [];
+    const y0 = 1800 - (n * step) / 2;
+    for (let i = 0; i < n; i++) {
+      const b = document.createElement('div');
+      b.className = 'rib';
+      Object.assign(b.style, { position: 'absolute', left: '0px', top: (y0 + i * step) + 'px', width: '3600px', height: (step + 6) + 'px' });
+      b.style.backgroundPosition = `0 0, ${(i * 173) % 1100}px 0, 0 0`;
+      this.el.appendChild(b);
+      this.bars.push(b);
+    }
+    $('#text').appendChild(this.el);
+    for (const tc of times) if (tc > 0.3) { cue(tc - 0.3, 'whoosh', { dur: 0.5, gain: 0.65, up: true }); cue(tc - 0.02, 'crash', { gain: 0.45 }); }
+  }
+  at(t) {
+    const tc = this.times.find(c => t > c - 0.42 && t < c + 0.46);
+    this.el.style.display = tc === undefined ? 'none' : '';
+    if (tc === undefined) return;
+    this.bars.forEach((b, i) => {
+      const s = ((i * 7) % this.n) / this.n * 0.12;            // a fan: neighbours a little apart
+      const dir = i % 2 ? 1 : -1;
+      const pin = Ease.inOutCubic(prog(t, tc - 0.38 + s, tc - 0.14 + s));
+      const pout = Ease.inOutCubic(prog(t, tc + 0.04 + s, tc + 0.3 + s));
+      const x = dir * (1 - pin) * 3700 + -dir * pout * 3700;
+      b.style.transform = `translateX(${x.toFixed(1)}px)`;
+    });
+  }
+}
+
+// kinetic type: letters slam in (big and blurred -> sharp), leave upward; "~word" in the iridescence
+class KText {
+  constructor(text, { y, size, cls = 'wl-h', lh = 0.9, track = -0.045, fit = 0, color = null }) {
+    this.el = document.createElement('div');
+    this.el.className = 'wl ' + cls;
+    Object.assign(this.el.style, { left: '0px', top: y + 'px', width: W + 'px', textAlign: 'center', fontSize: size + 'px', lineHeight: lh, letterSpacing: track + 'em' });
+    if (color) this.el.style.color = color;
+    this.size = size; this.fit = fit;
+    this.chars = [];
+    this.lines = text.split('\n').map(line => {
+      const ld = document.createElement('div');
+      line.split(' ').forEach((wd, wi, arr) => {
+        const irid = wd.startsWith('~');
+        const ws = document.createElement('span');
+        ws.style.display = 'inline-block';
+        ws.style.whiteSpace = 'nowrap';
+        if (wi < arr.length - 1) ws.style.marginRight = '0.24em';
+        for (const ch of wd.replace(/^~/, '').replace(/_/g, ' ')) {
+          const c = document.createElement('span');
+          c.className = 'c' + (irid ? ' wl-irid' : '');
+          c.style.display = 'inline-block';
+          c.textContent = ch;
+          ws.appendChild(c);
+          this.chars.push(c);
+        }
+        ld.appendChild(ws);
+      });
+      this.el.appendChild(ld);
+      return ld;
+    });
+    $('#text').appendChild(this.el);
+  }
+  prep() {
+    this.ready = true;
+    this.el.style.display = '';
+    if (this.fit) {
+      const wmax = Math.max(...this.lines.map(ld => ld.scrollWidth));
+      if (wmax > this.fit) { this.size *= this.fit / wmax; this.el.style.fontSize = this.size + 'px'; }
+    }
+    for (const ld of this.lines) {
+      const cs = [...ld.querySelectorAll('.wl-irid')];
+      if (!cs.length) continue;
+      const r0 = ld.getBoundingClientRect().left;
+      const xs = cs.map(c => c.getBoundingClientRect().left - r0), x0 = Math.min(...xs), x1 = Math.max(...cs.map((c, i) => xs[i] + c.offsetWidth));
+      cs.forEach((c, i) => { c.style.backgroundSize = (x1 - x0) + 'px 100%'; c.style.backgroundPosition = (x0 - xs[i]) + 'px 0'; });
+    }
+  }
+  at(t, tin, tout = null, { stagger = 0.028, dur = 0.42, from = 1.9, blur = 20, outDur = 0.22 } = {}) {
+    if (!this.ready) this.prep();
+    let any = false;
+    const n = this.chars.length;
+    this.chars.forEach((c, i) => {
+      const ti = tin + i * stagger, pi = prog(t, ti, ti + dur), e = Ease.outExpo(pi);
+      let s = lerp(from, 1, e), y = (1 - e) * -0.06, o = clamp(pi * 4), b = (1 - e) * blur, r = (1 - e) * (i % 2 ? 6 : -6);
+      if (tout !== null) {
+        const po = Ease.inCubic(prog(t, tout + (n - 1 - i) * 0.008, tout + (n - 1 - i) * 0.008 + outDur));
+        y -= po * 0.5; o *= 1 - po; b += po * 16; s *= 1 + po * 0.2;
+      }
+      if (o > 0.002) any = true;
+      c.style.transform = `translateY(${y.toFixed(4)}em) scale(${s.toFixed(4)}) rotate(${r.toFixed(2)}deg)`;
+      c.style.opacity = o.toFixed(3);
+      c.style.filter = b > 0.1 ? `blur(${b.toFixed(2)}px)` : '';
+    });
+    this.el.style.display = any ? '' : 'none';
+  }
+}
+
+// four-point chrome glints that flash on edges: list of [x, y, t, size]
+class Glints {
+  constructor(list) {
+    this.list = list.map(([x, y, t0, s = 90]) => {
+      const el = document.createElement('div');
+      Object.assign(el.style, { position: 'absolute', left: (x - s / 2) + 'px', top: (y - s / 2) + 'px', width: s + 'px', height: s + 'px', zIndex: '12', pointerEvents: 'none' });
+      el.innerHTML = `<svg viewBox="-50 -50 100 100" width="${s}" height="${s}"><defs><radialGradient id="gl${x}_${y}"><stop offset="0" stop-color="#fff"/><stop offset="0.35" stop-color="#f4ffd0" stop-opacity="0.9"/><stop offset="1" stop-color="#9b86ff" stop-opacity="0"/></radialGradient></defs><circle r="26" fill="url(#gl${x}_${y})" opacity="0.6"/><path d="M0 -50 C3 -8 8 -3 50 0 C8 3 3 8 0 50 C-3 8 -8 3 -50 0 C-8 -3 -3 -8 0 -50 Z" fill="#fff"/></svg>`;
+      $('#text').appendChild(el);
+      cue(t0, 'tick', { gain: 0.25 });
+      return { el, t0 };
+    });
+  }
+  at(t) {
+    for (const g of this.list) {
+      const p = prog(t, g.t0, g.t0 + 0.55);
+      const on = p > 0 && p < 1;
+      g.el.style.display = on ? '' : 'none';
+      if (on) g.el.style.transform = `scale(${Math.sin(Math.PI * p).toFixed(3)}) rotate(${(p * 90).toFixed(1)}deg)`;
+    }
+  }
+}
+// a number that counts up: el.textContent = fmt(value)
+const countTo = (el, t, t0, dur, to, fmt) => { el.textContent = fmt(to * Ease.outCubic(prog(t, t0, t0 + dur))); };

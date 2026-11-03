@@ -100,8 +100,21 @@ LG.reset();
     vec3 col = field(p, lod);
     for (int i = 0; i < 3; i++) {
       if (i >= uTn) break;
+      if (uTo[i].w > 0.5) continue;                 // in front of the glass: drawn after it
       float sh;
       vec4 c = i == 0 ? quad(uTex0, 0, p, lod, sh) : i == 1 ? quad(uTex1, 1, p, lod, sh) : quad(uTex2, 2, p, lod, sh);
+      float o = uTo[i].x;
+      col *= 1.0 - sh * 0.26 * o;
+      col = col * (1.0 - c.a * o) + c.rgb * o;
+    }
+    return col;
+  }
+  vec3 front(vec3 col, vec2 p) {
+    for (int i = 0; i < 3; i++) {
+      if (i >= uTn) break;
+      if (uTo[i].w < 0.5) continue;
+      float sh;
+      vec4 c = i == 0 ? quad(uTex0, 0, p, 0.0, sh) : i == 1 ? quad(uTex1, 1, p, 0.0, sh) : quad(uTex2, 2, p, 0.0, sh);
       float o = uTo[i].x;
       col *= 1.0 - sh * 0.26 * o;
       col = col * (1.0 - c.a * o) + c.rgb * o;
@@ -165,6 +178,7 @@ LG.reset();
         col = mix(col, rc, a);
       }
     }
+    col = front(col, p);
     outC = vec4(clamp(col, 0.0, 1.0), 1.0);
   }`;
 
@@ -224,7 +238,7 @@ LG.reset();
       tq.set([q.x, q.y, q.h * ar, q.h], i * 4);
       const a = (q.rot || 0) * Math.PI / 180;
       tr.set([Math.cos(a), Math.sin(a)], i * 2);
-      to.set([q.o, q.lod || 0, q.shadow ?? 0.6, 0], i * 4);
+      to.set([q.o, q.lod || 0, q.shadow ?? 0.6, q.front ? 1 : 0], i * 4);
     });
     for (let i = 0; i < 3; i++) {
       gl.activeTexture(gl.TEXTURE0 + i);

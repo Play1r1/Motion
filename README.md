@@ -235,9 +235,16 @@ The boss picked direction А · ХРОМ from the style frames. Every new film i
 | Field | Pearl off-white; two soft iridescent bands at −28° (lime #c6f53e → teal #4fd1bd → violet #7357ff, the colours of the logo) seen through 30 px vertical flutes. Drawn by `LG` in `src/glass.js`. |
 | Glass | Liquid glass, like the app's own tab bar: clear lenses (rim refraction, chromatic edges, a thin specular line), frosted slabs under UI, shapes that melt into each other and pinch apart. |
 | Type | Geologica 800, uppercase, tight tracking (−0.045 em) for headlines; Geologica 500 grey for sublines. Accent words in the logo's iridescence, one gradient across the line. |
-| Mark | The official chrome render (`assets/style/logo_chrome.png`), never redrawn; on end cards it floats in a glass lens. |
-| Kit | `src/chrome.js`: `WText`, glass `chip`, `LiquidBody` (one glass body flowing through states that split, merge and jiggle), `liquidIntro` (drops melting into a lens), `chromeEnd` (lens + logo + title + tagline + glass pill + fine print), `glassWipe`. |
-| Pacing | Calm and premium: one idea per scene, big numbers, the glass carries every transition. No whip pans, no UI pieces flying around (the reskinned presale cut with them was rejected). |
+| Mark | The official chrome render (`assets/style/logo_chrome.png`), never redrawn, **never under glass**: no lens, slab or chip may refract or bend it. Where a lens sits behind it, the logo is drawn in front (`front: true` on the `LG` texture); otherwise it is a plain DOM image with a soft drop shadow. |
+| Kit | `src/chrome.js`: `WText`, glass `chip`, `LiquidBody` (one glass body flowing through states that split, merge and jiggle), `liquidIntro` (drops melting into a lens), `chromeEnd` (lens + logo on it + title + tagline + glass pill + fine print), `glassWipe`. |
+| Motion signature | The INCPT look in motion, also in `src/chrome.js`. The logo is a boomerang, so the motion is built on that:
+- **arcs:** things fly in on boomerang arcs, spin, are caught with a small wobble and are thrown out again (`arcAt`, `flyEl`);
+- **rib shutter:** chrome ribs at the logo's −28°, shaded like its tubes and tinted in its iridescence, fan across the frame and hide every big cut (`RibShutter`);
+- **letter slams:** headlines slam in letter by letter, from big and blurred to sharp (`KText`);
+- **numbers:** every number counts up to its value (`countTo`);
+- **glints:** four-point glints flash on the chrome (`Glints`);
+- **beat:** the frame pulses on the kick. |
+| Pacing | Premium but never static: one idea per scene and a change of motion on every beat or two, so the eye always has something new. Calm films (welcome) let the glass carry the cuts; promo films use the motion signature. |
 
 ## Welcome reel in liquid glass (RU, 9:16)
 
@@ -249,13 +256,13 @@ One glass body flows through the whole film and changes shape for every idea:
 
 | Time | On screen | The glass |
 |---|---|---|
-| 0.0 | «Добро пожаловать в INCPT · Криптокошелёк и карты в Telegram» | five drops drift in and melt into a lens; the logo surfaces inside it; two droplets pinch off |
+| 0.0 | «Добро пожаловать в INCPT · Криптокошелёк и карты в Telegram» | five drops drift in and melt into a lens; the logo lands on it, sharp and unbent; two droplets pinch off |
 | 5.3 | «КРИПТА И КАРТЫ В ОДНОМ МЕСТЕ» | the lens flows into a frosted slab; the phone rises onto it; Получить / Отправить / Обменять float off in glass chips |
 | 9.3 | «14 МОНЕТ. ОДИН КОШЕЛЁК.» | a frosted column; the 14 coin rows of the wallet roll through it like a wheel |
 | 12.7 | «КАРТА INCPT · Виртуальная и металлическая» | a glass case under the holographic card; a glass capsule sweeps over it and bends the foil |
 | 16.0 | «LIQUID VAULT · USDT · 20–40 % годовых в стейкинге» | a sphere with the vault inside |
 | 19.3 | «И ЭТО ТОЛЬКО НАЧАЛО»: eSIM, Бизнес-лаунж, Фаст-лайн, Real-World Assets — «скоро» | the sphere splits into four tiles (they stay joined, then pinch apart) |
-| 22.0 | INCPT · Криптокошелёк и карты в Telegram · «Открыть в Telegram» | the tiles run back together into the lens around the logo |
+| 22.0 | INCPT · Криптокошелёк и карты в Telegram · «Открыть в Telegram» | the tiles run back together into the lens; the logo rests on it |
 
 How the glass is made (`src/glass.js`):
 - **WebGL pass (`LG`).** One full-screen shader per frame draws three things:
@@ -272,10 +279,33 @@ python3 tools/sound.py out/welcome
 bash tools/finalize.sh renders/welcome/incpt_welcome.mp4 out/welcome
 ```
 
+## Token presale reel with the motion signature (RU, 9:16)
+
+`renders/presale3/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 27 s, 120 BPM `drive` track (key +2).
+The presale cut in ХРОМ, rebuilt on the motion signature. The logo is never under glass: it flies in as a boomerang
+and is caught. Scene code: `src/scenes_presale3.js`.
+
+| Time | On screen | Motion |
+|---|---|---|
+| 0.0 | Пресейл токена · INCPT · Основной токен экосистемы INCEPTION | the logo flies in on a boomerang arc and is caught; letters slam in; glints |
+| 4.0 | INCEPTION Coin уже в INCPT Wallet · $0.50 +1.00% · TRC-20 · TRON · Купить на пресейле | rib shutter; the phone swings in on an arc; three glass chips are thrown in one per beat |
+| 8.0 | Стоимость — от оценки компании: $50M ÷ 100M INCPT = $0.50 | the glass slab splits into three rows; the numbers count up; ÷ and = spin in |
+| 12.0 | Цена пресейла 0.40 USDT · Покупка от $50,000 | the rows melt into one ticket; the price counts 0.00 → 0.40 and lands with a punch |
+| 16.0 | Переводы бесплатно · TRC-20 · TRON · Обмен откроется после листинга | rib shutter; two tiles flip in |
+| 19.5 | Купить на пресейле | the tiles melt into a glass button; a tap on the star |
+| 21.5 | INCEPTION COIN · presale.incpt.fi · Не является инвестиционной рекомендацией | rib shutter; the logo boomerangs back and is caught; glass pill |
+
+```bash
+node tools/render.mjs video --workers 4 --reel presale3
+python3 tools/sound.py out/presale3
+MAXRATE=12 bash tools/finalize.sh renders/presale3/incpt_presale.mp4 out/presale3
+```
+
 ## Token presale reel in ХРОМ (RU, 9:16)
 
 `renders/presale2/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 27 s, 96 BPM `calm` track.
 Rebuilt from scratch in the welcome reel's language (a first pass that only reskinned the old cut was rejected and removed).
+Superseded by the motion-signature cut above (`renders/presale3/`); in this render the logo still sits inside the lens and is bent by it, which the boss rejected (the source is fixed, the render is kept for reference).
 One liquid-glass body (`LiquidBody` in `src/chrome.js`) flows through the film:
 
 | Time | On screen | The glass |
