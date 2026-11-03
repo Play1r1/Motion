@@ -83,6 +83,26 @@ Kling 3.0 in 4K failed on Higgsfield's side for every job (refunded), so the cli
 | 118 | background loop: lime/violet liquid chrome | 10 | `5e9c1702-f338-480e-9479-5063b4464906` | `203504_5e9c1702….mp4` |
 | 113 | chrome coins tumble onto a stack | 5 | `02dab5a5-63ce-4e92-92f5-b68d951c2472` | `203504_02dab5a5….mp4` — the lime drifts to orange after ~1.5 s: grade it back or use the start |
 
+## Icon clips — Kling 4.0, 1080×1920, 5 s seamless loops on the pearl-white studio
+
+Each icon floats, sways and does its own small action, then returns to the first frame. Sheet:
+`renders/bank/clips_icons.jpg`. Files are `hf_20261103_<time>_<job id>.mp4`.
+
+| # | icon / action | job id | time |
+|---|---|---|---|
+| 201 | safe — dial turns | `e508466c-a87b-42ab-98bc-26f85dd157be` | `035051` |
+| 202 | shield — glint across the tick | `4af6e71a-9858-49e2-8009-fde8a4d21795` | `035051` |
+| 203 | card holder — cards slide up | `481d73d7-75a0-49ff-9b35-3514459228fd` | `035051` |
+| 204 | eSIM — signal arcs pulse | `90156d55-aace-4f19-981c-d3a5027597ca` | `035051` |
+| 205 | lounge — plane circles the chair | `49c5941a-6c09-4fc5-85eb-adda4e736a0e` | `035051` |
+| 206 | fast track — the arrow flips left mid-clip: use 307 | `e5065a5a-c2f6-49a6-8d84-48b5cc0da148` | `035051` |
+| 207 | RWA — top gold bar lifts | `8f042ca5-8e7b-4aca-8665-7fcb8280e0a4` | `035051` |
+| 208 | referral — lid pops, coins bounce | `4400199a-9398-47f5-b936-05637999f2a6` | `035051` |
+| 209 | IBAN — glint over the columns | `9a9bdb24-0fde-443a-b3aa-6b7e158d78cd` | `035051` |
+| 210 | AML — magnifier scans | `db8f5514-b474-416c-81ac-946d7d9906ec` | `035051` |
+| 211 | analytics — bars rise | `9a1c0937-a0ad-453d-a3ee-e324d9aa8143` | `035052` |
+| 212 | logo turns 360°, violet #7357ff (10 s) | `8f743712-be5f-4973-a489-7949122bba4b` | `035052` |
+
 ## 3D models — Tripo H3.1, detailed geometry + PBR texture (GLB)
 
 Front faces are textured from the icon; backs are dark and untextured, so turn them about ±45° at
