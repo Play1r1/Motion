@@ -129,8 +129,22 @@ The frame is fully covered mid-clip, so a cut there hides the scene change. Shee
 | 304 | fluted glass panel slides across, white | `962a4d3b-c986-4d3a-b511-f3ed79ed110d` | `041048` | subtle |
 | 305 | light line opens into a lime/violet flash, black | `c69c471a-d46c-4800-a4f6-0b584d9a79a2` | `041047` | clean |
 | 306 | chrome coins rain through the frame, white | `54668470-7f34-4e9b-946b-2a28ec9c7090` | `041047` | coins are flat grey discs |
-| 313 | coins tumble onto the stack (redo of 113) | `ad3b39fb-952b-4870-92d8-2f9cfd1739e8` | `041047` | check the background colour |
+| 313 | coins tumble onto the stack (redo of 113) | `ad3b39fb-952b-4870-92d8-2f9cfd1739e8` | `041047` | background stays lime — use this one |
 | 307 | fast-track icon (redo of 206) | `80cc123c-426b-499b-94d7-0d4787d7387b` | `041047` | still turns edge-on — animate `icons/icon_fastline.png` in the engine instead |
+
+## Lifestyle clips — Kling 4.0, 1080×1920, 5 s
+
+The lifestyle stills (401–406) brought to life. Sheets: `renders/bank/clips_lifestyle.jpg` (502–506 and
+the coin redo), `clip_lounge.jpg` (501). Files are `hf_20261103_041255_<job id>.mp4`.
+
+| # | what | job id |
+|---|---|---|
+| 501 | traveller in the lounge looks at the app, smiles | `18766a65-88ba-4671-a8b2-3d9ffefca052` |
+| 502 | card tilts beside the phone, rainbow glint | `25244450-df36-4da0-9100-431bbf47d366` |
+| 503 | walk down the fast-track lane past the queue | `4a097a43-1b3f-4674-9bbe-4a9374e74391` |
+| 504 | signal bars light up at the plane window | `81aea327-778d-4f31-b7f2-bc156da16690` |
+| 505 | marble still life, leaf shadows, card glint | `65428f62-ffd2-4c1d-a780-b1979b4a5710` |
+| 506 | phone pays at the boutique terminal, ring pulse | `d58aa1f5-3e20-4791-8183-6b348117eda0` |
 
 ## 3D models — Tripo H3.1, detailed geometry + PBR texture (GLB)
 
