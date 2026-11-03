@@ -226,6 +226,39 @@ node tools/style_frames.mjs         # src/style/frames.html -> out/style/A1..C3.
 node tools/style_board.mjs          # -> renders/style/board.jpg
 ```
 
+## Welcome reel in liquid glass (RU, 9:16)
+
+`renders/welcome/incpt_welcome.mp4` (+ `_preview.mp4`, `cover_welcome.jpg`, `captions.md`), 1080×1920, 27 s, 90 BPM `calm` track.
+The first film in the new brand: direction А (pearl, ribbed glass, the chrome mark, Geologica) in Apple's liquid-glass
+language, which the app's own tab bar and buttons already use. No Higgsfield credits: everything is drawn by the engine.
+
+One glass body flows through the whole film and changes shape for every idea:
+
+| Time | On screen | The glass |
+|---|---|---|
+| 0.0 | «Добро пожаловать в INCPT · Криптокошелёк и карты в Telegram» | five drops drift in and melt into a lens; the logo surfaces inside it; two droplets pinch off |
+| 5.3 | «КРИПТА И КАРТЫ В ОДНОМ МЕСТЕ» | the lens flows into a frosted slab; the phone rises onto it; Получить / Отправить / Обменять float off in glass chips |
+| 9.3 | «14 МОНЕТ. ОДИН КОШЕЛЁК.» | a frosted column; the 14 coin rows of the wallet roll through it like a wheel |
+| 12.7 | «КАРТА INCPT · Виртуальная и металлическая» | a glass case under the holographic card; a glass capsule sweeps over it and bends the foil |
+| 16.0 | «LIQUID VAULT · USDT · 20–40 % годовых в стейкинге» | a sphere with the vault inside |
+| 19.3 | «И ЭТО ТОЛЬКО НАЧАЛО»: eSIM, Бизнес-лаунж, Фаст-лайн, Real-World Assets — «скоро» | the sphere splits into four tiles (they stay joined, then pinch apart) |
+| 22.0 | INCPT · Криптокошелёк и карты в Telegram · «Открыть в Telegram» | the tiles run back together into the lens around the logo |
+
+How the glass is made (`src/glass.js`):
+- **WebGL pass (`LG`).** One full-screen shader per frame draws three things:
+  - the pearl field: two iridescent bands at −28° seen through 30 px flutes;
+  - textured quads with contact shadows (the logo, the safe);
+  - up to ten rounded rects joined by a smooth union, so the glass melts and splits like liquid.
+  - The glass bends the field at its rim (the profile of a lens edge), splits the bend per colour channel, and adds a thin specular line, a soft drop shadow and a slow sheen.
+- **CSS pass (`glassEl`).** Glass over DOM content (the chips over the phone, the capsule over the card) is a backdrop filter: a displacement map built for the element's exact size, split per colour channel, plus a light blur and a gradient rim.
+
+```bash
+node tools/render.mjs sheet 0:27:0.5 --reel welcome          # contact sheet -> out/welcome/
+node tools/render.mjs video --workers 4 --reel welcome        # -> out/welcome/seg/
+python3 tools/sound.py out/welcome
+bash tools/finalize.sh renders/welcome/incpt_welcome.mp4 out/welcome
+```
+
 ## Token presale reel (RU, 9:16)
 
 `renders/presale/incpt_presale.mp4` (+ `_preview.mp4`), 1080×1920, 27 s, with a cover and a ready post text (`captions.md`).
