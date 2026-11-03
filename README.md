@@ -226,6 +226,18 @@ node tools/style_frames.mjs         # src/style/frames.html -> out/style/A1..C3.
 node tools/style_board.mjs          # -> renders/style/board.jpg
 ```
 
+## The brand look: ХРОМ (chosen 2026-11-03)
+
+The boss picked direction А · ХРОМ from the style frames. Every new film is made in it:
+
+| | Rule |
+|---|---|
+| Field | Pearl off-white; two soft iridescent bands at −28° (lime #c6f53e → teal #4fd1bd → violet #7357ff, the colours of the logo) seen through 30 px vertical flutes. Drawn by `LG` in `src/glass.js`. |
+| Glass | Liquid glass, like the app's own tab bar: clear lenses (rim refraction, chromatic edges, a thin specular line), frosted slabs under UI, shapes that melt into each other and pinch apart. |
+| Type | Geologica 800, uppercase, tight tracking (−0.045 em) for headlines; Geologica 500 grey for sublines. Accent words in the logo's iridescence, one gradient across the line. |
+| Mark | The official chrome render (`assets/style/logo_chrome.png`), never redrawn; on end cards it floats in a glass lens. |
+| Kit | `src/chrome.js`: `WText`, glass `chip`, `glassWipe` (a glass capsule that sweeps through a whip), `chromeEnd` (lens + logo + title + tagline + glass pill + fine print). Older reels switch with the `CHROME` flag (`body.chrome` restyles `Headline` and `Tap`). |
+
 ## Welcome reel in liquid glass (RU, 9:16)
 
 `renders/welcome/incpt_welcome.mp4` (+ `_preview.mp4`, `cover_welcome.jpg`, `captions.md`), 1080×1920, 27 s, 90 BPM `calm` track.
@@ -257,6 +269,21 @@ node tools/render.mjs sheet 0:27:0.5 --reel welcome          # contact sheet -> 
 node tools/render.mjs video --workers 4 --reel welcome        # -> out/welcome/seg/
 python3 tools/sound.py out/welcome
 bash tools/finalize.sh renders/welcome/incpt_welcome.mp4 out/welcome
+```
+
+## Token presale reel in ХРОМ (RU, 9:16)
+
+`renders/presale_chrome/incpt_presale_chrome.mp4` (+ `_preview.mp4`, `cover_presale_chrome.jpg`, `captions.md`).
+The same 27 s cut, UI cut-outs, facts and 120 BPM track as the presale reel below, in the ХРОМ look:
+- the pearl fluted field instead of the foil;
+- Geologica headlines with iridescent accents (INCPT, COIN, INCEPTION, КОМПАНИИ, 0.40 USDT, $50,000, TRC-20 · TRON, БЕСПЛАТНО, ПРЕСЕЙЛЕ);
+- a liquid-glass capsule sweeping through each of the three whips (7.7 s ←, 11.7 s →, 15.7 s ↑), bending the phone and the headline under it;
+- a glass-lens end card: INCEPTION COIN, «Токен экосистемы INCEPTION», a glass pill «Пресейл · presale.incpt.fi», the risk line.
+
+```bash
+node tools/render.mjs video --workers 4 --reel presale_chrome   # scenes_presale.js with CHROME on
+python3 tools/sound.py out/presale_chrome
+MAXRATE=12 bash tools/finalize.sh renders/presale_chrome/incpt_presale_chrome.mp4 out/presale_chrome
 ```
 
 ## Token presale reel (RU, 9:16)

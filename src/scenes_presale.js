@@ -13,6 +13,43 @@ const PHONE_S = 0.64, PHONE_Y = 290;
 const PR = () => MANIFEST.reel;
 const oC = Ease.outCubic, iC = Ease.inCubic;
 const kick = t => (t < 4 || t > 21 ? 0 : Math.exp(-((t - 4) % B) / 0.09));
+// ХРОМ version (reel "presale_chrome"): the pearl field behind ribbed glass instead of the foil, Geologica
+// with iridescent accents, a liquid-glass capsule sweeping through every whip, the glass-lens end card
+function accent(h, ws) {
+  if (!CHROME) return h;
+  h.words.forEach(w => { if (ws.includes(w.textContent)) w.classList.add('wl-irid'); });
+  // once the line is fitted, one gradient runs across the accented words of each line
+  const at = h.at.bind(h);
+  h.at = (...args) => {
+    at(...args);
+    if (h.spread) return;
+    h.spread = true;
+    const d = h.el.style.display;
+    h.el.style.display = '';
+    for (const ld of h.el.querySelectorAll('.lineInner')) {
+      const ws_ = [...ld.querySelectorAll('.wl-irid')];
+      if (!ws_.length) continue;
+      const x0 = Math.min(...ws_.map(s => s.offsetLeft)), x1 = Math.max(...ws_.map(s => s.offsetLeft + s.offsetWidth));
+      for (const s of ws_) { s.style.backgroundSize = (x1 - x0) + 'px 100%'; s.style.backgroundPosition = (x0 - s.offsetLeft) + 'px 0'; }
+    }
+    h.el.style.display = d;
+  };
+  return h;
+}
+if (CHROME) {
+  drawBg = t => LG.draw(t);
+  scene({
+    init() {
+      LG.init();
+      this.wipes = [glassWipe(7.7, 0.55, -1, { sfx: false }), glassWipe(11.7, 0.55, 1, { sfx: false }), glassWipe(15.68, 0.55, 2, { sfx: false })];
+    },
+    update(t) {
+      LG.reset();
+      LG.F.sy = t * 12;
+      this.wipes.forEach(w => w(t));
+    },
+  });
+}
 
 // phone showing the coin page at a scroll: the long page under the app's fixed header and its two
 // frosted bottom buttons (tinted while the presale button sits behind them, white otherwise)
@@ -83,8 +120,8 @@ scene({
     this.words = [
       [new Headline('ПРЕСЕЙЛ', { y: 800, size: 172, fit: 980 }), 0.25, 1.1],
       [new Headline('ТОКЕНА', { y: 800, size: 172, fit: 980 }), 1.25, 2.1],
-      [new Headline('INCPT', { y: 800, size: 190, fit: 980 }), 2.25, 3.1],
-      [new Headline('В INCPT\nWALLET', { y: 740, size: 150, fit: 980 }), 3.25, 3.8],
+      [accent(new Headline('INCPT', { y: 800, size: 190, fit: 980 }), ['INCPT']), 2.25, 3.1],
+      [accent(new Headline('В INCPT\nWALLET', { y: 740, size: 150, fit: 980 }), ['INCPT']), 3.25, 3.8],
     ];
     cue(0.0, 'riser', { dur: 3.95, gain: 0.5 });
     this.items.forEach(c => cue(Math.max(0, c.tin - 0.06), 'whoosh', { dur: 0.4, gain: 0.3 + c.s * 0.1, pan: c.dir * 0.6 }));
@@ -125,8 +162,8 @@ scene({
     this.chart = chartCut(this.ph, { at: this.ph.at('ps_chart') });
     this.head = this.ph.piece('ps_head');
     this.price = this.ph.piece('ps_price');
-    this.h1 = new Headline('INCEPTION\nCOIN', { y: TXT_TOP - 10, size: 150, fit: 990 });
-    this.h2 = new Headline('ТОКЕН\nЭКОСИСТЕМЫ\nINCEPTION', { y: TXT_TOP - 50, size: 112, fit: 990 });
+    this.h1 = accent(new Headline('INCEPTION\nCOIN', { y: TXT_TOP - 10, size: 150, fit: 990 }), ['COIN']);
+    this.h2 = accent(new Headline('ТОКЕН\nЭКОСИСТЕМЫ\nINCEPTION', { y: TXT_TOP - 50, size: 112, fit: 990 }), ['INCEPTION']);
     cue(3.98, 'impact', { gain: 1.0 });
     cue(4.0, 'crash', { gain: 0.8 });
     cue(4.1, 'whoosh', { dur: 0.45, gain: 0.5, up: true });
@@ -169,7 +206,7 @@ scene({
     this.slotF = this.ph.slot('ps_formula');
     this.formula = this.ph.piece('ps_formula');
     this.ex = [1, 2, 3].map(i => ({ n: this.ph.piece('ps_ex' + i), slot: this.ph.slot('ps_ex' + i) }));
-    this.h = new Headline('СТОИМОСТЬ —\nОТ ОЦЕНКИ\nКОМПАНИИ', { y: TXT_TOP - 50, size: 118, fit: 990 });
+    this.h = accent(new Headline('СТОИМОСТЬ —\nОТ ОЦЕНКИ\nКОМПАНИИ', { y: TXT_TOP - 50, size: 118, fit: 990 }), ['КОМПАНИИ']);
     cue(8.0, 'crash', { gain: 0.6 });
     cue(8.4, 'whoosh', { dur: 0.5, gain: 0.55, up: true }); cue(8.5, 'pop', { gain: 0.6, pitch: 0.8 });
     cue(9.85, 'whoosh', { dur: 0.4, gain: 0.35, up: true });
@@ -209,8 +246,8 @@ scene({
     this.ph = coinPhone(cam, 0);
     this.slot = this.ph.slot('ps_presale');
     this.btn = this.ph.piece('ps_presale');
-    this.h1 = new Headline('ЦЕНА ПРЕСЕЙЛА\n0.40 USDT', { y: TXT_TOP, size: 124, fit: 990 });
-    this.h2 = new Headline('ПОКУПКА\nОТ $50,000', { y: TXT_TOP, size: 136, fit: 990 });
+    this.h1 = accent(new Headline('ЦЕНА ПРЕСЕЙЛА\n0.40 USDT', { y: TXT_TOP, size: 124, fit: 990 }), ['0.40', 'USDT']);
+    this.h2 = accent(new Headline('ПОКУПКА\nОТ $50,000', { y: TXT_TOP, size: 136, fit: 990 }), ['$50,000']);
     cue(12.0, 'crash', { gain: 0.6 });
     cue(12.4, 'whoosh', { dur: 0.6, gain: 0.6, up: true }); cue(12.5, 'pop', { gain: 0.6, pitch: 0.75 });
     cue(12.62, 'shimmer', { gain: 0.3 });
@@ -249,9 +286,9 @@ scene({
     this.send = this.ph.piece('ps_send');
     this.btn = this.ph.piece('ps_presale');
     this.tap = new Tap(this.ph, 200);
-    this.h1 = new Headline('СЕТЬ\nTRC-20 · TRON', { y: TXT_TOP, size: 124, fit: 990 });
-    this.h2 = new Headline('ПЕРЕВОДЫ\nБЕСПЛАТНО', { y: TXT_TOP, size: 136, fit: 990 });
-    this.h3 = new Headline('КУПИТЬ\nНА ПРЕСЕЙЛЕ', { y: TXT_TOP, size: 136, fit: 990 });
+    this.h1 = accent(new Headline('СЕТЬ\nTRC-20 · TRON', { y: TXT_TOP, size: 124, fit: 990 }), ['TRC-20', 'TRON']);
+    this.h2 = accent(new Headline('ПЕРЕВОДЫ\nБЕСПЛАТНО', { y: TXT_TOP, size: 136, fit: 990 }), ['БЕСПЛАТНО']);
+    this.h3 = accent(new Headline('КУПИТЬ\nНА ПРЕСЕЙЛЕ', { y: TXT_TOP, size: 136, fit: 990 }), ['ПРЕСЕЙЛЕ']);
     cue(16.0, 'crash', { gain: 0.5 });
     cue(16.38, 'whoosh', { dur: 0.45, gain: 0.5, up: true }); cue(16.45, 'pop', { gain: 0.6, pitch: 0.8 });
     cue(17.5, 'crash', { gain: 0.35, pan: 0.4 });
@@ -307,11 +344,21 @@ class UrlBadge {
 }
 UrlBadge.prototype.set = TgBadge.prototype.set;
 
+const PS_STAR = `<svg viewBox="0 0 24 24" width="76" height="76"><defs><linearGradient id="psc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a6dc1e"/><stop offset="0.45" stop-color="#45c8b2"/><stop offset="1" stop-color="#7357ff"/></linearGradient></defs><circle cx="12" cy="12" r="12" fill="url(#psc)"/><path d="M11 5.2 C11.45 8.6 12.4 9.55 15.8 10 C12.4 10.45 11.45 11.4 11 14.8 C10.55 11.4 9.6 10.45 6.2 10 C9.6 9.55 10.55 8.6 11 5.2 Z M15.6 13.6 C15.78 14.98 16.12 15.32 17.5 15.5 C16.12 15.68 15.78 16.02 15.6 17.4 C15.42 16.02 15.08 15.68 13.7 15.5 C15.08 15.32 15.42 14.98 15.6 13.6 Z" fill="#fff"/></svg>`;
+if (CHROME) {
+  chromeEnd(21.0, {
+    title: 'INCEPTION ~COIN', titleSize: 150, tag: 'Токен экосистемы INCEPTION', from: 0,
+    pill: `${PS_STAR}<div style="text-align:left;line-height:1.05"><div class="wl wl-s" style="position:static;font-size:26px">Пресейл</div><div class="wl-chip" style="font-size:42px;font-weight:700">presale.incpt.fi</div></div>`,
+    pillW: 600, risk: 'Не является инвестиционной рекомендацией',
+    y: { title: 1238, tag: 1420, pill: 1585, risk: 1745 },
+  });
+} else {
 endCard(21.0, 'ТОКЕН ЭКОСИСТЕМЫ INCEPTION', DURATION, 1, {
   title: '<span class="lk-w lk-incpt">INCEPTION</span><span class="lk-w lk-io">COIN</span>',
   badge: () => new UrlBadge('Пресейл', 'presale.incpt.fi'),
 });
-scene({
+}
+if (!CHROME) scene({
   init() {
     this.el = document.createElement('div');
     this.el.className = 'ps-risk';
