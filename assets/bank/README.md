@@ -55,6 +55,19 @@ clips where the model reshapes it are marked; use the matte (`assets/style/logo_
 | 47 | icon: AML | `9e7b125f-e97c-4e51-960b-3fcaa543434a` | `193343_9e7b125f….png` | `icons/icon_aml.png` |
 | 48 | icon: analytics | `d2a2b843-6a11-43a0-aa11-b6c88540901e` | `193343_d2a2b843….png` | full res only for now |
 
+### Lifestyle stills (GPT Image 2.5, 4K, 2160×3840) — `renders/bank/stills_lifestyle.jpg`
+
+Files are `hf_20261103_<time>_<job id>.png`.
+
+| # | what | job id | time |
+|---|---|---|---|
+| 401 | traveller in an airport lounge with the app on the phone | `9d45e189-2e36-4dbe-bae5-e4ff600c2d91` | `041100` |
+| 402 | hands: phone with the app + holo card | `daf41c56-4b57-4254-8d0d-6cdf3f6cc711` | `041101` |
+| 403 | fast-track lane past the queue | `3326952c-fac3-4d5e-93da-cae41efb13d4` | `041100` |
+| 404 | eSIM: landed, full signal at the plane window | `9635042d-df67-471b-a897-23f7ac601dd6` | `041100` |
+| 405 | holo card on marble with coffee | `6de2fc66-64ff-415a-8e81-0cd05975bb15` | `041100` |
+| 406 | phone payment at a boutique terminal | `a5753f59-c824-4228-9880-7788f68c9855` | `041101` |
+
 ## Clips — 9:16, 1080×1920, 24 fps, silent use
 
 Kling 3.0 in 4K failed on Higgsfield's side for every job (refunded), so the clips are Kling 4.0
@@ -102,6 +115,22 @@ Each icon floats, sways and does its own small action, then returns to the first
 | 210 | AML — magnifier scans | `db8f5514-b474-416c-81ac-946d7d9906ec` | `035051` |
 | 211 | analytics — bars rise | `9a1c0937-a0ad-453d-a3ee-e324d9aa8143` | `035052` |
 | 212 | logo turns 360°, violet #7357ff (10 s) | `8f743712-be5f-4973-a489-7949122bba4b` | `035052` |
+
+## Transitions and fixes — Kling 4.0, 1080×1920, 3 s (fixes 5 s)
+
+The frame is fully covered mid-clip, so a cut there hides the scene change. Sheet:
+`renders/bank/clips_transitions.jpg`. Files are `hf_20261103_<time>_<job id>.mp4`.
+
+| # | what | job id | time | notes |
+|---|---|---|---|---|
+| 301 | liquid chrome wave, left → right, pearl white | `0ac3ad63-56ab-480b-82a7-2f1685c35ea5` | `041047` | clean |
+| 302 | liquid chrome floods up and drains, black | `4519cfdd-55ba-480c-b773-58e7923119cd` | `041047` | clean |
+| 303 | violet blob bursts and fills, lime | `c098b685-be17-4ab9-90a9-f76a6dce1a5a` | `041047` | blob reads magenta — hue-shift to #7357ff |
+| 304 | fluted glass panel slides across, white | `962a4d3b-c986-4d3a-b511-f3ed79ed110d` | `041048` | subtle |
+| 305 | light line opens into a lime/violet flash, black | `c69c471a-d46c-4800-a4f6-0b584d9a79a2` | `041047` | clean |
+| 306 | chrome coins rain through the frame, white | `54668470-7f34-4e9b-946b-2a28ec9c7090` | `041047` | coins are flat grey discs |
+| 313 | coins tumble onto the stack (redo of 113) | `ad3b39fb-952b-4870-92d8-2f9cfd1739e8` | `041047` | check the background colour |
+| 307 | fast-track icon (redo of 206) | `80cc123c-426b-499b-94d7-0d4787d7387b` | `041047` | still turns edge-on — animate `icons/icon_fastline.png` in the engine instead |
 
 ## 3D models — Tripo H3.1, detailed geometry + PBR texture (GLB)
 
