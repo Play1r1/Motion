@@ -236,7 +236,8 @@ The boss picked direction А · ХРОМ from the style frames. Every new film i
 | Glass | Liquid glass, like the app's own tab bar: clear lenses (rim refraction, chromatic edges, a thin specular line), frosted slabs under UI, shapes that melt into each other and pinch apart. |
 | Type | Geologica 800, uppercase, tight tracking (−0.045 em) for headlines; Geologica 500 grey for sublines. Accent words in the logo's iridescence, one gradient across the line. |
 | Mark | The official chrome render (`assets/style/logo_chrome.png`), never redrawn; on end cards it floats in a glass lens. |
-| Kit | `src/chrome.js`: `WText`, glass `chip`, `glassWipe` (a glass capsule that sweeps through a whip), `chromeEnd` (lens + logo + title + tagline + glass pill + fine print). Older reels switch with the `CHROME` flag (`body.chrome` restyles `Headline` and `Tap`). |
+| Kit | `src/chrome.js`: `WText`, glass `chip`, `LiquidBody` (one glass body flowing through states that split, merge and jiggle), `liquidIntro` (drops melting into a lens), `chromeEnd` (lens + logo + title + tagline + glass pill + fine print), `glassWipe`. |
+| Pacing | Calm and premium: one idea per scene, big numbers, the glass carries every transition. No whip pans, no UI pieces flying around (the reskinned presale cut with them was rejected). |
 
 ## Welcome reel in liquid glass (RU, 9:16)
 
@@ -273,17 +274,23 @@ bash tools/finalize.sh renders/welcome/incpt_welcome.mp4 out/welcome
 
 ## Token presale reel in ХРОМ (RU, 9:16)
 
-`renders/presale_chrome/incpt_presale_chrome.mp4` (+ `_preview.mp4`, `cover_presale_chrome.jpg`, `captions.md`).
-The same 27 s cut, UI cut-outs, facts and 120 BPM track as the presale reel below, in the ХРОМ look:
-- the pearl fluted field instead of the foil;
-- Geologica headlines with iridescent accents (INCPT, COIN, INCEPTION, КОМПАНИИ, 0.40 USDT, $50,000, TRC-20 · TRON, БЕСПЛАТНО, ПРЕСЕЙЛЕ);
-- a liquid-glass capsule sweeping through each of the three whips (7.7 s ←, 11.7 s →, 15.7 s ↑), bending the phone and the headline under it;
-- a glass-lens end card: INCEPTION COIN, «Токен экосистемы INCEPTION», a glass pill «Пресейл · presale.incpt.fi», the risk line.
+`renders/presale2/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 27 s, 96 BPM `calm` track.
+Rebuilt from scratch in the welcome reel's language (a first pass that only reskinned the old cut was rejected and removed).
+One liquid-glass body (`LiquidBody` in `src/chrome.js`) flows through the film:
+
+| Time | On screen | The glass |
+|---|---|---|
+| 0.0 | Пресейл токена · INCPT · Основной токен экосистемы INCEPTION | drops melt into a lens, the chrome mark surfaces inside it like a coin |
+| 5.0 | INCEPTION Coin уже в INCPT Wallet | a frosted slab; the phone with the coin page rises onto it; glass chips: $0.50 +1.00%, TRC-20 · TRON, Купить на пресейле |
+| 9.4 | Стоимость — от оценки компании | the slab splits into three rows: $50M ÷ 100M INCPT = $0.50 (the page's example), glass ÷ and = between them |
+| 13.75 | Купить на пресейле | the rows run together into one ticket: «Цена пресейла 0.40 USDT · Покупка от $50,000» |
+| 18.1 | Переводы бесплатно | the ticket splits into two tiles: Сеть TRC-20 · TRON / Бесплатно другим пользователям; «Обмен откроется после листинга» |
+| 21.25 | INCEPTION COIN · Токен экосистемы INCEPTION | the coin lens again, the glass pill «Пресейл · presale.incpt.fi», the risk line |
 
 ```bash
-node tools/render.mjs video --workers 4 --reel presale_chrome   # scenes_presale.js with CHROME on
-python3 tools/sound.py out/presale_chrome
-MAXRATE=12 bash tools/finalize.sh renders/presale_chrome/incpt_presale_chrome.mp4 out/presale_chrome
+node tools/render.mjs video --workers 4 --reel presale2
+python3 tools/sound.py out/presale2
+MAXRATE=12 bash tools/finalize.sh renders/presale2/incpt_presale.mp4 out/presale2
 ```
 
 ## Token presale reel (RU, 9:16)

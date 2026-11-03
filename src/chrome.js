@@ -168,3 +168,82 @@ function chromeEnd(T0, { title = 'INCPT', tag, pill, pillW = 560, risk = null, f
     },
   });
 }
+
+// ------------------------------------------------------------------ the liquid body
+// One glass body that flows through a film. states: [{ t, dur, shapes: [{x, y, w, h, r}], look, k }] —
+// at `t` the shapes of the previous state start flowing into these (matched by index; a shape with no
+// partner is born from / melts into the first one), staying joined while they flow (smooth union),
+// pinching apart as they land, then jiggling once. look: glass optics for the state (refr, bevel,
+// mag, tint, frost). k: the union radius the state rests with (0 = separate pieces).
+const GLASS = {
+  lens: { refr: 58, bevel: 170, mag: 22, tint: 0.03, frost: 0 },
+  slab: { refr: 40, bevel: 80, mag: 0, tint: 0.16, frost: 1.6 },
+  tile: { refr: 36, bevel: 64, mag: 0, tint: 0.17, frost: 1.6 },
+  panel: { refr: 44, bevel: 90, mag: 0, tint: 0.12, frost: 1.2 },
+};
+class LiquidBody {
+  constructor(states) { this.S = states; }
+  at(t) {
+    const S = this.S;
+    if (t < S[0].t) return false;
+    let i = 0;
+    while (i + 1 < S.length && t >= S[i + 1].t) i++;
+    const cur = S[i], prev = S[i - 1] || cur;
+    const dur = cur.dur || 0;
+    const n = Math.max(prev.shapes.length, cur.shapes.length);
+    const look = {};
+    const p0 = dur ? Ease.inOutCubic(prog(t, cur.t, cur.t + dur)) : 1;
+    for (const k in cur.look) look[k] = lerp(prev.look[k], cur.look[k], p0);
+    Object.assign(LG.G, look);
+    const dot = s => ({ x: s.x, y: s.y, w: Math.min(s.w, s.h) * 0.3, h: Math.min(s.w, s.h) * 0.3, r: Math.min(s.w, s.h) * 0.15 });
+    for (let j = 0; j < n; j++) {
+      const a = prev.shapes[j] || dot(prev.shapes[0]);
+      const b = cur.shapes[j] || dot(cur.shapes[0]);
+      const st = n > 1 ? (j / (n - 1)) * 0.22 : 0;          // pieces leave one after another
+      const pr = dur ? prog(t, cur.t + st * dur, cur.t + dur * (0.78 + st)) : 1;
+      const p = Ease.inOutCubic(pr);
+      const g = { x: lerp(a.x, b.x, p), y: lerp(a.y, b.y, p), w: lerp(a.w, b.w, p), h: lerp(a.h, b.h, p), r: lerp(a.r ?? Math.min(a.w, a.h) / 2, b.r ?? Math.min(b.w, b.h) / 2, p) };
+      // stretch along the flow, then one decaying jiggle after landing
+      const flow = Math.sin(Math.PI * p) * 0.06;
+      const tl = t - (cur.t + dur * (0.78 + st));
+      const jg = tl > 0 && dur ? Math.exp(-tl * 3.4) * Math.sin(tl * 12.5) * 0.035 : 0;
+      const br = Math.sin(t * 1.3 + j) * 0.004;
+      const gone = !cur.shapes[j] && p >= 0.999;
+      if (gone) continue;
+      const kk = j === 0 ? 0 : lerp(prev.k ?? 0, cur.k ?? 0, Ease.outCubic(prog(t, cur.t + dur * 0.55, cur.t + dur + 0.25))) + Math.sin(Math.PI * clamp(pr)) * 170;
+      LG.S.push({ x: g.x, y: g.y, w: g.w * (1 - flow * 0.6 + jg + br), h: g.h * (1 + flow - jg - br), r: g.r, k: kk });
+    }
+    return true;
+  }
+}
+
+// drops drift in from the edges and melt into a lens; two droplets pinch off it (t: 0 -> ~3.8 s)
+function liquidIntro(t, L = { x: 540, y: 800, d: 790 }, t0 = 0) {
+  t -= t0;
+  const drops = [
+    { sx: 140, sy: 330, r0: 70, r1: 175, a: 0.1, b: 2.15, ph: 0.3 },
+    { sx: 960, sy: 520, r0: 56, r1: 150, a: 0.3, b: 1.95, ph: 1.7 },
+    { sx: 610, sy: 1460, r0: 86, r1: 205, a: 0.0, b: 2.3, ph: 2.9 },
+    { sx: 250, sy: 1150, r0: 34, r1: 95, a: 0.55, b: 1.85, ph: 4.1 },
+    { sx: 860, sy: 1260, r0: 26, r1: 70, a: 0.75, b: 2.05, ph: 5.3 },
+  ];
+  const g = Ease.outCubic(prog(t, 1.65, 2.6));
+  const tl = t - 2.45;
+  const j = tl > 0 ? Math.exp(-tl * 3.0) * Math.sin(tl * 12) * 0.05 : 0;
+  const br = Math.sin(t * 1.3) * 0.006;
+  if (L.d * g > 1) LG.S.push({ x: L.x, y: L.y, w: L.d * g * (1 + j + br), h: L.d * g * (1 - j - br), k: 0 });
+  for (const d of drops) {
+    const p = Ease.inOutCubic(prog(t, d.a, d.b));
+    const r = lerp(d.r0, d.r1, p) * Ease.outCubic(prog(t, d.a, d.a + 0.8)) * (1 - prog(t, 2.25, 2.75));
+    if (r < 0.5) continue;
+    LG.S.push({ x: lerp(d.sx, L.x, p) + Math.sin(t * 2.1 + d.ph) * 16 * (1 - p), y: lerp(d.sy, L.y, p) + Math.cos(t * 1.7 + d.ph) * 14 * (1 - p), w: 2 * r, h: 2 * r, k: 140 });
+  }
+  for (const s of [-1, 1]) {
+    const q = prog(t, 2.55, 3.8);
+    if (q <= 0 || q >= 1) continue;
+    const r = Math.pow(Math.sin(Math.PI * q), 0.6) * 54;
+    LG.S.push({ x: L.x + s * lerp(300, 470, Ease.outCubic(q)), y: L.y + lerp(150, 330, Ease.outCubic(q)) * (s > 0 ? 0.7 : 1), w: 2 * r, h: 2 * r, k: 110 });
+  }
+  Object.assign(LG.G, GLASS.lens);
+  LG.G.sheen = lerp(-600, 2600, prog(t, 3.0, 4.6));
+}

@@ -141,7 +141,7 @@
   window.STAGE = { topup: [1080, 1080] }[REEL] || [1080, 1920];
   window.MANIFEST_NAME = REEL.startsWith('howto_') ? 'howto' : REEL.startsWith('ig_') ? 'ig' : REEL.startsWith('presale') ? 'presale' : REEL;   // series share one manifest
   window.SCENES_FILE = { presale_chrome: 'presale' }[REEL] || REEL;           // ХРОМ versions reuse a reel's scenes
-  window.CHROME = ['welcome', 'presale_chrome'].includes(REEL);
+  window.CHROME = ['welcome', 'presale_chrome', 'presale2'].includes(REEL);
   document.body.classList.toggle('chrome', CHROME);
   document.documentElement.style.setProperty('--W', STAGE[0] + 'px');
   document.documentElement.style.setProperty('--H', STAGE[1] + 'px');
