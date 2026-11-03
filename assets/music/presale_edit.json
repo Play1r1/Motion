@@ -1,0 +1,5 @@
+{"duration": 26.0, "fade_out": 0.6, "pieces": [
+  {"src": "presale_a.mp3", "from": 0.07, "to": 4.07, "at": 0.0},
+  {"src": "presale_a.mp3", "from": 34.07, "to": 52.07, "at": 4.0},
+  {"src": "presale_a.mp3", "from": 24.07, "to": 28.0, "at": 22.0}
+]}

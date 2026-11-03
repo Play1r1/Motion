@@ -213,7 +213,18 @@ def bass(f, d):
     return np.tanh(x * 1.2) * np.minimum(1, t / 0.012) * np.minimum(1, (d - t) / 0.06) * 0.5
 
 
-if STYLE == "tech":
+MEDIT = META.get("musicEdit")              # a cut of generated music (tools/music_edit.py) instead of a synth bed
+if MEDIT:
+    import subprocess, tempfile
+    from scipy.io import wavfile as _wf
+    with tempfile.TemporaryDirectory() as _d:
+        _o = os.path.join(_d, "m.wav")
+        subprocess.run([sys.executable, os.path.join(ROOT, "tools", "music_edit.py"), os.path.join(ROOT, MEDIT), _o], check=True)
+        _sr, _x = _wf.read(_o)
+    _x = _x.astype(np.float64)
+    _n = min(N, len(_x))
+    music[:_n] = _x[:_n]
+elif STYLE == "tech":
     # intro: pad + ticking hats, filter opening toward the drop
     for b in range(max(1, round(DROP / BAR))):
         ch = CHORDS[b % 4]
@@ -1028,7 +1039,7 @@ for c in cues["cues"]:
             place(sfx, s, at + i * step, g * (0.45 + 0.55 * i / max(1, n_ - 1)) * 0.5)
 
 # ------------------------------------------------------------------ mix + master
-mix = music * 0.62 + sfx * 0.9
+mix = music * 0.62 + sfx * 0.9 * META.get("sfxGain", 1.0)
 fade = np.ones(N)
 fo = int(1.1 * SR)
 fade[-fo:] = np.linspace(1, 0, fo) ** 2

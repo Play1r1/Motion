@@ -240,10 +240,15 @@ The boss picked direction А · ХРОМ from the style frames. Every new film i
 | Motion signature | The INCPT look in motion, also in `src/chrome.js`. The logo is a boomerang, so the motion is built on that:<br>• **arcs:** things fly in on boomerang arcs, spin, are caught with a small wobble and are thrown out again (`arcAt`, `flyEl`);<br>• **rib shutter:** chrome ribs at the logo's −28°, shaded like its tubes and tinted in its iridescence, fan across the frame and hide every big cut (`RibShutter`);<br>• **letter slams:** headlines slam in letter by letter, from big and blurred to sharp (`KText`);<br>• **numbers:** every number counts up to its value (`countTo`);<br>• **glints:** four-point glints flash on the chrome (`Glints`);<br>• **beat:** the frame pulses on the kick. |
 | Pacing | Premium but never static: one idea per scene and a change of motion on every beat or two, so the eye always has something new. Calm films (welcome) let the glass carry the cuts; promo films use the motion signature. |
 | Music | Energetic, never a lullaby (the calm piano bed was rejected as sleepy). `tools/sound.py` has two styles for it. Both have a hook, a breakdown and build into a second drop, a moment of silence before each drop, a groove that keeps going under the end card, and the INCPT sound logo (a four-note «ta-DA-da-DAA» on the end card):<br>• `pulse`: bass house for promo cuts (120–128 BPM; four-on-the-floor, offbeat stabs, syncopated mid bass, vocal chops, a stutter edit into the CTA);<br>• `liquid`: liquid drum & bass at twice the film's tempo (90 BPM film → 180 BPM; two-step drums, reese bass, Rhodes), so every cut still lands on the beat.<br>Scenes place the sections with `META.build`, `META.drop2` and `META.stutter`. Mixed for phones: nothing under 32 Hz, a presence lift above 3 kHz, a limiter, about −13 LUFS. |
+| Music, now | The synthesized beds read as sleepy (calm) or strange (pulse, liquid), so films now use original generated tracks (vidIQ, royalty-free), cut to the picture's beat grid with `tools/music_edit.py`. Serious and precise: a steady pulse, deep hits, clear sections. |
 
 ## Welcome reel in liquid glass (RU, 9:16)
 
-`renders/welcome/incpt_welcome.mp4` (+ `_preview.mp4`, `cover_welcome.jpg`, `captions.md`), 1080×1920, 27 s, 90 BPM picture on a 180 BPM `liquid` drum & bass track.
+`renders/welcome/incpt_welcome.mp4` (+ `_preview.mp4`, `cover_welcome.jpg`, `captions.md`), 1080×1920, 27 s, 90 BPM, on an original generated track
+(vidIQ, `assets/music/welcome_a.mp3`). The track is cut on the picture's bars (`assets/music/welcome_edit.json`):
+- take 1's piano intro;
+- take 2's full beat from the drop at 5.33 s;
+- take 1's riser, whose final hit lands on the end card at 22.0 s.
 The first film in the new brand: direction А (pearl, ribbed glass, the chrome mark, Geologica) in Apple's liquid-glass
 language, which the app's own tab bar and buttons already use. No Higgsfield credits: everything is drawn by the engine.
 
@@ -274,7 +279,53 @@ python3 tools/sound.py out/welcome
 bash tools/finalize.sh renders/welcome/incpt_welcome.mp4 out/welcome
 ```
 
+## Token presale reel, strict cut (RU, 9:16) — current
+
+`renders/presale4/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 26 s, 120 BPM.
+The boss wanted it serious, clear and uneven in rhythm, not playful. So this cut follows the INCPT reel DNA (the
+`incpt-motion-reels` skill) inside the ХРОМ look:
+- **Real UI.** The real coin page sits in the titanium phone, and real pieces of it lift off wider than the phone.
+- **Type.** Words come one by one, 100 ms apart, with one message per frame.
+- **Cuts and moves.** Cuts fall only on bar downbeats, and moves land on the beat's accents (+0.75 s, +1.5 s).
+- **Holds and camera.** Every hold drifts slowly in 3D; the camera either stands or commits.
+- **Rhythm.** Phone shots alternate with type-only frames and a macro of the chart.
+- **No decoration.** There are no glints, spins, bounces or decorative wipes, and the logo is never under glass.
+Scene code: `src/scenes_presale4.js`.
+
+| Time | On screen |
+|---|---|
+| 0.0 | the chrome mark lands on the boom · ПРЕСЕЙЛ ТОКЕНА |
+| 2.0 | INCPT · Основной токен экосистемы INCEPTION (on the ticking pulse) |
+| 4.0 | drop: the phone rises with the coin page · УЖЕ В INCPT WALLET; the INCEPTION Coin header lifts off |
+| 6.0 | macro: the real 7-day chart draws itself; $0.50 +1.00% lands on the accent |
+| 8.0 | СТОИМОСТЬ — ОТ ОЦЕНКИ КОМПАНИИ: the formula, then the three example lines, one per accent |
+| 10.0 | $50M ÷ 100M INCPT = $0.50, one part per accent (the full beat comes in) |
+| 12.0 | ЦЕНА ПРЕСЕЙЛА: the presale button lifts off |
+| 14.0 | 0.40 USDT counts up and locks on the accent · ПОКУПКА ОТ $50,000 |
+| 16.0 | СЕТЬ TRC-20 · TRON (the pill lifts off) · ПЕРЕВОДЫ БЕСПЛАТНО (the note about free transfers and the listing) |
+| 20.0 | КУПИТЬ НА ПРЕСЕЙЛЕ: the real button alone on the canvas, one tap on its star |
+| 22.0 | end card: the mark, INCEPTION COIN, Токен экосистемы INCEPTION, presale.incpt.fi, the risk line |
+
+**Music.** The track is an original, royalty-free one generated in vidIQ (`assets/music/presale_a.mp3`, 25 vidIQ credits;
+no Higgsfield credits). The generator returned two takes of the same prompt, D minor and G minor, both at 120 BPM.
+`tools/music_edit.py` cuts them on downbeats with 25 ms equal-power crossfades
+(`assets/music/presale_edit.json`):
+- take 1's boom and ticking pulse for the hook (0–4 s);
+- take 2's driving beat from the drop (4–22 s);
+- take 1's closing hits for the end card.
+The scene names the edit in `META.musicEdit`, and `tools/sound.py` lays the scene's few cues (whooshes, one tap) over it at
+`META.sfxGain`.
+
+```bash
+node tools/render.mjs video --workers 4 --reel presale4
+python3 tools/sound.py out/presale4
+MAXRATE=12 bash tools/finalize.sh renders/presale4/incpt_presale.mp4 out/presale4
+```
+
 ## Token presale reel with the motion signature (RU, 9:16)
+
+Superseded by the strict cut above: the boss found the boomerang arcs, rib shutter, letter slams and glints too playful,
+and the synthesized bass-house track strange.
 
 `renders/presale3/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 27 s, 120 BPM `pulse` track (key +2).
 The presale cut in ХРОМ, rebuilt on the motion signature. The logo is never under glass: it flies in as a boomerang

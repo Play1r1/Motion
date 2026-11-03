@@ -9,7 +9,7 @@
 DURATION = 27.0;
 const B = 60 / 90;
 const T2 = 8 * B, T3 = 14 * B, T4 = 19 * B, T5 = 24 * B, T6 = 29 * B, TE = 33 * B;
-META = { drop: T2, end: TE, bpm: 90, music: 'liquid', key: 0, drop2: T5, build: T6 };   // liquid DnB at 180 = 2 x 90
+META = { drop: T2, end: TE, bpm: 90, musicEdit: 'assets/music/welcome_edit.json', sfxGain: 0.45 };   // generated track, cut on the 90 BPM grid
 const oC = Ease.outCubic, iC = Ease.inCubic;
 drawBg = t => LG.draw(t);                  // the WebGL field replaces the old foil background
 
