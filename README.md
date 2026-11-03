@@ -260,7 +260,7 @@ One glass body flows through the whole film and changes shape for every idea:
 | 5.3 | «КРИПТА И КАРТЫ В ОДНОМ МЕСТЕ» | the lens flows into a frosted slab; the phone rises onto it; Получить / Отправить / Обменять float off in glass chips |
 | 9.3 | «14 МОНЕТ. ОДИН КОШЕЛЁК.» | a frosted column; the 14 coin rows of the wallet roll through it like a wheel |
 | 12.7 | «КАРТА INCPT · Виртуальная и металлическая» | a glass case under the holographic card; a glass capsule sweeps over it and bends the foil |
-| 16.0 | «LIQUID VAULT · USDT · 20–40 % годовых в стейкинге» | a glass sphere; the safe from the app's own staking screen rests on it (not a generated one, never bent by the glass) |
+| 16.0 | «LIQUID · MONTHLY · MAXIMUM · 20–100 % годовых в стейкинге» (all three plans, the range from the team) | a glass sphere; the safe from the app's own staking screen rests on it (not a generated one, never bent by the glass) |
 | 19.3 | «И ЭТО ТОЛЬКО НАЧАЛО»: eSIM, Бизнес-лаунж, Фаст-лайн, Real-World Assets — «скоро» | the sphere splits into four tiles (they stay joined, then pinch apart) |
 | 22.0 | INCPT · Криптокошелёк и карты в Telegram · «Открыть в Telegram» | the tiles run back together into the lens; the logo rests on it |
 

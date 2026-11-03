@@ -3,7 +3,7 @@
 // drops that meet into a lens around the logo, a slab under the phone, a column for the coins, a
 // case for the card, a sphere for the vault, four tiles for the services, and the lens again.
 // Every claim is in the app: Получить / Отправить / Обменять, 14 coins, the INCPT card (virtual and
-// metal), Liquid Vault 20–40 % APY, eSIM / Бизнес-лаунж / Фаст-лайн / Real-World Assets marked «скоро».
+// metal), staking 20–100 % (Liquid · Monthly · Maximum), eSIM / Бизнес-лаунж / Фаст-лайн / Real-World Assets marked «скоро».
 'use strict';
 
 DURATION = 27.0;
@@ -280,12 +280,12 @@ scene({
   },
 });
 
-// ======================================================================= 5. LIQUID VAULT (16.0 – 19.3)
-// the case rounds into a sphere with the vault inside; 20–40 % годовых
+// ======================================================================= 5. STAKING (16.0 – 19.3)
+// the case rounds into a sphere with the app's safe on it; all three plans (Liquid · Monthly · Maximum): 20–100 % годовых
 scene({
   init() {
-    this.pill = chip('<span class="wl-chip" style="font-size:31px;letter-spacing:0.16em;font-weight:700;color:#3a3d46">LIQUID VAULT · USDT</span>', 520, 86);
-    this.big = new WText('~20–40%', { y: 1318, size: 236, track: -0.06 });
+    this.pill = chip('<span class="wl-chip" style="font-size:29px;letter-spacing:0.14em;font-weight:700;color:#3a3d46">LIQUID · MONTHLY · MAXIMUM</span>', 720, 86);
+    this.big = new WText('~20–100%', { y: 1318, size: 236, track: -0.06, fit: 960 });
     this.sub = new WText('годовых в стейкинге', { y: 1560, size: 50, cls: 'wl-s' });
     cue(T5 + 0.1, 'impact', { gain: 0.5, soft: true });
     cue(T5 + 0.4, 'coin', { gain: 0.55 });
