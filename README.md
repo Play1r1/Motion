@@ -281,7 +281,35 @@ python3 tools/sound.py out/welcome
 bash tools/finalize.sh renders/welcome/incpt_welcome.mp4 out/welcome
 ```
 
-## Token presale reel, strict cut (RU, 9:16) — current
+## Token presale reel, readable cut (RU, 9:16) — current
+
+`renders/presale5/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 38 s, 120 BPM,
+in the incpt.io brand. The 26 s strict cut read as rushed and uniform. This one gives every message 3–6 s after it has
+fully appeared, and changes the kind of shot every time. Scene code: `src/scenes_presale5.js`; music:
+`assets/music/presale5_edit.json`. The same generated track is cut longer: take 1's calm cinematic middle carries the
+valuation, and its riser leads back into take 2's drive.
+
+| Time | Shot |
+|---|---|
+| 0.0 | focus pull onto the mark · «Пресейл токена» |
+| 3.0 | the mark folds into the site's lock-up, the wordmark slides out from behind it · «Основной токен экосистемы INCEPTION» |
+| 6.0 | drop: a macro of the coin page, the camera pulls back to the whole phone · «Уже в INCPT Wallet»; $0.50 +1.00% and the coin's header lift off; the camera dives through the screen |
+| 12.0 | out of the dive, the page's rule as a fraction: «последняя подтверждённая оценка компании / фиксированное количество valuation units» |
+| 15.5 | the words give way to the page's example, counting up: $50M / 100M INCPT = $0.50 |
+| 20.0 | the drive returns: «ЦЕНА ПРЕСЕЙЛА», 0.40 rolls in on an odometer and locks on the accent · USDT · «Покупка от $50,000»; the real presale button rises |
+| 26.0 | the real TRC-20 · TRON pill is laid on the canvas · «Переводы другим пользователям — бесплатно» · «Обмен откроется после листинга» |
+| 30.0 | back in the app: the phone rises, one tap on the presale button · «Купить на пресейле» |
+| 34.0 | the lock-up in focus · «Пресейл INCEPTION Coin» · presale.incpt.fi · the risk line |
+
+```bash
+node tools/render.mjs video --workers 4 --reel presale5
+python3 tools/sound.py out/presale5
+MAXRATE=12 bash tools/finalize.sh renders/presale5/incpt_presale.mp4 out/presale5
+```
+
+## Token presale reel, strict cut (RU, 9:16)
+
+Superseded by the readable cut above (too rushed: about 2 s per message).
 
 `renders/presale4/incpt_presale.mp4` (+ `_preview.mp4`, `cover_presale.jpg`, `captions.md`), 1080×1920, 26 s, 120 BPM.
 The boss wanted it serious, clear and uneven in rhythm, not playful. So this cut follows the INCPT reel DNA (the
