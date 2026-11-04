@@ -114,12 +114,10 @@ const whoosh = (t, g = 0.3, pan = 0) => cue(t - 0.09, 'whoosh', { dur: 0.36, gai
 scene({
   init() {
     LG.init();
-    // a soft vignette, like a lens
-    div(`left:0px;top:0px;width:${W}px;height:${H}px;z-index:40;background:radial-gradient(120% 90% at 50% 46%, rgba(20,22,40,0) 62%, rgba(20,22,40,0.10) 100%);`);
   },
   update(t) {
     LG.reset();
-    LG.F.sy = t * 3;                             // the canvas stands; the flutes barely breathe
+    LG.F.white = 1;                              // the brand canvas is plain white (Andrew, 2026-11-04)
   },
 });
 

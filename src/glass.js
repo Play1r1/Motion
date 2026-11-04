@@ -11,7 +11,7 @@
 const LG = {
   F: {}, T: [], S: [], G: {},
   reset() {
-    this.F = { oil: 1, rib: 1, dark: 0, sx: 0, sy: 0, warm: 0 };
+    this.F = { oil: 1, rib: 1, dark: 0, sx: 0, sy: 0, warm: 0, white: 0 };   // white: 1 = a plain white canvas (no bands, no flutes)
     this.T = [];
     this.S = [];
     this.G = { refr: 44, frost: 0, tint: 0.1, chroma: 1, rim: 1, shadow: 1, bevel: 70, op: 1, sheen: -9999, mag: 0 };
@@ -79,7 +79,7 @@ LG.reset();
     float hi = smoothstep(0.0, 0.05, f) * (1.0 - smoothstep(0.16, 0.26, f));
     float lo = smoothstep(0.5, 0.56, f) * (1.0 - smoothstep(0.68, 0.76, f));
     col += (hi * 0.05 - lo * 0.028) * rib * vm * mix(1.0, 0.5, uF.z);
-    return col;
+    return mix(col, vec3(1.0), uF.w);
   }
   // a textured quad (premultiplied) and the soft contact shadow it casts below itself
   vec4 quad(sampler2D tx, int i, vec2 p, float lod, out float sh) {
@@ -229,7 +229,7 @@ LG.reset();
     gl.useProgram(prog);
     gl.uniform2f(U.uRes, W, H);
     gl.uniform1f(U.uT, t);
-    gl.uniform4f(U.uF, F.oil, F.rib, F.dark, 0);
+    gl.uniform4f(U.uF, F.oil, F.rib, F.dark, F.white || 0);
     gl.uniform4f(U.uF2, F.sx, F.sy, 0, 0);
     const T = LG.T.filter(q => q.o > 0.002).slice(0, 3);
     const tq = new Float32Array(12), tr = new Float32Array(6), to = new Float32Array(12);

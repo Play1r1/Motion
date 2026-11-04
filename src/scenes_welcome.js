@@ -75,6 +75,7 @@ scene({
     LG.reset();
     // the field drifts slowly upward over the film; a gentle push in the end card
     LG.F.sy = t * 9;
+    LG.F.white = 1;                       // the brand canvas is plain white (Andrew, 2026-11-04)
     if (t >= T6 - 0.4) return;            // services and the end card place their own glass
     const b = body(t);
     if (t < T2 - 0.45) return;            // the intro builds its lens itself
@@ -312,6 +313,19 @@ scene({
   },
 });
 
+// flat line icons in the app's icon language (tinted rounded square, 1.8 px line glyph, the app's
+// green / violet / blue); each one shows its service
+const FLAT = {
+  esim: ['#e7f5ec', '#2f9a5a', '<path d="M8 3h6.6L18.5 6.9V20a1 1 0 0 1-1 1h-9.5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><rect x="9.25" y="10.5" width="5.5" height="6.5" rx="1"/><path d="M12 10.5v6.5M9.25 13.75h5.5"/>'],
+  lounge: ['#efeafc', '#6a4ed6', '<path d="M6 11.5V8.5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3"/><path d="M3.75 12.75a1.6 1.6 0 0 1 3.2 0V15h10.1v-2.25a1.6 1.6 0 0 1 3.2 0V17.5a1 1 0 0 1-1 1H4.75a1 1 0 0 1-1-1z"/><path d="M6.5 18.5V20.5M17.5 18.5V20.5"/>'],
+  fastline: ['#e8eefc', '#3462d4', '<path d="M5 6.5l5.5 5.5L5 17.5"/><path d="M12.5 6.5L18 12l-5.5 5.5"/>'],
+  rwa: ['#e8eefc', '#3462d4', '<path d="M3.5 20.5h17"/><path d="M6 20.5V4.8a.8.8 0 0 1 .8-.8h7.4a.8.8 0 0 1 .8.8v15.7"/><path d="M15 9.5h2.7a.8.8 0 0 1 .8.8v10.2"/><path d="M8.6 7.5h1.4M11.4 7.5h1.4M8.6 10.9h1.4M11.4 10.9h1.4M8.6 14.3h1.4M11.4 14.3h1.4"/><path d="M9.8 20.5v-2.9h1.9v2.9"/>'],
+};
+const FLAT_ICON = k => {
+  const [bg, fg, g] = FLAT[k];
+  return `<div style="position:absolute;inset:0;border-radius:52px;background:${bg};display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="112" height="112" fill="none" stroke="${fg}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${g}</svg></div>`;
+};
+
 // ======================================================================= 6. SERVICES (19.3 – 22.0)
 // the sphere splits into four tiles: eSIM, Бизнес-лаунж, Фаст-лайн, Real-World Assets — «скоро»
 const TILES = [
@@ -326,8 +340,9 @@ scene({
     this.items = TILES.map(T => {
       const el = document.createElement('div');
       Object.assign(el.style, { position: 'absolute', left: (T.x - 220) + 'px', top: (T.y - 220) + 'px', width: '440px', height: '440px' });
-      const im = mkImg(`bank/icons/icon_${T.ico}.png`, 'abs');
-      Object.assign(im.style, { left: '100px', top: '28px', width: '240px', height: '240px' });
+      const im = document.createElement('div');
+      im.innerHTML = FLAT_ICON(T.ico);
+      Object.assign(im.style, { position: 'absolute', left: '124px', top: '52px', width: '192px', height: '192px' });
       const lab = document.createElement('div');
       lab.className = 'wl';
       Object.assign(lab.style, { left: '0px', top: '282px', width: '440px', textAlign: 'center', fontSize: '36px', fontWeight: '600', letterSpacing: '-0.015em' });
