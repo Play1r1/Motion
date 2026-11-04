@@ -7,7 +7,7 @@
 // Geologica lines; words rise and un-blur one by one. "~word" is drawn in the logo's iridescence,
 // spread over the whole line. chars: animate letter by letter (for the wordmark).
 class WText {
-  constructor(text, { y, size, cls = 'wl-h', lh = 0.92, track = null, chars = false, color = null, fit = 0 }) {
+  constructor(text, { y, size, cls = 'wl-h', lh = 1.04, track = null, chars = false, color = null, fit = 0 }) {
     this.el = document.createElement('div');
     this.el.className = 'wl ' + cls;
     Object.assign(this.el.style, { left: '0px', top: y + 'px', width: W + 'px', textAlign: 'center', fontSize: size + 'px', lineHeight: lh });
@@ -121,11 +121,12 @@ function glassWipe(t0, dur = 0.55, dir = 1, { w = 560, tilt = 12, sfx = true } =
 // ------------------------------------------------------------------ end card
 // The chrome mark resting on a glass lens (drawn in front of it, never refracted), a Geologica title, a tagline, a glass pill and an optional fine
 // print. T0: the lens starts to grow (from `from` of its size); everything else is timed from it.
-function chromeEnd(T0, { title = 'INCPT', tag, pill, pillW = 560, risk = null, from = 0.4, lens = { x: 540, y: 780, d: 760 }, titleSize = 236, y = { title: 1236, tag: 1498, pill: 1690, risk: 1800 } } = {}) {
+function chromeEnd(T0, { title = 'INCPT', tag, pill, pillW = 560, risk = null, from = 0.4, lens = { x: 540, y: 780, d: 760 }, titleSize = 236, y = { title: 1236, tag: 1498, pill: 1690, risk: 1800 }, mark = title === 'INCPT' } = {}) {
   scene({
     init() {
       this.logo = mkImg('style/logo_chrome.png');
-      this.name = new WText(title, { y: y.title, size: titleSize, chars: !/[ ~]/.test(title), track: -0.05, fit: 960 });
+      this.name = new WText(title, mark ? { y: y.title + 20, size: titleSize * 0.8, cls: 'wl-mark', chars: true, track: 0.06, fit: 900 }   // the brand wordmark
+        : { y: y.title, size: titleSize, chars: !/[ ~]/.test(title), track: -0.02, fit: 960 });
       this.tag = new WText(tag, { y: y.tag, size: 42, cls: 'wl-s' });
       this.pill = chip(pill, pillW, 124);
       if (risk) {

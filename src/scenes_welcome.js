@@ -89,7 +89,7 @@ scene({
 scene({
   init() {
     this.hello = new WText('Добро пожаловать в', { y: 1262, size: 50, cls: 'wl-s' });
-    this.name = new WText('INCPT', { y: 1318, size: 236, cls: 'wl-h', chars: true, track: -0.05 });
+    this.name = new WText('INCPT', { y: 1340, size: 190, cls: 'wl-mark', chars: true, track: 0.06 });   // the brand wordmark
     this.tag = new WText('Криптокошелёк и карты в Telegram', { y: 1580, size: 40, cls: 'wl-s' });
     cue(0.05, 'shimmer', { gain: 0.3 });
     cue(0.4, 'whoosh', { dur: 1.6, gain: 0.35 });
@@ -285,8 +285,8 @@ scene({
 // the case rounds into a sphere with the app's safe on it; all three plans (Liquid · Monthly · Maximum): 20–100 % годовых
 scene({
   init() {
-    this.pill = chip('<span class="wl-chip" style="font-size:29px;letter-spacing:0.14em;font-weight:700;color:#3a3d46">LIQUID · MONTHLY · MAXIMUM</span>', 720, 86);
-    this.big = new WText('~20–100%', { y: 1318, size: 236, track: -0.06, fit: 960 });
+    this.pill = chip('<span class="wl-kick" style="font-size:28px;font-weight:500">Liquid · Monthly · Maximum</span>', 720, 86);
+    this.big = new WText('~20–100%', { y: 1318, size: 236, track: -0.03, fit: 960 });
     this.sub = new WText('годовых в стейкинге', { y: 1560, size: 50, cls: 'wl-s' });
     cue(T5 + 0.1, 'impact', { gain: 0.5, soft: true });
     cue(T5 + 0.4, 'coin', { gain: 0.55 });

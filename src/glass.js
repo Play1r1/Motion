@@ -79,7 +79,7 @@ LG.reset();
     float hi = smoothstep(0.0, 0.05, f) * (1.0 - smoothstep(0.16, 0.26, f));
     float lo = smoothstep(0.5, 0.56, f) * (1.0 - smoothstep(0.68, 0.76, f));
     col += (hi * 0.05 - lo * 0.028) * rib * vm * mix(1.0, 0.5, uF.z);
-    return mix(col, vec3(1.0), uF.w);
+    return mix(col, vec3(0.9804, 0.9765, 0.9608), uF.w);   // the incpt.io canvas, #faf9f5
   }
   // a textured quad (premultiplied) and the soft contact shadow it casts below itself
   vec4 quad(sampler2D tx, int i, vec2 p, float lod, out float sh) {

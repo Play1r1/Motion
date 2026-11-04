@@ -17,7 +17,7 @@ drawBg = t => LG.draw(t);
 // ------------------------------------------------------------------ type
 // words one by one: 100 ms apart, a short rise and a touch of blur, out fast
 const SHOW = { stagger: 0.1, dur: 0.55, dy: 0.28, blur: 6, outDur: 0.16, outStagger: 0.0, outDy: -0.12 };
-const T = (text, y, size, o = {}) => new WText(text, { y, size, fit: 960, track: -0.04, ...o });
+const T = (text, y, size, o = {}) => new WText(text, { y, size, fit: 960, track: -0.02, ...o });
 // on screen from tin; gone at the cut (tend) or fading out from tout
 function win(txt, t, tin, tend, tout = null, opts = {}) {
   const gate = opts.gate ?? tin - 0.01;
@@ -137,7 +137,7 @@ scene({
 // ======================================================================= 2. THE NAME (2 – 4)
 scene({
   init() {
-    this.name = T('~INCPT', 640, 330, { track: -0.05 });
+    this.name = T('~INCPT', 680, 250, { cls: 'wl-mark', track: 0.06 });   // the brand wordmark, in the site gradient
     this.sub = T('Основной токен\nэкосистемы INCEPTION', 1060, 60, { cls: 'wl-s', lh: 1.18, track: -0.01 });
   },
   update(t) {
@@ -243,10 +243,10 @@ scene({
     this.btn = this.ph.piece('ps_presale');
     this.h = T('Цена ~пресейла', TOP, 128);
     whoosh(12.75, 0.36);
-    this.price = div(`left:0px;top:470px;width:${W}px;text-align:center;font-weight:800;font-size:400px;line-height:1;letter-spacing:-0.06em;`, '<span class="wl-irid" style="display:inline-block"></span>');
+    this.price = div(`left:0px;top:470px;width:${W}px;text-align:center;font-weight:600;font-size:380px;line-height:1;letter-spacing:-0.03em;`, '<span class="wl-irid" style="display:inline-block"></span>');
     this.pv = this.price.firstChild;
     this.unit = T('USDT', 930, 150);
-    this.min = T('Покупка от ~$50,000', 1200, 76, { track: -0.03 });
+    this.min = T('Покупка от ~$50,000', 1200, 76);
   },
   update(t) {
     win(this.h, t, 12.05, 14.0);
@@ -328,14 +328,14 @@ scene({
 });
 
 // ======================================================================= 8. END CARD (22 – 26)
-const PS_STAR = `<svg viewBox="0 0 24 24" width="64" height="64"><defs><linearGradient id="ps4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a6dc1e"/><stop offset="0.45" stop-color="#45c8b2"/><stop offset="1" stop-color="#7357ff"/></linearGradient></defs><circle cx="12" cy="12" r="12" fill="url(#ps4)"/><path d="M11 5.2 C11.45 8.6 12.4 9.55 15.8 10 C12.4 10.45 11.45 11.4 11 14.8 C10.55 11.4 9.6 10.45 6.2 10 C9.6 9.55 10.55 8.6 11 5.2 Z M15.6 13.6 C15.78 14.98 16.12 15.32 17.5 15.5 C16.12 15.68 15.78 16.02 15.6 17.4 C15.42 16.02 15.08 15.68 13.7 15.5 C15.08 15.32 15.42 14.98 15.6 13.6 Z" fill="#fff"/></svg>`;
+const PS_STAR = `<svg viewBox="0 0 24 24" width="64" height="64"><defs><linearGradient id="ps4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a4c34f"/><stop offset="0.5" stop-color="#5ba7c4"/><stop offset="1" stop-color="#968cd3"/></linearGradient></defs><circle cx="12" cy="12" r="12" fill="url(#ps4)"/><path d="M11 5.2 C11.45 8.6 12.4 9.55 15.8 10 C12.4 10.45 11.45 11.4 11 14.8 C10.55 11.4 9.6 10.45 6.2 10 C9.6 9.55 10.55 8.6 11 5.2 Z M15.6 13.6 C15.78 14.98 16.12 15.32 17.5 15.5 C16.12 15.68 15.78 16.02 15.6 17.4 C15.42 16.02 15.08 15.68 13.7 15.5 C15.08 15.32 15.42 14.98 15.6 13.6 Z" fill="#fff"/></svg>`;
 scene({
   init() {
     this.logo = logoImg(560);
     this.title = T('INCEPTION ~Coin', 1078, 132);
     this.tag = T('Токен экосистемы INCEPTION', 1236, 46, { cls: 'wl-s', track: -0.01 });
     this.pill = div(`left:${540 - 290}px;top:1372px;width:580px;height:120px;border-radius:60px;background:#fff;display:flex;align-items:center;justify-content:center;gap:22px;box-shadow:0 22px 44px -20px rgba(20,24,60,0.32), 0 2px 6px rgba(20,24,60,0.06);`,
-      `${PS_STAR}<div style="text-align:left;line-height:1.05"><div style="font-weight:500;font-size:26px;color:#6b6e76">Пресейл</div><div style="font-weight:700;font-size:44px;letter-spacing:-0.02em;color:#0b0b0d">presale.incpt.fi</div></div>`);
+      `${PS_STAR}<div style="text-align:left;line-height:1.05"><div style="font-weight:500;font-size:26px;color:#6b6e76">Пресейл</div><div style="font-weight:700;font-size:44px;letter-spacing:-0.02em;color:#132440">presale.incpt.fi</div></div>`);
     this.risk = div(`left:0px;top:1560px;width:${W}px;text-align:center;font-weight:500;font-size:27px;color:#8b8e96;`, 'Не является инвестиционной рекомендацией');
     whoosh(23.5, 0.2);
   },
