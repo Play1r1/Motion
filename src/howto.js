@@ -124,6 +124,7 @@ function htGroup(sc, def) {
 
 // ------------------------------------------------------------------ the tutorial
 function howto(C) {
+  if (window.USE3D) return howto3d(C);          // the 3D version (src/howto3d.js): same data, a real phone and Liquid Glass
   DURATION = C.duration;
   META = window.BRAND
     ? { drop: 3.0, end: C.outT, bpm: 90, musicEdit: `assets/music/${window.REEL}_edit.json`, sfxGain: 0.45, sfxOnly: ['whoosh', 'tap', 'tick'] }   // the generated tutorial track

@@ -1,0 +1,18 @@
+{
+ "duration": 31.5,
+ "fade_out": 0.8,
+ "pieces": [
+  {
+   "src": "howto_a.mp3",
+   "from": 0.0,
+   "to": 22.841,
+   "at": 0.0
+  },
+  {
+   "src": "howto_a.mp3",
+   "from": 33.507,
+   "to": 43.5,
+   "at": 22.841
+  }
+ ]
+}
