@@ -1,15 +1,15 @@
 # INCPT Wallet: Instagram Reels
 
-Three short reels: 9:16, 1080×1920, 11 s each, 120 BPM.
+Three short reels in the incpt.io style: 9:16, 1080×1920, 20 s each, on an original generated track (vidIQ, royalty-free).
 
 - **Videos:** `incpt_ig_*.mp4` in this folder (`renders/instagram/`), plus `_preview.mp4` for messengers.
 - **Covers:** `cover_*.jpg`, also here.
 
 **Structure of every reel:**
-- 0–2 s: hook;
-- on the 2nd second, the drop;
-- three beats of 2 s each;
-- end card «INCPT WALLET · Доступен в Telegram».
+- 0–4 s: hook;
+- on the 4th second, the drop;
+- three sections of 4 s each (enough time to read every line);
+- 16–20 s: end card, the INCPT lock-up and «Доступен в Telegram».
 
 **Safe areas.** Text stays in the upper third, products sit in the middle, the bottom of the frame is left free for the caption and the buttons.
 
@@ -39,7 +39,7 @@ All money amounts, percentages and operations are taken from the app's screens.
 ```
 Пусть ваши USDT работают 🔐
 
-Стейкинг в INCPT Wallet: 20–40% годовых, прогноз дохода — каждый день.
+Стейкинг в INCPT Wallet: от 20 до 100% годовых (Liquid, Monthly, Maximum), прогноз дохода — каждый день.
 В Liquid Vault пополнять и выводить можно в любой момент (в пределах 20 000 USDT).
 
 Открыть стейкинг — в разделе Stake 👉 ссылка в профиле

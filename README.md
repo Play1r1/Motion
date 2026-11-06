@@ -182,6 +182,24 @@ python3 tools/sound.py out/howto_topup
 bash tools/finalize.sh renders/incpt_howto_topup.mp4 out/howto_topup
 ```
 
+## The incpt.io brand on the older reels (2026-11-06)
+
+Andreas approved the welcome and presale cuts in the incpt.io style («Нормально») and asked for everything else in it.
+The promo, the six how-tos and the three Instagram reels now render in a brand mode of the shared engine.
+`window.BRAND` covers `promo`, `howto_*` and `ig_*`:
+- **Canvas:** `#faf9f5` instead of the foil.
+- **Headlines:** the site's type in navy, in sentence case; `~word` puts a word in the site's gradient; no foil bands.
+- **Mark:** the chrome mark with a soft shadow, no spin, no sheen.
+- **End card:** `brandEnd` in `src/common.js`, with the site's lock-up, a grey tagline and a white Telegram badge.
+- **How-to step card:** white, with the gradient progress and highlight ring.
+- **Time scale:** `window.TS` runs a whole reel slower, cues included, so nothing is rushed. The Instagram reels run at half speed (4 s sections, 20 s); the promo runs a third slower (4 s sections, 36 s).
+- **Music:** generated tracks cut to each reel (`assets/music/*_edit.json`):
+  - `ig_a` (120 BPM): its own build and drop land on the Instagram reels';
+  - `howto_a` (90 BPM): the how-tos, each a whole number of bars shorter from the middle, so the ending lands on the reel's;
+  - the welcome track (90 BPM): the promo.
+- **Sound effects:** only quiet functional cues stay over the music (`META.sfxOnly`).
+- **Staking:** «от 20 до 100% годовых» across the three plans. The app's Liquid Vault screen still reads 20–40% APY for that plan.
+
 ## Instagram reels (RU, 9:16, 11 s)
 
 `renders/instagram/`: `incpt_ig_card.mp4`, `incpt_ig_stake.mp4` and `incpt_ig_swap.mp4` (+ `_preview.mp4`), with covers and ready post texts.
