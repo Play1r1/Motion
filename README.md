@@ -200,7 +200,37 @@ The promo, the six how-tos and the three Instagram reels now render in a brand m
 - **Sound effects:** only quiet functional cues stay over the music (`META.sfxOnly`).
 - **Staking:** «от 20 до 100% годовых» across the three plans. The app's Liquid Vault screen still reads 20–40% APY for that plan.
 
-## Instagram reels (RU, 9:16, 11 s)
+## Instagram films in real 3D (RU, 9:16) — current
+
+They replace the three reels below, which shared one template, one song and flat vector models.
+Each film is built anew: its own concept, its own song and light, its own motion and type animation.
+All three use real 3D (three.js) and Liquid Glass, and every number and line on screen comes from the app.
+
+| Film | Length | World | Story |
+|---|---|---|---|
+| `x_card` | 22 s | Airy and pastel. Its own 110 BPM track: a shimmering intro, then a soft drop. | USDT coins spiral into a Liquid Glass lens, and the INCPT card comes out of it on the drop → the app's rows −$5,025 (ERC-20) and +$5,000 → Starbucks −$18.50 and Nike −$249.90 as the card dips for a tap → the metal card joins («Виртуальные и металлическая») → the cards part for the end card. |
+| `x_stake` | 26 s | Warm. The app's safe in 3D, lit like black chrome with a gold side. Its own 92 BPM track: it breathes before the drop and ends on a ringing chord. | A macro on the dial, which ticks on every beat → the camera pulls back to the whole safe on the drop → the Liquid, Monthly and Maximum tiles snap in on the beats («От 20 до 100% годовых») → the app's deposit card (20,000.00 USDT) counts its forecast up to $14.42. |
+| `x_swap` | 18 s | Cool and kinetic from the first frame. The unused second take of the 120 BPM track, which ends on its own stop. | USDT and BTC orbit as a pair and trade places on the drop → they dock into the app's swap screen in glass → 50% types in 20,000.20 of the real 40,000.40 USDT → the app's fee lines, «Комиссия обмена — в курсе» → the screen turns away like a page. |
+
+The 3D kit is `src/kit3d.js`, loaded for `x_*` and `lab3d*` reels by a module loader in `index.html`:
+- **Studio:** an environment of soft boxes, set per film:
+  - neutral for the card;
+  - for the safe, an amber wall, a cool strip, a black flag and a dark horizon, so polished dark metal reads as in the app;
+  - soft shadows on an invisible backdrop or floor.
+- **Card:** the app's card, with the oil-slick foil (colours sampled from the app's card), a brushed grain, rounded and bevelled corners, the print in Inter and the Mastercard mark. The metal card is brushed graphite.
+- **Safe:** the staking screen's safe, with a chrome body, an inset door, a dial with 72 ridges and the INCPT mark (traced from the logo), gold hinges and feet.
+- **Coins:** a reeded edge, raised rims and enamel faces.
+- **Liquid Glass:** refracting slabs with a rounded rim, a milky layer for legibility and the app's UI printed on them; a biconvex lens. Live UI (counters, the selected chip) is redrawn on its canvas.
+- **Layout:** `K3.L(px, py, z)` places things in frame pixels, so Instagram's safe areas hold at any depth.
+- **Look tests:** `lab3d` (card, coins, glass) and `lab3d_safe` (the safe under the stake light).
+
+```bash
+node tools/render.mjs video --workers 3 --reel x_card       # -> out/x_card/
+python3 tools/sound.py out/x_card
+bash tools/finalize.sh renders/instagram/incpt_x_card.mp4 out/x_card
+```
+
+## Instagram reels (RU, 9:16, 11 s) — superseded by the films above
 
 `renders/instagram/`: `incpt_ig_card.mp4`, `incpt_ig_stake.mp4` and `incpt_ig_swap.mp4` (+ `_preview.mp4`), with covers and ready post texts.
 

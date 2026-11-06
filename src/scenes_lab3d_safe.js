@@ -4,7 +4,7 @@ DURATION = 3.0;
 META = { drop: 0, end: 3, bpm: 120 };
 scene({
   init() {
-    K3.init({ envOpts: { warm: 3.0, cool: 3.5, front: 0.15, flag: 1, horizon: 0.22, floor: 0.08 }, keyPos: [-7, 11, 5], keyI: 1.6, fillI: 0 });
+    K3.init({ envOpts: { warm: 3.0, cool: 3.5, front: 0.15, flag: 1, horizon: 0.22, floor: 0.08 }, keyPos: [-3, 14, 3.5], keyI: 1.6, fillI: 0 });
     this.s = [0, 1, 2, 3].map(() => K3.add(makeSafe()));
   },
   update(t) {

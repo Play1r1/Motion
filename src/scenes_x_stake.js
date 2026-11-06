@@ -50,11 +50,11 @@ function makeDeposit(state) {
 
 scene({
   init() {
-    K3.init({ envOpts: { warm: 4.6, cool: 3.5, front: 0.15, flag: 1, horizon: 0.22, floor: 0.08 }, keyPos: [-7, 11, 5], keyI: 1.6, fillI: 0, shadowOpacity: 0.0 });
+    K3.init({ envOpts: { warm: 4.6, cool: 3.5, front: 0.15, flag: 1, horizon: 0.22, floor: 0.08 }, keyPos: [-3, 14, 3.5], keyI: 1.6, fillI: 0, shadowOpacity: 0.0 });
     K3.backdrop.visible = false;
     // a floor that only catches the safe's shadow: it stands on something
     this.safe = K3.add(makeSafe());
-    this.floor = new THREE.Mesh(new THREE.PlaneGeometry(7, 4.5), new THREE.ShadowMaterial({ opacity: 0.14, depthWrite: false }));
+    this.floor = new THREE.Mesh(new THREE.PlaneGeometry(12, 9), new THREE.ShadowMaterial({ opacity: 0.16, depthWrite: false }));
     this.floor.rotation.x = -Math.PI / 2; this.floor.position.set(0.4, -1.16, -0.2); this.floor.receiveShadow = true;
     this.safe.add(this.floor);          // it tilts with the safe, so its contact shadow reads as a soft pool
     this.tiles = [['liquid', 'Liquid', true], ['monthly', 'Monthly', false], ['maximum', 'Maximum', false]].map(a => K3.add(makeTile(...a)));
@@ -84,7 +84,7 @@ scene({
       ry: lerp(0, 27, pull) - 9 * prog(t, S(2), S(8)) + Math.sin(t * 0.5) * 1.5 * pull, rz: 0, s: lerp(1, hs, pull), vis: end < 1 });
     const k = Math.floor(t / BT), f = oE(clamp((t - k * BT) / 0.16));
     const ticks = Math.min(k + f, 8);                                           // ticks stop for the pull-back
-    this.safe.dial.rotation.z = -ticks * Math.PI / 15 - oE(prog(t, S(2) - 0.05, S(2) + 0.6)) * Math.PI / 2;
+    this.safe.dial.rotation.z = -ticks * Math.PI / 12 - oE(prog(t, S(2) - 0.05, S(2) + 0.9)) * Math.PI * 4 / 3;   // 8 ticks of 15° + the unlock = one full turn: the mark ends upright, as in the app
     // ---- the three modes snap in on the beats after the drop, and step away for the deposit
     this.tiles.forEach((tl, i) => {
       const t0 = S(2) + (1 + i) * BT, a = oE(prog(t, t0, t0 + 0.7)), b = iC(prog(t, S(5) - 0.4 + i * 0.06, S(5) + i * 0.06));
