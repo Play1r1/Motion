@@ -7,7 +7,7 @@
 'use strict';
 
 const K3 = {
-  init({ fov = 26, camZ = 16, shadowOpacity = 0.06, exposure = 1.0, env = 'studio', backdropZ = -2.5 } = {}) {
+  init({ fov = 26, camZ = 16, shadowOpacity = 0.06, exposure = 1.0, env = 'studio', envOpts = {}, backdropZ = -2.5, keyPos = [-1.5, 4, 14], keyI = 2.0, fillI = 0.5 } = {}) {
     const T = THREE, X = THREEX;
     const cv = document.createElement('canvas');
     cv.id = 'k3d';
@@ -28,14 +28,15 @@ const K3 = {
     for (const f of ['400 64px Poppins', '500 64px Poppins', '600 64px Poppins', '400 64px "Montserrat Variable"', '500 64px "Montserrat Variable"', '600 64px "Montserrat Variable"', '400 64px "Inter Variable"', '500 64px "Inter Variable"', '600 64px "Inter Variable"'])
       document.fonts.load(f, 'Баланс карты Ab 0123');   // a Cyrillic sample, so the Cyrillic subset loads too
     const pm = new T.PMREMGenerator(r);
-    sc.environment = pm.fromScene(env === 'room' ? new X.RoomEnvironment() : studioEnv(), 0.02).texture;
+    sc.environment = pm.fromScene(env === 'room' ? new X.RoomEnvironment() : studioEnv(envOpts), 0.02).texture;
     sc.environmentIntensity = 1.0;
     this.scene = sc;
     this.cam = new T.PerspectiveCamera(fov, W / H, 0.1, 400);
+    this.camZ = camZ; this.fov = fov;
     this.cam.position.set(0, 0, camZ);
     // key light from the upper left front, a soft shadow on the backdrop behind
-    const key = new T.DirectionalLight(0xffffff, 2.0);
-    key.position.set(-1.5, 4, 14);
+    const key = new T.DirectionalLight(0xffffff, keyI);
+    key.position.set(...keyPos);
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);
     key.shadow.radius = 40;
@@ -45,7 +46,7 @@ const K3 = {
     sc.add(new T.HemisphereLight(0xffffff, 0xe9e6df, 0.35));
     // a rim light from behind and above: separates metal and glass edges from the white canvas
     const rim = new T.DirectionalLight(0xffffff, 1.4); rim.position.set(3, 6, -8); sc.add(rim);
-    const fill = new T.DirectionalLight(0xf3f1ff, 0.5); fill.position.set(6, -2, 6); sc.add(fill);
+    const fill = new T.DirectionalLight(0xf3f1ff, fillI); fill.position.set(6, -2, 6); sc.add(fill);
     this.key = key;
     // the backdrop: invisible, it only catches the shadow
     const bd = new T.Mesh(new T.PlaneGeometry(80, 120), new T.ShadowMaterial({ opacity: shadowOpacity }));
@@ -64,6 +65,7 @@ const K3 = {
     const tex = new THREE.CanvasTexture(c);
     if (srgb) tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 8;
+    tex.redraw = () => { const g = c.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, w, h); draw(g, w, h); tex.needsUpdate = true; };   // live UI
     this.texJobs.push(() => { draw(c.getContext('2d'), w, h); tex.needsUpdate = true; });
     return tex;
   },
@@ -72,6 +74,8 @@ const K3 = {
     this.r.render(this.scene, this.cam);
   },
   // layout in frame pixels: scene units per pixel at depth z, and the scene point under pixel (px, py) at depth z
+  // layout against the camera's rest pose (fov, camZ from init): frame pixels -> scene units at depth z
+  L(px, py, z = 0) { const u = 2 * (this.camZ - z) * Math.tan(this.fov * Math.PI / 360) / H; return { x: (px - W / 2) * u, y: (H / 2 - py) * u, z, u }; },
   upp(z = 0) { return 2 * (this.cam.position.z - z) * Math.tan(this.cam.fov * Math.PI / 360) / H; },
   at(px, py, z = 0) { const u = this.upp(z); return { x: (px - W / 2) * u + this.cam.position.x, y: (H / 2 - py) * u + this.cam.position.y, z }; },
   // place an object: position (scene units), rotation in degrees, uniform scale
@@ -88,22 +92,28 @@ const K3 = {
 // a product-photography set: a white sweep (bright above, a warm grey floor) and soft boxes. A large key
 // box upper left, a tall strip on the right that draws the long highlight down glass and metal edges, a
 // top panel and a low rim strip behind. HDR values, so the boxes read as light, not as white paint.
-function studioEnv() {
+function studioEnv({ warm = 0, cool = 0, key = 2.6, front = 1.2, flag = 0, horizon = 0.86, floor = 0.55 } = {}) {
+  const f3 = v => `vec3(${v.toFixed(3)}, ${(v * 0.99).toFixed(3)}, ${(v * 0.965).toFixed(3)})`;
   const T = THREE, sc = new T.Scene();
   const sweep = new T.Mesh(new T.SphereGeometry(40, 64, 32), new T.ShaderMaterial({ side: T.BackSide, depthWrite: false,
     vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-    fragmentShader: 'varying vec3 vP; void main(){ float y = vP.y; vec3 top = vec3(1.0), hor = vec3(0.86, 0.85, 0.83), flo = vec3(0.55, 0.54, 0.52);' +
+    fragmentShader: 'varying vec3 vP; void main(){ float y = vP.y; vec3 top = vec3(1.0), hor = ' + f3(horizon) + ', flo = ' + f3(floor) + ';' +
       'vec3 c = y > 0.0 ? mix(hor, top, smoothstep(0.0, 0.7, y)) : mix(hor, flo, smoothstep(0.0, 0.5, -y)); gl_FragColor = vec4(c * 0.9, 1.0); }' }));
   sc.add(sweep);
-  const box = (w, h, k, pos) => {
-    const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(k, k, k), side: T.DoubleSide }));
+  const box = (w, h, k, pos, rgb = [1, 1, 1]) => {
+    const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(k * rgb[0], k * rgb[1], k * rgb[2]), side: T.DoubleSide }));
     m.position.set(...pos); m.lookAt(0, 0, 0); sc.add(m); return m;
   };
-  box(14, 8, 2.6, [-10, 9, 12]);          // key
+  box(14, 8, key, [-10, 9, 12]);          // key
+  // colour accents for a film's own light: a warm amber wall on the left, a cool blue strip on the right
+  if (warm) { box(12, 5, warm, [-10, -4, -10], [1.0, 0.55, 0.16]); box(12, 4, warm * 0.5, [-10, 0.6, -10], [1.0, 0.62, 0.25]); }
+  if (cool) box(2.4, 16, cool, [10, 7, -7], [0.35, 0.62, 1.0]);
+  // a black flag low in front (the camera side): polished dark metal facing the camera then reads dark and deep
+  if (flag) box(30, 14, 0.02, [2, -5, 16]);
   box(2.2, 18, 5.0, [14, 1, 3]);          // right strip
   box(16, 10, 1.6, [0, 16, 0]);           // top
   box(14, 1.6, 3.0, [-4, 2, -14]);        // rim, behind
-  box(6, 6, 1.2, [6, -2, 14]);            // a soft front fill
+  box(6, 6, front, [6, -2, 14]);          // a soft front fill
   return sc;
 }
 
@@ -344,4 +354,79 @@ function makeOpRow(o, { w = 2.9, h = 0.63 } = {}) {
     g.fillStyle = out ? '#121318' : '#2fae52'; g.font = `500 ${0.205 * H_}px ${F}`; g.fillText(o.amount, 0.962 * W_, 0.335 * H_);
     g.fillStyle = '#6a707b'; g.font = `400 ${0.158 * H_}px ${F}`; g.fillText(o.status || '', 0.962 * W_, 0.69 * H_);
   } });
+}
+
+const LOGO_OUTLINE = [-0.2712,0.4939,-0.2839,0.4879,-0.3056,0.4758,-0.3179,0.4636,-0.3256,0.4515,-0.3294,0.4394,-0.3306,0.4273,-0.3296,0.4152,-0.3258,0.4030,-0.3197,0.3909,-0.3114,0.3788,-0.3017,0.3667,-0.2914,0.3545,-0.2801,0.3424,-0.2682,0.3303,-0.2559,0.3182,-0.2435,0.3061,-0.2308,0.2939,-0.2183,0.2818,-0.2056,0.2697,-0.1926,0.2576,-0.1793,0.2455,-0.1660,0.2333,-0.1532,0.2212,-0.1411,0.2091,-0.1294,0.1970,-0.1183,0.1848,-0.1076,0.1727,-0.0975,0.1606,-0.0880,0.1485,-0.0791,0.1364,-0.0712,0.1242,-0.0641,0.1121,-0.0579,0.1000,-0.0524,0.0879,-0.0480,0.0758,-0.0449,0.0636,-0.0427,0.0515,-0.0413,0.0394,-0.0409,0.0273,-0.0417,0.0152,-0.0437,0.0030,-0.0466,-0.0091,-0.0500,-0.0212,-0.0544,-0.0333,-0.0595,-0.0455,-0.0656,-0.0576,-0.0724,-0.0697,-0.0797,-0.0818,-0.0874,-0.0939,-0.0957,-0.1061,-0.1041,-0.1182,-0.1130,-0.1303,-0.1221,-0.1424,-0.1314,-0.1545,-0.1407,-0.1667,-0.1502,-0.1788,-0.1601,-0.1909,-0.1702,-0.2030,-0.1803,-0.2152,-0.1906,-0.2273,-0.2009,-0.2394,-0.2114,-0.2515,-0.2217,-0.2636,-0.2318,-0.2758,-0.2419,-0.2879,-0.2520,-0.3000,-0.2623,-0.3121,-0.2724,-0.3242,-0.2821,-0.3364,-0.2916,-0.3485,-0.3001,-0.3606,-0.3076,-0.3727,-0.3138,-0.3848,-0.3187,-0.3970,-0.3213,-0.4091,-0.3221,-0.4212,-0.3211,-0.4333,-0.3181,-0.4455,-0.3126,-0.4576,-0.3041,-0.4697,-0.2916,-0.4818,-0.2579,-0.4927,-0.2007,-0.4952,-0.1405,-0.4879,-0.1112,-0.4758,-0.0868,-0.4636,-0.0641,-0.4515,-0.0433,-0.4394,-0.0235,-0.4273,-0.0052,-0.4152,0.0120,-0.4030,0.0286,-0.3909,0.0447,-0.3788,0.0599,-0.3667,0.0744,-0.3545,0.0886,-0.3424,0.1021,-0.3303,0.1159,-0.3182,0.1292,-0.3061,0.1419,-0.2939,0.1540,-0.2818,0.1662,-0.2697,0.1781,-0.2576,0.1898,-0.2455,0.2009,-0.2333,0.2120,-0.2212,0.2225,-0.2091,0.2324,-0.1970,0.2421,-0.1848,0.2516,-0.1727,0.2607,-0.1606,0.2692,-0.1485,0.2769,-0.1364,0.2847,-0.1242,0.2920,-0.1121,0.2985,-0.1000,0.3043,-0.0879,0.3102,-0.0758,0.3151,-0.0636,0.3195,-0.0515,0.3229,-0.0394,0.3262,-0.0273,0.3286,-0.0152,0.3304,-0.0030,0.3314,0.0091,0.3318,0.0212,0.3318,0.0333,0.3312,0.0455,0.3298,0.0576,0.3278,0.0697,0.3254,0.0818,0.3223,0.0939,0.3187,0.1061,0.3146,0.1182,0.3102,0.1303,0.3052,0.1424,0.2993,0.1545,0.2930,0.1667,0.2864,0.1788,0.2789,0.1909,0.2712,0.2030,0.2627,0.2152,0.2536,0.2273,0.2439,0.2394,0.2334,0.2515,0.2223,0.2636,0.2106,0.2758,0.1981,0.2879,0.1852,0.3000,0.1720,0.3121,0.1585,0.3242,0.1443,0.3364,0.1294,0.3485,0.1138,0.3606,0.0971,0.3727,0.0791,0.3848,0.0599,0.3970,0.0397,0.4091,0.0187,0.4212,-0.0041,0.4333,-0.0290,0.4455,-0.0563,0.4576,-0.0866,0.4697,-0.1219,0.4818,-0.1548,0.4909];
+// the INCPT mark in 3D: the logo's silhouette (traced from the chrome logo), a pillowed extrusion with the
+// logo's diagonal fluting as a bump, an iridescent chrome; unit height
+function logoFluteTex() {
+  return K3.canvasTex(1024, 1024, (g, w, h) => {
+    g.fillStyle = '#808080'; g.fillRect(0, 0, w, h);
+    g.save(); g.translate(w / 2, h / 2); g.rotate(-0.95);
+    for (let x = -w; x < w; x += 17) { const gr = g.createLinearGradient(x, 0, x + 17, 0);
+      gr.addColorStop(0, '#5a5a5a'); gr.addColorStop(0.5, '#c8c8c8'); gr.addColorStop(1, '#5a5a5a'); g.fillStyle = gr; g.fillRect(x, -h, 17, 2 * h); }
+    g.restore();
+  }, { srgb: false });
+}
+function logoTintTex() {
+  return K3.canvasTex(512, 512, (g, w, h) => {
+    const gr = g.createLinearGradient(0, h, w, 0);
+    ['#b9d36a', '#9fd09a', '#7fc3c0', '#8aa6dc', '#a294da'].forEach((c, i, a) => gr.addColorStop(i / (a.length - 1), c));
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  });
+}
+function makeLogoMark({ depth = 0.16, bevel = 0.07, chrome = false } = {}) {
+  const T = THREE, sh = new T.Shape();
+  for (let i = 0; i < LOGO_OUTLINE.length; i += 2) (i ? sh.lineTo : sh.moveTo).call(sh, LOGO_OUTLINE[i], LOGO_OUTLINE[i + 1]);
+  sh.closePath();
+  const geo = new T.ExtrudeGeometry(sh, { depth, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel * 0.8, bevelSegments: 10, curveSegments: 4, steps: 1 });
+  geo.translate(0, 0, -depth / 2);
+  const p = geo.attributes.position, uv = geo.attributes.uv;
+  for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) + 0.5, p.getY(i) + 0.5);
+  geo.computeVertexNormals();
+  const mat = new T.MeshPhysicalMaterial(chrome ? { color: 0xe9ecf2, metalness: 1, roughness: 0.12, bumpMap: logoFluteTex(), bumpScale: 1.2 }
+    : { map: logoTintTex(), metalness: 1, roughness: 0.14, iridescence: 0.7, iridescenceThicknessRange: [200, 700], bumpMap: logoFluteTex(), bumpScale: 0.9, clearcoat: 0.6 });
+  const m = new T.Mesh(geo, mat); m.castShadow = true;
+  const g = new T.Group(); g.add(m); return g;
+}
+
+// ------------------------------------------------------------------ the app's safe, in 3D
+// modelled on the staking screen's safe: a dark polished chrome body with soft corners, an inset door with a
+// raised bevel, a large dial (bright rim, a ring of ridges, a black centre with the INCPT mark), two gold
+// hinges on the right, four short feet. g.dial turns, g.door swings on the hinge side.
+function makeSafe() {
+  const T = THREE, g = new T.Group(), W_ = 2.2, H_ = 2.1, D = 1.9;
+  const dark = new T.MeshPhysicalMaterial({ color: 0x4a4d55, metalness: 1, roughness: 0.15, clearcoat: 0.8, clearcoatRoughness: 0.05 });
+  const chrome = new T.MeshPhysicalMaterial({ color: 0xe6e9ef, metalness: 1, roughness: 0.07 });
+  const gold = new T.MeshPhysicalMaterial({ color: 0xe2b765, metalness: 1, roughness: 0.16, clearcoat: 0.5 });
+  const black = new T.MeshPhysicalMaterial({ color: 0x141518, metalness: 0.6, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.04 });
+  const body = new T.Mesh(new THREEX.RoundedBoxGeometry(W_, H_, D, 10, 0.3), dark); body.castShadow = true; g.add(body);
+  // the door gap and the door (a rounded slab with a bevel), hinged on the right
+  const gap = new T.Mesh(new T.ShapeGeometry(roundedRectShape(1.8, 1.7, 0.17), 20), new T.MeshBasicMaterial({ color: 0x0b0c0e }));
+  gap.position.z = D / 2 + 0.001; g.add(gap);
+  const hingeX = 0.86;
+  const door = new T.Group(); door.position.set(hingeX, 0, D / 2); g.add(door);
+  const doorMat = new T.MeshPhysicalMaterial({ color: 0x3a3d44, metalness: 1, roughness: 0.2, clearcoat: 0.6, clearcoatRoughness: 0.12 });
+  const slab = new T.Mesh(slabGeometry(1.72, 1.62, 0.15, 0.1, 0.035), doorMat); slab.position.set(-hingeX, 0, 0.03); slab.castShadow = true; door.add(slab);
+  // the dial
+  const dial = new T.Group(); dial.position.set(-hingeX, 0, 0.09); door.add(dial);
+  const rim = new T.Mesh(new T.TorusGeometry(0.52, 0.045, 32, 160), chrome); dial.add(rim);
+  const base = new T.Mesh(new T.CylinderGeometry(0.5, 0.5, 0.04, 128), dark); base.rotation.x = Math.PI / 2; dial.add(base);
+  const ridges = [];
+  for (let i = 0; i < 72; i++) { const b = new T.BoxGeometry(0.014, 0.11, 0.035); b.translate(0, 0.425, 0.03); b.rotateZ(i / 72 * Math.PI * 2); ridges.push(b); }
+  dial.add(new T.Mesh(THREEX.mergeGeometries(ridges), chrome));
+  const inner = new T.Mesh(new T.TorusGeometry(0.355, 0.022, 24, 128), chrome); inner.position.z = 0.03; dial.add(inner);
+  const centre = new T.Mesh(new T.CylinderGeometry(0.34, 0.34, 0.05, 128), black); centre.rotation.x = Math.PI / 2; centre.position.z = 0.03; dial.add(centre);
+  const mark = makeLogoMark({ depth: 0.05, bevel: 0.035, chrome: true }); mark.scale.setScalar(0.4); mark.position.z = 0.075; dial.add(mark);
+  // hinges and feet
+  for (const y of [0.42, -0.42]) {
+    const h = new T.Mesh(new T.CylinderGeometry(0.075, 0.075, 0.36, 40), gold); h.position.set(hingeX + 0.02, y, D / 2 + 0.07); g.add(h);
+    for (const e of [1, -1]) { const c = new T.Mesh(new T.SphereGeometry(0.075, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), gold); c.position.set(hingeX + 0.02, y + e * 0.18, D / 2 + 0.07); if (e < 0) c.rotation.x = Math.PI; g.add(c); }
+  }
+  for (const [x, z] of [[-0.72, 0.6], [0.72, 0.6], [-0.72, -0.6], [0.72, -0.6]]) {
+    const f = new T.Mesh(new T.CylinderGeometry(0.15, 0.13, 0.12, 40), dark); f.position.set(x, -H_ / 2 - 0.04, z); g.add(f);
+  }
+  g.traverse(o => { if (o.isMesh && o.material !== gap.material) o.castShadow = true; });
+  Object.assign(g, { dial, door });
+  return g;
 }
