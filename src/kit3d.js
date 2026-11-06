@@ -385,7 +385,7 @@ function makeLogoMark({ depth = 0.16, bevel = 0.07, chrome = false } = {}) {
   for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) + 0.5, p.getY(i) + 0.5);
   geo.computeVertexNormals();
   const mat = new T.MeshPhysicalMaterial(chrome ? { color: 0xe9ecf2, metalness: 1, roughness: 0.12, bumpMap: logoFluteTex(), bumpScale: 1.2 }
-    : { map: logoTintTex(), metalness: 1, roughness: 0.14, iridescence: 0.7, iridescenceThicknessRange: [200, 700], bumpMap: logoFluteTex(), bumpScale: 0.9, clearcoat: 0.6 });
+    : { map: logoTintTex(), metalness: 0.42, roughness: 0.2, iridescence: 0.6, iridescenceThicknessRange: [200, 700], bumpMap: logoFluteTex(), bumpScale: 0.9, clearcoat: 1, clearcoatRoughness: 0.1 });   // pastel like the logo in any studio
   const m = new T.Mesh(geo, mat); m.castShadow = true;
   const g = new T.Group(); g.add(m); return g;
 }

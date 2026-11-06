@@ -1,0 +1,5 @@
+{"duration": 30.0, "fade_out": 0.5, "pieces": [
+  {"src": "ig_a.mp3", "from": 10.25, "to": 28.22, "at": 0.0},
+  {"src": "ig_a.mp3", "from": 18.24, "to": 24.23, "at": 17.97},
+  {"src": "ig_a.mp3", "from": 24.23, "to": 30.22, "at": 23.96}
+]}

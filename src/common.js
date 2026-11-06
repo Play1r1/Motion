@@ -32,7 +32,7 @@ const home = n => { const c = MANIFEST.cutouts[n], so = MANIFEST.phone.screenOff
 // L: layout (logo centre / height, lock-up top, badge top) — defaults are the 9:16 frame
 // L.title: lock-up words (html, .lk-w spans); L.badge: () => an object with set() like TgBadge
 function endCard(T0, tagline, END = DURATION, sfx = 1, L = {}) {
-  if (window.BRAND) return brandEnd(T0, tagline, END, sfx);
+  if (window.BRAND) return brandEnd(T0, tagline, END, sfx, L);
   L = { logoY: 640, logoH: 520, lockTop: 968, badgeY: 1300, ...L };
   scene({
     init() {
@@ -93,7 +93,7 @@ function endCard(T0, tagline, END = DURATION, sfx = 1, L = {}) {
 // ======================================================================= BRAND END CARD (incpt.io)
 // The site's lock-up comes into focus (the chrome mark, then the INCPT wordmark sliding out from behind
 // it), a grey tagline, the white «Доступен в Telegram» badge. No spins, no foil.
-function brandEnd(T0, tagline, END = DURATION, sfx = 1) {
+function brandEnd(T0, tagline, END = DURATION, sfx = 1, { sharp = false } = {}) {   // sharp: the logo lands without the focus pull (a 3D mark hands over to it)
   const AR = 743 / 1081, LH = 250, CY = 760, q = 1 / (window.TS || 1);   // offsets in real seconds whatever the reel's TS
   scene({
     init() {
@@ -120,7 +120,7 @@ function brandEnd(T0, tagline, END = DURATION, sfx = 1) {
       if (!on) { this.badge.set({ o: 0 }); return; }
       const lw = LH * AR, ww = this.wm.offsetWidth, gap = LH * 0.17, left = 540 - (lw + gap + ww) / 2;
       const f = Ease.outExpo(prog(t, T0, T0 + 0.9 * q)), d = prog(t, T0, END);
-      const s = lerp(1.32, 1, f), b = (1 - f) * 22;
+      const s = sharp ? 1 : lerp(1.32, 1, f), b = sharp ? 0 : (1 - f) * 22;
       Object.assign(this.logo.style, { left: left + 'px', top: (CY - LH / 2) + 'px', opacity: clamp((t - T0) / (0.2 * q)).toFixed(3),
         transform: `perspective(1800px) rotateY(${lerp(-4, 4, d).toFixed(2)}deg) rotateX(${lerp(2, -2, d).toFixed(2)}deg) scale(${s.toFixed(4)})`,
         filter: `drop-shadow(0 26px 30px rgba(19,36,64,0.2))${b > 0.1 ? ` blur(${b.toFixed(2)}px)` : ''}` });
