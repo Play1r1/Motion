@@ -66,7 +66,7 @@ scene({
     const M0 = at(0, 540, 900, 0), sp = oE(prog(t, S(4) - 0.4, S(4) + 0.6));
     const land = Ease.outCubic(prog(t, S(12) - 0.7, S(12))), M4 = at(4, 272, 760, 4);
     const markOn = t < S(4) + 0.6 || t > S(12) - 0.8;
-    if (t < S(8)) K3.pose(this.mark, { x: M0.x, y: M0.y, z: 0, rx: 4, ry: Math.sin(t * 0.6) * 28 + sp * 360, rz: 0, s: 1.6, vis: markOn && vis(0) });
+    if (t < S(8)) K3.pose(this.mark, { x: M0.x, y: M0.y, z: 0, rx: 4, ry: Math.sin(t * 0.6) * 16 + sp * 360, rz: 0, s: 1.6, vis: markOn && vis(0) });
     else K3.pose(this.mark, { x: lerp(M4.x + 1.5, M4.x, land), y: lerp(M4.y - 2.2, M4.y, land), z: lerp(-6, 4, land), rx: lerp(25, 0, land), ry: lerp(-200, 0, land), rz: 0,
       s: 0.65, vis: markOn && t < S(12) + 0.25 });
     this.coins.forEach((c, i) => {

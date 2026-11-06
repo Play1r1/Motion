@@ -375,7 +375,7 @@ function logoTintTex() {
     g.fillStyle = gr; g.fillRect(0, 0, w, h);
   });
 }
-function makeLogoMark({ depth = 0.16, bevel = 0.07, chrome = false } = {}) {
+function makeLogoMark({ depth = 0.05, bevel = 0.05, chrome = false } = {}) {
   const T = THREE, sh = new T.Shape();
   for (let i = 0; i < LOGO_OUTLINE.length; i += 2) (i ? sh.lineTo : sh.moveTo).call(sh, LOGO_OUTLINE[i], LOGO_OUTLINE[i + 1]);
   sh.closePath();
@@ -385,7 +385,8 @@ function makeLogoMark({ depth = 0.16, bevel = 0.07, chrome = false } = {}) {
   for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) + 0.5, p.getY(i) + 0.5);
   geo.computeVertexNormals();
   const mat = new T.MeshPhysicalMaterial(chrome ? { color: 0xe9ecf2, metalness: 1, roughness: 0.12, bumpMap: logoFluteTex(), bumpScale: 1.2 }
-    : { map: logoTintTex(), metalness: 0.42, roughness: 0.2, iridescence: 0.6, iridescenceThicknessRange: [200, 700], bumpMap: logoFluteTex(), bumpScale: 0.9, clearcoat: 1, clearcoatRoughness: 0.1 });   // pastel like the logo in any studio
+    : { map: logoTintTex(), metalness: 0.25, roughness: 0.18, iridescence: 0.5, iridescenceThicknessRange: [200, 700], bumpMap: logoFluteTex(), bumpScale: 0.9, clearcoat: 1, clearcoatRoughness: 0.1,
+        emissiveMap: logoTintTex(), emissive: 0xffffff, emissiveIntensity: 0.22 });   // pastel like the logo in any studio, dark or light
   const m = new T.Mesh(geo, mat); m.castShadow = true;
   const g = new T.Group(); g.add(m); return g;
 }
