@@ -212,6 +212,23 @@ All three use real 3D (three.js) and Liquid Glass, and every number and line on 
 | `x_stake` | 26 s | Warm. The app's safe in 3D, lit like black chrome with a gold side. Its own 92 BPM track: it breathes before the drop and ends on a ringing chord. | A macro on the dial, which ticks on every beat → the camera pulls back to the whole safe on the drop → the Liquid, Monthly and Maximum tiles snap in on the beats («От 20 до 100% годовых») → the app's deposit card (20,000.00 USDT) counts its forecast up to $14.42. |
 | `x_swap` | 18 s | Cool and kinetic from the first frame. The unused second take of the 120 BPM track, which ends on its own stop. | USDT and BTC orbit as a pair and trade places on the drop → they dock into the app's swap screen in glass → 50% types in 20,000.20 of the real 40,000.40 USDT → the app's fee lines, «Комиссия обмена — в курсе» → the screen turns away like a page. |
 
+**Promo** (`x_promo`, 30 s, `renders/incpt_x_promo.mp4`):
+- **The move:** one camera travels along a shelf of the product, holding at each station and whipping fast on the bar lines.
+- **Open:** the INCPT mark in 3D (the logo's silhouette and fluting, pastel iridescent), ringed by the wallet's five coins (USDT, USDC, BTC, ETH, TRX).
+- **Stations:** on the drop the cards (with a Starbucks row in glass), then the safe («прогноз $14.42 сегодня»), then USDT and BTC trading places.
+- **Close:** the mark comes back and lands on the end card's logo, which takes over without a focus pull.
+- **Music:** the first take of the 120 BPM track, with its groove looped once.
+
+**How-tos in 3D** (`x_howto_<name>`, the same six tutorials):
+- **Engine:** `src/howto3d.js` runs the unchanged how-to configs in `scenes_howto_*.js` on a titanium phone with a glass cover.
+- **Screen:** the real screenshots, composed per frame with the app's transitions, scrolls, the highlight (a dim around the target and the brand-gradient ring) and tap ripples.
+- **Glass:**
+  - a lifted piece of UI becomes a Liquid Glass tile that rises off the screen and refracts it;
+  - the pointer is a glass fingertip;
+  - notes are glass pills;
+  - the step card is a glass slab under the DOM copy.
+- **Intro:** opens on the 3D mark.
+
 The 3D kit is `src/kit3d.js`, loaded for `x_*` and `lab3d*` reels by a module loader in `index.html`:
 - **Studio:** an environment of soft boxes, set per film:
   - neutral for the card;
@@ -225,9 +242,10 @@ The 3D kit is `src/kit3d.js`, loaded for `x_*` and `lab3d*` reels by a module lo
 - **Look tests:** `lab3d` (card, coins, glass) and `lab3d_safe` (the safe under the stake light).
 
 ```bash
-node tools/render.mjs video --workers 3 --reel x_card       # -> out/x_card/
+node tools/render.mjs video --workers 3 --reel x_card       # -> out/x_card/ (also x_stake, x_swap, x_promo, x_howto_topup, ...)
 python3 tools/sound.py out/x_card
 bash tools/finalize.sh renders/instagram/incpt_x_card.mp4 out/x_card
+ffmpeg -ss 7 -i renders/instagram/incpt_x_card.mp4 -frames:v 1 -q:v 2 renders/instagram/cover_x_card.jpg
 ```
 
 ## Instagram reels (RU, 9:16, 11 s) — superseded by the films above

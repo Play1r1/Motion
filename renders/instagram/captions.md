@@ -1,40 +1,36 @@
-# INCPT Wallet: Instagram Reels
+# INCPT Wallet: Instagram films
 
-Three short reels in the incpt.io style: 9:16, 1080×1920, 20 s each, on an original generated track (vidIQ, royalty-free).
+Three short films in the incpt.io style, 9:16, 1080×1920, built in real 3D with Liquid Glass.
+Each film has its own original generated track (vidIQ, royalty-free), its own light and its own motion.
 
-- **Videos:** `incpt_ig_*.mp4` in this folder (`renders/instagram/`), plus `_preview.mp4` for messengers.
-- **Covers:** `cover_*.jpg`, also here.
+- **Videos:** `incpt_x_*.mp4` in this folder (`renders/instagram/`), plus `_preview.mp4` for messengers.
+- **Covers:** `cover_x_*.jpg`, also here.
+- **Superseded:** the older reels (`incpt_ig_*.mp4`, `cover_card/stake/swap.jpg`) used one shared template and should no longer be posted.
 
-**Structure of every reel:**
-- 0–4 s: hook;
-- on the 4th second, the drop;
-- three sections of 4 s each (enough time to read every line);
-- 16–20 s: end card, the INCPT lock-up and «Доступен в Telegram».
-
-**Safe areas.** Text stays in the upper third, products sit in the middle, the bottom of the frame is left free for the caption and the buttons.
+**Safe areas.** Text stays in the upper part of the frame, models and UI sit in the middle, and the bottom is left free for the caption and the buttons.
 
 All money amounts, percentages and operations are taken from the app's screens.
 
 ---
 
-## 1. «Из крипты — в карту»: `incpt_ig_card.mp4`
+## 1. «Из крипты — в карту»: `incpt_x_card.mp4` (22 s)
 
-**Cover:** `cover_card.jpg`
+**Cover:** `cover_x_card.jpg`
 
 ```
-Крипта → карта за пару тапов 💳
+Из крипты — в карту 💳
 
 Пополняете карту INCPT из USDT и платите ей как обычной картой — в кофейне, в магазине, онлайн.
-Виртуальная или металлическая — выбирайте сами.
+Виртуальные и металлическая — выбирайте сами.
 
 Всё прямо в Telegram 👉 ссылка в профиле
 
 #INCPTWallet #криптокарта #криптовалюта #USDT #крипта #Telegram #финтех #crypto
 ```
 
-## 2. «Пусть USDT работают»: `incpt_ig_stake.mp4`
+## 2. «Пусть USDT работает»: `incpt_x_stake.mp4` (26 s)
 
-**Cover:** `cover_stake.jpg`
+**Cover:** `cover_x_stake.jpg`
 
 ```
 Пусть ваши USDT работают 🔐
@@ -49,17 +45,17 @@ All money amounts, percentages and operations are taken from the app's screens.
 #INCPTWallet #стейкинг #USDT #пассивныйдоход #криптовалюта #крипта #Telegram #crypto
 ```
 
-## 3. «Обмен в один тап»: `incpt_ig_swap.mp4`
+## 3. «Обмен внутри кошелька»: `incpt_x_swap.mp4` (18 s)
 
-**Cover:** `cover_swap.jpg`
+**Cover:** `cover_x_swap.jpg`
 
 ```
-5 монет — один кошелёк ⚡️
+Обмен — прямо в кошельке ⚡️
 
-USDT, USDC, Bitcoin, Ethereum и TRON в одном месте.
-Меняйте одну монету на другую в один тап: курс и комиссии видны сразу, до обмена.
+Отдаёте USDT — получаете BTC. Выбираете сумму (25%, 50%, 75% или Макс), видите комиссию сети до обмена.
+Комиссия обмена уже в курсе — без сюрпризов.
 
-Получай · Обменивай · Отправляй — всё в Telegram 👉 ссылка в профиле
+Всё в Telegram 👉 ссылка в профиле
 
 #INCPTWallet #обменкрипты #биткоин #USDT #криптовалюта #крипта #Telegram #crypto
 ```
@@ -68,7 +64,7 @@ USDT, USDC, Bitcoin, Ethereum и TRON в одном месте.
 
 ## Posting tips
 
-- **Cover:** upload the cover from this folder via «Изменить обложку» → «Добавить из галереи». In the profile grid Instagram crops the Reel to 3:4 around the centre, and the cover's headline and product stay inside that crop.
+- **Cover:** upload the cover from this folder via «Изменить обложку» → «Добавить из галереи». In the profile grid Instagram crops the Reel to 3:4 around the centre; the covers keep the headline and the model inside that crop.
 - **Pinned comment:** pin the first comment with the bot link, so the profile link is not the only way in.
-- **Sound:** our tracks are generated, so there are no rights issues and the Reel will not be muted. On top of them you can add a trending sound at low volume.
-- **Schedule:** one Reel every 2–3 days. The tutorials make good Stories with a link sticker.
+- **Sound:** the tracks are generated, so there are no rights issues and the Reel will not be muted.
+- **Schedule:** one film every 2–3 days.
