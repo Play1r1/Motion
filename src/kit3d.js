@@ -430,3 +430,49 @@ function makeSafe() {
   Object.assign(g, { dial, door });
   return g;
 }
+
+// ------------------------------------------------------------------ a phone, for the how-tos
+// a titanium frame with a bevel, a black bezel, the screen (any texture: a real app screen, or a live canvas
+// the scene composes per frame), an additive glass layer that only adds the studio's reflections, the
+// island, the side buttons, a frosted back with the camera plateau. Screen 920 × 2000 px = 2.78 × 6.05 units.
+function imgTex(src) {
+  const im = mkImg(src), tex = new THREE.Texture(im);
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  K3.texJobs.push(() => { tex.needsUpdate = true; });
+  return tex;
+}
+function screenCanvas(w = 920, h = 2000) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  return { c, g: c.getContext('2d'), tex, w, h };
+}
+function makePhone(screenTex, { frame = 0xbdb9b2 } = {}) {
+  const T = THREE, g = new T.Group(), W_ = 3.0, H_ = 6.3, D = 0.32, SW = 2.78, SH = 6.05;
+  const ti = new T.MeshPhysicalMaterial({ color: frame, metalness: 1, roughness: 0.3, clearcoat: 0.3, clearcoatRoughness: 0.3 });
+  const body = new T.Mesh(slabGeometry(W_, H_, 0.5, D, 0.07), ti); body.castShadow = true; g.add(body);
+  const flat = (w, h, r, mat, z) => {
+    const geo = new T.ShapeGeometry(roundedRectShape(w, h, r), 24), p = geo.attributes.position, uv = geo.attributes.uv;
+    for (let i = 0; i < p.count; i++) uv.setXY(i, (p.getX(i) + w / 2) / w, (p.getY(i) + h / 2) / h);
+    const m = new T.Mesh(geo, mat); m.position.z = z; g.add(m); return m;
+  };
+  flat(2.92, 6.2, 0.46, new T.MeshPhysicalMaterial({ color: 0x050506, roughness: 0.2, clearcoat: 1 }), D / 2 + 0.001);   // the bezel
+  g.screen = flat(SW, SH, 0.4, new T.MeshBasicMaterial({ map: screenTex, toneMapped: false }), D / 2 + 0.002);
+  flat(0.86, 0.25, 0.125, new T.MeshBasicMaterial({ color: 0x000000 }), D / 2 + 0.003).position.y = SH / 2 - 0.3;      // the island
+  // the cover glass: adds only reflections (additive), so the screen keeps its true colours
+  flat(2.92, 6.2, 0.46, new T.MeshPhysicalMaterial({ color: 0x000000, roughness: 0.04, metalness: 0, envMapIntensity: 0.55,
+    transparent: true, blending: T.AdditiveBlending, depthWrite: false }), D / 2 + 0.004).renderOrder = 4;
+  // buttons
+  for (const [x, y, h] of [[-1, 1.75, 0.3], [-1, 1.2, 0.55], [-1, 0.5, 0.55], [1, 1.25, 0.9]]) {
+    const b = new T.Mesh(new THREEX.RoundedBoxGeometry(0.05, h, 0.12, 3, 0.02), ti); b.position.set(x * (W_ / 2 + 0.012), y, 0); g.add(b);
+  }
+  // the back: frosted glass and the camera plateau
+  const back = flat(2.92, 6.2, 0.46, new T.MeshPhysicalMaterial({ color: 0xd9d5ce, roughness: 0.55, metalness: 0, clearcoat: 0.2 }), -D / 2 - 0.001);
+  back.rotation.y = Math.PI;
+  const plat = new T.Mesh(slabGeometry(1.25, 1.25, 0.3, 0.06, 0.02), new T.MeshPhysicalMaterial({ color: 0xc9c5be, roughness: 0.35, metalness: 0.2, clearcoat: 0.6 }));
+  plat.position.set(0.7, 2.25, -D / 2 - 0.03); g.add(plat);
+  for (const [x, y] of [[0.42, 2.53], [0.42, 1.97], [0.98, 2.25]]) {
+    const l = new T.Mesh(new T.CylinderGeometry(0.2, 0.22, 0.08, 48), new T.MeshPhysicalMaterial({ color: 0x0a0b0d, metalness: 0.5, roughness: 0.1, clearcoat: 1 }));
+    l.rotation.x = Math.PI / 2; l.position.set(x, y, -D / 2 - 0.08); g.add(l);
+  }
+  return g;
+}
