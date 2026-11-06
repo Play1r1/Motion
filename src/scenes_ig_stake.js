@@ -31,7 +31,7 @@ scene({
     // withdrawals: the top coin of a stack flies out
     const top = s => C.filter(c => c.stack === s).slice(-1)[0];
     [[2, 6.25], [1, 6.75], [0, 7.25]].forEach(([s, t]) => { top(s).out = t; });
-    this.apy = new VChip(cam, { html: '20–100% APY', size: 64, W: 700 });   // all three plans (Liquid · Monthly · Maximum)
+    this.apy = new VChip(cam, { html: 'Liquid · Monthly · Maximum', size: 46, W: 760 });   // the three plans behind 20–100 %
     this.stat = new VStat(cam, { W: 600, value: '$20,000.00', caption: 'Всего в стейкинге' });
     this.fc = new VChip(cam, { html: '⚡&nbsp;прогноз $14.42 сегодня', size: 40, W: 760 });
     this.plus = [0, 1, 2, 3].map(() => new VChip(cam, { html: '+$14.42', size: 34, W: 300 }));
