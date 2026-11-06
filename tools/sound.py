@@ -997,8 +997,11 @@ def scroll(d):
     return x
 
 
+SFX_ONLY = META.get("sfxOnly")         # with generated music: keep only the quiet, functional cues
 for c in cues["cues"]:
     k, at, g = c["type"], c["t"], c.get("gain", 0.5)
+    if SFX_ONLY and k not in SFX_ONLY:
+        continue
     pan = c.get("pan", 0.0)
     if k == "whoosh":
         place(sfx, whoosh(c.get("dur", 0.45), c.get("up", False)), at, g * 0.55, pan)

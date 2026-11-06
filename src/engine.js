@@ -42,7 +42,9 @@ const sn = (x, y, t, s = 0) =>
 
 // ------------------------------------------------------------------ sound cues
 const CUES = [];
-const cue = (t, type, o = {}) => CUES.push({ t: +t.toFixed(4), type, ...o });
+// TS: a reel's whole timeline can run slower (scene time = real time / TS); its cues follow
+const TSc = () => window.TS || 1;
+const cue = (t, type, o = {}) => { const k = TSc(), q = { ...o }; for (const f of ['dur', 'step']) if (q[f] !== undefined) q[f] *= k; CUES.push({ t: +(t * k).toFixed(4), type, ...q }); };
 
 // ------------------------------------------------------------------ DOM nodes
 let MANIFEST = null;
@@ -256,8 +258,8 @@ class Headline {
       }
       for (const w of line.split(' ')) {
         const s = document.createElement('span');
-        s.className = 'word';
-        s.textContent = w.replace(/_/g, '\u00a0');
+        s.className = 'word' + (w.startsWith('~') ? ' acc' : '');
+        s.textContent = w.replace(/^~/, '').replace(/_/g, '\u00a0');
         inner.appendChild(s);
         this.words.push(s);
       }
@@ -318,7 +320,7 @@ class Headline {
 // INCPT logo in screen space with its own perspective; a thin sheen sweeps the foil
 class LogoMark {
   constructor() {
-    const L = MANIFEST.logo;
+    const L = window.BRAND ? { src: 'style/logo_chrome.png', size: [743, 1081], shadow: 'style/logo_chrome.png', shadowPad: 0 } : MANIFEST.logo;
     this.el = document.createElement('div');
     this.el.className = 'logo3d';
     this.inner = document.createElement('div');
@@ -326,6 +328,7 @@ class LogoMark {
     Object.assign(this.inner.style, { width: L.size[0] + 'px', height: L.size[1] + 'px' });
     this.shadow = mkImg(L.shadow, 'abs');
     Object.assign(this.shadow.style, { left: -L.shadowPad + 'px', top: -L.shadowPad + 'px' });
+    if (window.BRAND) Object.assign(this.shadow.style, { width: L.size[0] + 'px', height: L.size[1] + 'px', filter: 'brightness(0) blur(26px) opacity(0.22)', transform: 'translateY(46px)' });
     this.inner.appendChild(this.shadow);
     this.inner.appendChild(mkImg(L.src, 'fill'));
     this.sheen = document.createElement('div');
@@ -347,6 +350,7 @@ class LogoMark {
     st.opacity = o >= 0.999 ? '' : o.toFixed(3);
     st.filter = blur > 0.05 ? `blur(${(blur / k).toFixed(2)}px)` : '';
     this.shadow.style.opacity = shadow.toFixed(3);
+    if (window.BRAND) sheen = null;                       // no foil sheen on the chrome mark
     this.sheen.style.display = sheen === null ? 'none' : '';
     if (sheen !== null) this.sheen.style.backgroundPosition = `${(120 - sheen * 140).toFixed(2)}% 50%`;
   }
@@ -415,6 +419,7 @@ function foil(h) {
   return [lerp(a[0], b[0], e), lerp(a[1], b[1], e), lerp(a[2], b[2], e)];
 }
 function drawBg(t) {
+  if (window.BRAND) { bgCtx.fillStyle = '#faf9f5'; bgCtx.fillRect(0, 0, W, H); return; }   // the incpt.io canvas
   // parallax: background moves ~35% of the camera and scales a third as much
   const px = -CAM.x * 0.35 / W * 2.2, py = -CAM.y * 0.35 / H * VS_, ps = 1 / (1 + (CAM.s - 1) * 0.3);
   const d = fieldImg.data;
@@ -468,15 +473,17 @@ async function boot() {
   await document.fonts.ready;
   await Promise.all(IMGS.map(im => (im.complete ? im.decode().catch(() => {}) : new Promise(r => { im.onload = () => im.decode().then(r, r); im.onerror = r; }))));
   window.CUES = CUES.sort((a, b) => a.t - b.t);
-  window.DURATION = DURATION;
-  window.META = META;
+  window.DURATION = DURATION * TSc();
+  window.META = { ...META };
+  for (const k of ['drop', 'end', 'build', 'drop2']) if (typeof META[k] === 'number') window.META[k] = META[k] * TSc();
   window.FPS = FPS;
   window.READY = true;
 }
 
 window.seek = (t, frame = Math.round(t * FPS)) => {
   CAM.x = 0; CAM.y = 0; CAM.s = 1; CAM.rz = 0; BGP.deep = 0; BGP.white = 0;
-  for (const s of SCENES) s.update(t);
+  const ts = t / TSc();
+  for (const s of SCENES) s.update(ts);
   $('#cam').style.transform = `translate(${CAM.x.toFixed(2)}px, ${CAM.y.toFixed(2)}px) scale(${CAM.s.toFixed(4)}) rotateZ(${CAM.rz.toFixed(3)}deg)`;
   drawBg(t);
   return true;

@@ -1,0 +1,12 @@
+{
+ "duration": 44.0,
+ "fade_out": 0.8,
+ "pieces": [
+  {
+   "src": "howto_a.mp3",
+   "from": 0.0,
+   "to": 43.5,
+   "at": 0.0
+  }
+ ]
+}

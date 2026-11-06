@@ -32,6 +32,7 @@ const home = n => { const c = MANIFEST.cutouts[n], so = MANIFEST.phone.screenOff
 // L: layout (logo centre / height, lock-up top, badge top) — defaults are the 9:16 frame
 // L.title: lock-up words (html, .lk-w spans); L.badge: () => an object with set() like TgBadge
 function endCard(T0, tagline, END = DURATION, sfx = 1, L = {}) {
+  if (window.BRAND) return brandEnd(T0, tagline, END, sfx);
   L = { logoY: 640, logoH: 520, lockTop: 968, badgeY: 1300, ...L };
   scene({
     init() {
@@ -85,6 +86,51 @@ function endCard(T0, tagline, END = DURATION, sfx = 1, L = {}) {
       Object.assign(this.tag.style, { letterSpacing: ts + 'em', paddingLeft: ts + 'em', opacity: clamp(pt * 1.6).toFixed(3) });
       const pb = oX(prog(t, c + 1.62, c + 2.3));
       this.badge.set({ y: L.badgeY, o: clamp((t - (c + 1.62)) * 6), dy: (1 - pb) * 60, s: lerp(0.92, 1, pb), blur: (1 - pb) * 8 });
+    },
+  });
+}
+
+// ======================================================================= BRAND END CARD (incpt.io)
+// The site's lock-up comes into focus (the chrome mark, then the INCPT wordmark sliding out from behind
+// it), a grey tagline, the white «Доступен в Telegram» badge. No spins, no foil.
+function brandEnd(T0, tagline, END = DURATION, sfx = 1) {
+  const AR = 743 / 1081, LH = 250, CY = 760, q = 1 / (window.TS || 1);   // offsets in real seconds whatever the reel's TS
+  scene({
+    init() {
+      this.logo = mkImg('style/logo_chrome.png', 'abs');
+      Object.assign(this.logo.style, { width: LH * AR + 'px', height: LH + 'px', zIndex: '6', transformOrigin: '50% 50%' });
+      $('#text').appendChild(this.logo);
+      this.wm = document.createElement('div');
+      this.wm.className = 'wl wl-mark';
+      Object.assign(this.wm.style, { fontSize: '150px', zIndex: '6' });
+      this.wm.textContent = 'INCPT';
+      $('#text').appendChild(this.wm);
+      this.tag = document.createElement('div');
+      this.tag.className = 'wl wl-s';
+      Object.assign(this.tag.style, { left: '0px', top: '1000px', width: W + 'px', textAlign: 'center', fontSize: '44px' });
+      this.tag.textContent = tagline;
+      $('#text').appendChild(this.tag);
+      this.badge = new TgBadge('Доступен в', 'Telegram');
+      cue(T0, 'whoosh', { dur: 0.6, gain: 0.35 * sfx });
+      cue(T0 + 0.3 * q, 'whoosh', { dur: 0.4, gain: 0.25 * sfx, up: true });
+    },
+    update(t) {
+      const on = t >= T0;
+      for (const el of [this.logo, this.wm, this.tag]) el.style.display = on ? '' : 'none';
+      if (!on) { this.badge.set({ o: 0 }); return; }
+      const lw = LH * AR, ww = this.wm.offsetWidth, gap = LH * 0.17, left = 540 - (lw + gap + ww) / 2;
+      const f = Ease.outExpo(prog(t, T0, T0 + 0.9 * q)), d = prog(t, T0, END);
+      const s = lerp(1.32, 1, f), b = (1 - f) * 22;
+      Object.assign(this.logo.style, { left: left + 'px', top: (CY - LH / 2) + 'px', opacity: clamp((t - T0) / (0.2 * q)).toFixed(3),
+        transform: `perspective(1800px) rotateY(${lerp(-4, 4, d).toFixed(2)}deg) rotateX(${lerp(2, -2, d).toFixed(2)}deg) scale(${s.toFixed(4)})`,
+        filter: `drop-shadow(0 26px 30px rgba(19,36,64,0.2))${b > 0.1 ? ` blur(${b.toFixed(2)}px)` : ''}` });
+      const r = Ease.outExpo(prog(t, T0 + 0.25 * q, T0 + 1.0 * q));
+      Object.assign(this.wm.style, { left: (left + lw + gap - (1 - r) * 120) + 'px', top: (CY - 75) + 'px', opacity: clamp((t - T0 - 0.25) / 0.2).toFixed(3),
+        clipPath: `inset(-20px ${((1 - r) * 100).toFixed(2)}% -20px 0)` });
+      const k = Ease.outExpo(prog(t, T0 + 0.75 * q, T0 + 1.4 * q));
+      Object.assign(this.tag.style, { opacity: clamp((t - T0 - 0.75) / 0.25).toFixed(3), transform: `translateY(${((1 - k) * 20).toFixed(2)}px)` });
+      const pb = Ease.outExpo(prog(t, T0 + 1.25 * q, T0 + 1.9 * q));
+      this.badge.set({ y: 1130, o: clamp((t - T0 - 1.25) * 6), dy: (1 - pb) * 40, s: lerp(0.95, 1, pb) });
     },
   });
 }

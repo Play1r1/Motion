@@ -7,6 +7,12 @@
 
 DURATION = 29.0;
 META = { drop: 4.0, end: 23.0, bpm: 120, music: 'drive' };
+// the incpt.io brand (2026-11-06): a third slower (TS = 4/3: sections of 4 s, the beat at 90 BPM) on the welcome
+// reel's generated track (promo_edit: piano intro, the full beat from the drop, its final hit on the end card); 36 s
+if (window.BRAND) {
+  window.TS = 4 / 3; DURATION = 27.0;
+  META = { drop: 4.0, end: 23.0, bpm: 90, musicEdit: 'assets/music/promo_edit.json', sfxGain: 0.5, sfxOnly: ['whoosh', 'tap', 'tick'] };
+}
 const B = 0.5;                            // one beat
 const TXT_TOP = 236;
 const PHONE_S = 0.64, PHONE_Y = 290;
@@ -60,10 +66,10 @@ scene({
       C('pr_apy', { x: 250, y: 610, z: 380, s: 1.9, rz: -3, tin: 2.37, dir: 1, blur: 0, pop: true }),
     ];
     this.words = [
-      [new Headline('КРИПТА', { y: 800, size: 172, fit: 980 }), 0.25, 1.1],
-      [new Headline('КАРТЫ', { y: 800, size: 172, fit: 980 }), 1.25, 2.1],
-      [new Headline('СТЕЙКИНГ', { y: 800, size: 172, fit: 980 }), 2.25, 3.1],
-      [new Headline('В ОДНОМ\nМЕСТЕ', { y: 740, size: 150, fit: 980 }), 3.25, 3.8],
+      [new Headline('Крипта', { y: 800, size: 172, fit: 980 }), 0.25, 1.1],
+      [new Headline('Карты', { y: 800, size: 172, fit: 980 }), 1.25, 2.1],
+      [new Headline('Стейкинг', { y: 800, size: 172, fit: 980 }), 2.25, 3.1],
+      [new Headline('В ~одном\n~месте', { y: 740, size: 150, fit: 980 }), 3.25, 3.8],
     ];
     cue(0.0, 'riser', { dur: 3.95, gain: 0.5 });
     this.items.forEach(c => cue(Math.max(0, c.tin - 0.06), 'whoosh', { dur: 0.4, gain: 0.25 + c.s * 0.12, pan: c.dir * 0.6 }));
@@ -100,7 +106,7 @@ scene({
     this.ph = new Phone(cam, 'pr_home');
     this.bal = new Cut(this.ph, 'pr_balance');
     this.slotBal = this.ph.addSlot('balance');
-    this.h = new Headline('INCPT\nWALLET', { y: TXT_TOP - 10, size: 150 });
+    this.h = new Headline('INCPT\n~Wallet', { y: TXT_TOP - 10, size: 150 });
     cue(3.98, 'impact', { gain: 1.0 });
     cue(4.0, 'crash', { gain: 0.8 });
     cue(4.72, 'whoosh', { dur: 0.45, gain: 0.5, up: true }); cue(4.8, 'pop', { gain: 0.6, pitch: 0.9 });
@@ -140,8 +146,8 @@ scene({
     this.rows = ['usdt', 'usdc', 'btc', 'eth', 'trx'].map(n => new Cut(this.ph, 'pr_row_' + n));
     this.btns = ['recv', 'swap', 'send'].map(n => new Cut(this.ph, 'pr_btn_' + n));
     this.tap = new Tap(this.ph, 200);
-    this.h1 = new Headline('АКТИВЫ\nПОД ЗАЩИТОЙ', { y: TXT_TOP, size: 124, fit: 990 });
-    this.h2 = new Headline('ПОЛУЧАЙ\nОБМЕНИВАЙ\nОТПРАВЛЯЙ', { y: TXT_TOP - 60, size: 112, fit: 990 });
+    this.h1 = new Headline('Активы\nпод ~защитой', { y: TXT_TOP, size: 124, fit: 990 });
+    this.h2 = new Headline('Получай\n~обменивай\nотправляй', { y: TXT_TOP - 60, size: 112, fit: 990 });
     cue(7.0, 'crash', { gain: 0.45, pan: 0.4 });
     cue(7.38, 'whoosh', { dur: 0.6, gain: 0.55, up: true }); cue(7.5, 'pop', { gain: 0.6, pitch: 0.8 });
     cue(8.6, 'scroll', { dur: 0.6, gain: 0.5 });
@@ -194,7 +200,7 @@ scene({
     this.get = new Cut(this.ph, 'pr_get');
     this.btn = new Cut(this.ph, 'pr_swapbtn');
     this.tap = new Tap(this.ph, 170);
-    this.h = new Headline('ОБМЕН\nВ ОДИН ТАП', { y: TXT_TOP, size: 124, fit: 990 });
+    this.h = new Headline('Обмен\nв ~один ~тап', { y: TXT_TOP, size: 124, fit: 990 });
     cue(12.0, 'crash', { gain: 0.6 });
     cue(12.48, 'whoosh', { dur: 0.45, gain: 0.5, up: true }); cue(12.55, 'pop', { gain: 0.5 }); cue(12.62, 'pop', { gain: 0.5, pitch: 1.12 });
     [13.0, 14.0].forEach(tt => { cue(tt, 'tap', { gain: 0.8 }); cue(tt + 0.05, 'whoosh', { dur: 0.45, gain: 0.55 }); cue(tt + 0.45, 'coin', { gain: 0.45 }); });
@@ -241,8 +247,8 @@ scene({
     this.card = new Cut(this.ph, 'pr_card');
     const so = MANIFEST.phone.screenOffset;
     this.ops = ['topcard', 'topup', 'starbucks', 'nike'].map((n, i) => ({ n: new Cut(this.ph, 'pr_op_' + n, { at: [so[0] + 460, so[1] + 1000] }), t0: 16.75 + i * 0.25, dx: (i % 2 ? 1 : -1) * 40 }));
-    this.h1 = new Headline('ВИРТУАЛЬНЫЕ\nИ МЕТАЛЛИЧЕСКИЕ\nКАРТЫ', { y: TXT_TOP - 50, size: 104, fit: 990 });
-    this.h2 = new Headline('ПЛАТИ\nКРИПТОЙ', { y: TXT_TOP, size: 136, fit: 990 });
+    this.h1 = new Headline('Виртуальные\nи ~металлические\nкарты', { y: TXT_TOP - 50, size: 104, fit: 990 });
+    this.h2 = new Headline('Плати\n~криптой', { y: TXT_TOP, size: 136, fit: 990 });
     cue(15.0, 'crash', { gain: 0.45, pan: -0.4 });
     cue(15.28, 'whoosh', { dur: 0.6, gain: 0.55, up: true }); cue(15.4, 'pop', { gain: 0.6, pitch: 0.8 });
     cue(16.5, 'whoosh', { dur: 0.5, gain: 0.6, up: true });
@@ -283,7 +289,7 @@ scene({
     this.safe = new Cut(this.ph, 'pr_safe');
     this.apy = new Cut(this.ph, 'pr_apy');
     this.fc = new Cut(this.ph, 'pr_forecast');
-    this.h = new Headline('СТЕЙКИНГ\n20–40% APY', { y: TXT_TOP, size: 124, fit: 990 });
+    this.h = new Headline('Стейкинг\n~20–100% ~годовых', { y: TXT_TOP, size: 124, fit: 990 });
     cue(18.0, 'crash', { gain: 0.6 });
     cue(18.35, 'whoosh', { dur: 0.6, gain: 0.55, up: true }); cue(18.45, 'pop', { gain: 0.6, pitch: 0.75 });
     cue(19.0, 'whoosh', { dur: 0.4, gain: 0.5, up: true }); cue(19.05, 'pop', { gain: 0.6, pitch: 1.1 });
@@ -318,7 +324,7 @@ scene({
     this.b2 = this.ph.ov('bar_home2', { opacity: '0' });
     this.ph.ov('header');
     this.ph.ov('corners');
-    this.h = new Headline('ВСЁ ПРЯМО\nВ TELEGRAM', { y: TXT_TOP, size: 124, fit: 990 });
+    this.h = new Headline('Всё прямо\nв ~Telegram', { y: TXT_TOP, size: 124, fit: 990 });
     cue(21.0, 'crash', { gain: 0.45, pan: 0.4 });
     cue(21.3, 'scroll', { dur: 1.1, gain: 0.45 });
     cue(22.8, 'whoosh', { dur: 0.45, gain: 0.95, up: true });
@@ -340,4 +346,4 @@ scene({
 });
 
 // ======================================================================= 8. END CARD (23 – 29)
-endCard(23.0, 'AI-КРИПТОКОШЕЛЁК И КАРТЫ');
+endCard(23.0, 'AI-криптокошелёк и карты');

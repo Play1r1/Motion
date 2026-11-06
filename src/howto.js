@@ -125,7 +125,9 @@ function htGroup(sc, def) {
 // ------------------------------------------------------------------ the tutorial
 function howto(C) {
   DURATION = C.duration;
-  META = { drop: 3.0, end: C.outT, bpm: 80, music: 'calm', key: C.key || 0 };
+  META = window.BRAND
+    ? { drop: 3.0, end: C.outT, bpm: 90, musicEdit: `assets/music/${window.REEL}_edit.json`, sfxGain: 0.45, sfxOnly: ['whoosh', 'tap', 'tick'] }   // the generated tutorial track
+    : { drop: 3.0, end: C.outT, bpm: 80, music: 'calm', key: C.key || 0 };
   const OUT_T = C.outT;
 
   // ---- intro (0 – 3)
@@ -139,7 +141,7 @@ function howto(C) {
       $('#text').appendChild(this.chip);
       const lines = C.title.split('\n').length;
       this.h = new Headline(C.title, { y: 880, size: 124, fit: 980 });
-      this.s = new Headline(C.sub, { y: 880 + lines * 112 + 24, size: 46, color: '#1d2744', cls: 'sub', fit: 940 });
+      this.s = new Headline(C.sub, { y: 880 + lines * (window.BRAND ? 136 : 112) + 24, size: 46, color: '#1d2744', cls: 'sub', fit: 940 });
       Object.assign(this.s.el.style, { fontFamily: "'Inter Variable', sans-serif", fontVariationSettings: "'opsz' 32", fontWeight: '600', letterSpacing: '-0.01em' });
       cue(0.0, 'whoosh', { dur: 0.9, gain: 0.3, up: true });
       cue(0.62, 'shimmer', { gain: 0.25 });
@@ -147,6 +149,9 @@ function howto(C) {
     },
     update(t) {
       const pin = oX(prog(t, 0.05, 0.85)), out = Ease.inCubic(prog(t, 2.55, 3.0));
+      if (window.BRAND)                                   // the brand: a focus pull onto the chrome mark, no spin
+        this.logo.set({ x: 540, y: 560 - out * 320, h: lerp(330, 250, pin), ry: lerp(-5, 3, prog(t, 0, 3)), rz: 0, o: clamp(t * 7) * (1 - out), blur: (1 - pin) * 18 + out * 8, shadow: 0.6 });
+      else
       this.logo.set({ x: 540, y: 600 - out * 320, h: lerp(70, 250, pin), ry: lerp(-150, -6, pin) + t * 4, rz: lerp(-30, -2, pin), o: clamp(t * 7) * (1 - out), blur: (1 - pin) * 10 + out * 8, sheen: vis(t, 0.8, 1.9) ? prog(t, 0.8, 1.9) : null, shadow: 0.5 });
       const pc = oX(prog(t, 0.45, 1.1));
       Object.assign(this.chip.style, { display: t < 3.05 ? '' : 'none', opacity: (clamp((t - 0.45) * 5) * (1 - out)).toFixed(3),

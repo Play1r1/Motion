@@ -5,14 +5,19 @@
 'use strict';
 
 const IG = { drop: 2.0, end: 8.0, dur: 11.0, titleY: 240 };
+// the incpt.io brand (2026-11-06): the whole reel runs at half speed (TS = 2: sections of 4 s instead of 2, readable),
+// on the generated track (ig_edit: its own build and drop land on the reel's), the end card holds 4 s; 20 s in all
 // a short swell on every beat after the drop
 const igKick = t => (t < IG.drop || t > IG.end ? 0 : Math.exp(-((t - IG.drop) % 0.5) / 0.09));
-const outBack = p => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+const outBack = p => { if (window.BRAND) return 1 - Math.pow(1 - p, 4);   // the brand lands softly, no overshoot
+  const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
 const igCut = name => new Cut($('#cam'), name, { onScreen: false });
 
 function igSetup(key) {
+  if (window.BRAND) { IG.dur = 10.0; window.TS = 2; }   // only the Instagram reels run at half speed
   DURATION = IG.dur;
-  META = { drop: IG.drop, end: IG.end, bpm: 120, music: 'drive', key };
+  META = window.BRAND ? { drop: IG.drop, end: IG.end, bpm: 120, musicEdit: 'assets/music/ig_edit.json', sfxGain: 0.5, sfxOnly: ['whoosh', 'tap', 'tick'] }
+    : { drop: IG.drop, end: IG.end, bpm: 120, music: 'drive', key };
 }
 
 // the four headlines of a reel: [text, tin, tout, size, stagger]
@@ -28,6 +33,7 @@ class IgTitles {
 
 // standard cue set: riser into the drop, impact + crash on it, a crash and fill on every section
 function igCues(sections) {
+  if (window.BRAND) { cue(IG.drop - 0.08, 'whoosh', { dur: 0.45, gain: 0.4, up: true }); sections.forEach(t => cue(t - 0.06, 'whoosh', { dur: 0.35, gain: 0.25 })); return; }
   cue(0.0, 'riser', { dur: IG.drop - 0.02, gain: 0.45 });
   cue(IG.drop - 0.02, 'impact', { gain: 0.95 });
   cue(IG.drop, 'crash', { gain: 0.75 });

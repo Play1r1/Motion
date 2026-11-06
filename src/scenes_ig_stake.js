@@ -13,10 +13,10 @@ scene({
   init() {
     const cam = $('#cam');
     this.T = new IgTitles([
-      ['ПУСТЬ USDT\nРАБОТАЮТ', -0.6, 1.85],
-      ['20–40%\nГОДОВЫХ', 2.0, 3.85],
-      ['ДОХОД\nКАЖДЫЙ ДЕНЬ', 4.0, 5.85],
-      ['ВЫВОД\nВ ЛЮБОЙ МОМЕНТ', 6.0, 7.75],
+      ['Пусть USDT\n~работают', -0.6, 1.85],
+      ['~20–100%\nгодовых', 2.0, 3.85],
+      ['Доход\n~каждый ~день', 4.0, 5.85],
+      ['Вывод\nв ~любой ~момент', 6.0, 7.75],
     ]);
     // the platform: a tilted plane the stacks stand on (coins live in its coordinates: z = up the stack)
     this.plat = new Node(cam, { w: 2, h: 2 });
@@ -31,7 +31,7 @@ scene({
     // withdrawals: the top coin of a stack flies out
     const top = s => C.filter(c => c.stack === s).slice(-1)[0];
     [[2, 6.25], [1, 6.75], [0, 7.25]].forEach(([s, t]) => { top(s).out = t; });
-    this.apy = new VChip(cam, { html: '20–40% APY', size: 64, W: 700 });
+    this.apy = new VChip(cam, { html: '20–100% APY', size: 64, W: 700 });   // all three plans (Liquid · Monthly · Maximum)
     this.stat = new VStat(cam, { W: 600, value: '$20,000.00', caption: 'Всего в стейкинге' });
     this.fc = new VChip(cam, { html: '⚡&nbsp;прогноз $14.42 сегодня', size: 40, W: 760 });
     this.plus = [0, 1, 2, 3].map(() => new VChip(cam, { html: '+$14.42', size: 34, W: 300 }));
@@ -101,4 +101,4 @@ scene({
   },
 });
 
-endCard(IG.end, 'СТЕЙКИНГ USDT · 20–40% ГОДОВЫХ', IG.dur, 0.7);
+endCard(IG.end, 'Стейкинг USDT · от 20 до 100% годовых', IG.dur, 0.7);

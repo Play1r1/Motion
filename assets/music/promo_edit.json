@@ -1,0 +1,6 @@
+{"duration": 36.0, "fade_out": 0.8, "pieces": [
+  {"src": "welcome_a.mp3", "from": 0.84, "to": 6.173, "at": 0.0},
+  {"src": "welcome_a.mp3", "from": 34.83, "to": 50.83, "at": 5.333},
+  {"src": "welcome_a.mp3", "from": 42.83, "to": 51.481, "at": 21.333},
+  {"src": "welcome_a.mp3", "from": 21.497, "to": 27.0, "at": 29.984}
+]}

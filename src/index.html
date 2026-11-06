@@ -139,6 +139,33 @@
   body.chrome .headline { font-family: 'Geologica Variable', sans-serif; font-variation-settings: normal !important; font-weight: 800; letter-spacing: -0.045em !important; }
   body.chrome .tap .disc { background: rgba(255,255,255,0.36); border-color: rgba(255,255,255,0.98); box-shadow: 0 12px 30px -10px rgba(20,24,60,0.35); }
   body.chrome .tap .halo { border-color: rgba(255,255,255,0.8); }
+  /* ---- the incpt.io brand on the older engine pieces (body.brand: promo, how-tos, Instagram reels) ---- */
+  body.brand { --ink: var(--brand-navy); }
+  body.brand #stage { background: var(--brand-bg); }
+  body.brand .headline { font-family: var(--brand-font); font-variation-settings: normal !important; font-weight: 600; letter-spacing: -0.02em !important;
+    text-transform: none; line-height: 1.08 !important; color: var(--brand-navy); }
+  body.brand .headline .band { display: none; }
+  body.brand .headline .acc { background: var(--brand-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  body.brand .headline.sub { font-family: var(--brand-font) !important; font-weight: 400 !important; color: var(--brand-grey) !important; }
+  body.brand .tu-chip { font-family: var(--brand-font); font-weight: 500; letter-spacing: 0.14em; color: #606674; background: #fff;
+    box-shadow: 0 10px 24px -14px rgba(19,36,64,0.35), 0 0 0 1px rgba(19,36,64,0.06); }
+  body.brand .tu-seg { background: rgba(19,36,64,0.10); }
+  body.brand .tu-seg i { background: var(--brand-grad); }
+  body.brand .tr-panel { background: #fff; border: 1px solid rgba(19,36,64,0.06); font-family: var(--brand-font);
+    box-shadow: 0 30px 70px -34px rgba(19,36,64,0.30), 0 2px 6px rgba(19,36,64,0.04); }
+  body.brand .tu-head { font-family: var(--brand-font); font-variation-settings: normal; font-weight: 600; text-transform: none; letter-spacing: -0.02em; color: var(--brand-navy); line-height: 1.05; }
+  body.brand .ht-head { font-size: 74px; }
+  body.brand .tr-desc, body.brand .ht-desc, body.brand .tu-desc { font-family: var(--brand-font); font-weight: 400; color: var(--brand-grey); }
+  body.brand .tr-desc b, body.brand .ht-desc b, body.brand .tu-desc b { font-weight: 600; color: var(--brand-navy); }
+  body.brand .tu-ring { background: var(--brand-grad) !important; }
+  body.brand .tap .disc { background: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.98); box-shadow: 0 12px 30px -10px rgba(19,36,64,0.35); }
+  body.brand .tap .halo { border-color: rgba(255,255,255,0.85); }
+  body.brand .tgbadge { font-family: var(--brand-font); background: #fff; box-shadow: 0 22px 44px -20px rgba(19,36,64,0.30), 0 2px 6px rgba(19,36,64,0.06); }
+  body.brand .tgbadge .tgsmall { font-family: var(--brand-font); font-weight: 400; color: var(--brand-grey); }
+  body.brand .tgbadge .tgbig { font-family: var(--brand-font); font-weight: 600; color: var(--brand-navy); }
+  body.brand .tgbadge.dark { background: #fff; box-shadow: 0 22px 44px -20px rgba(19,36,64,0.30), 0 2px 6px rgba(19,36,64,0.06); }
+  body.brand .tgbadge.dark .tgsmall { color: var(--brand-grey); }
+  body.brand .tgbadge.dark .tgbig { color: var(--brand-navy); }
   /* ---- presale reel ---- */
   .ps-risk { position: absolute; left: 0; top: 1500px; width: var(--W); text-align: center; font-family: 'Inter Variable', sans-serif; font-variation-settings: 'opsz' 32;
     font-size: 27px; font-weight: 500; color: #8e8c86; letter-spacing: 0.01em; white-space: nowrap; }
@@ -160,6 +187,9 @@
   window.SCENES_FILE = { presale_chrome: 'presale' }[REEL] || REEL;           // ХРОМ versions reuse a reel's scenes
   window.CHROME = ['welcome', 'presale_chrome', 'presale2', 'presale3', 'presale4', 'presale5'].includes(REEL);
   document.body.classList.toggle('chrome', CHROME);
+  // the incpt.io brand for the reels rebuilt after 2026-11-06 (white canvas, navy type, the site's gradient, the lock-up)
+  window.BRAND = REEL.startsWith('howto_') || REEL.startsWith('ig_') || REEL === 'promo';
+  document.body.classList.toggle('brand', BRAND);
   document.documentElement.style.setProperty('--W', STAGE[0] + 'px');
   document.documentElement.style.setProperty('--H', STAGE[1] + 'px');
 </script>
