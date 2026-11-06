@@ -7,7 +7,7 @@
 'use strict';
 
 const K3 = {
-  init({ fov = 26, camZ = 16, shadowOpacity = 0.06, exposure = 1.0, env = 'studio', envOpts = {}, backdropZ = -2.5, keyPos = [-1.5, 4, 14], keyI = 2.0, fillI = 0.5 } = {}) {
+  init({ fov = 26, camZ = 16, shadowOpacity = 0.06, exposure = 1.0, env = 'studio', envOpts = {}, backdropZ = -2.5, keyPos = [-1.5, 4, 14], keyI = 2.0, fillI = 0.5, shadowRes = 1024 } = {}) {
     const T = THREE, X = THREEX;
     const cv = document.createElement('canvas');
     cv.id = 'k3d';
@@ -38,9 +38,9 @@ const K3 = {
     const key = new T.DirectionalLight(0xffffff, keyI);
     key.position.set(...keyPos);
     key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
-    key.shadow.radius = 40;
-    key.shadow.blurSamples = 24;
+    key.shadow.mapSize.set(shadowRes, shadowRes);
+    key.shadow.radius = 40 * shadowRes / 2048;
+    key.shadow.blurSamples = shadowRes > 1024 ? 24 : 12;
     Object.assign(key.shadow.camera, { left: -10, right: 10, top: 14, bottom: -14, near: 1, far: 40 });
     sc.add(key);
     sc.add(new T.HemisphereLight(0xffffff, 0xe9e6df, 0.35));
