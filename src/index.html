@@ -183,12 +183,12 @@
 <script>
   window.REEL = new URLSearchParams(location.search).get('reel') || 'wallet';
   window.STAGE = { topup: [1080, 1080] }[REEL] || [1080, 1920];
-  window.MANIFEST_NAME = REEL.startsWith('howto_') ? 'howto' : REEL.startsWith('ig_') ? 'ig' : REEL.startsWith('presale') ? 'presale' : REEL;   // series share one manifest
+  window.MANIFEST_NAME = REEL.startsWith('howto_') ? 'howto' : REEL.startsWith('ig_') ? 'ig' : REEL.startsWith('presale') ? 'presale' : (REEL.startsWith('x_') || REEL.startsWith('lab3d')) ? 'welcome' : REEL;   // series share one manifest
   window.SCENES_FILE = { presale_chrome: 'presale' }[REEL] || REEL;           // ХРОМ versions reuse a reel's scenes
   window.CHROME = ['welcome', 'presale_chrome', 'presale2', 'presale3', 'presale4', 'presale5'].includes(REEL);
   document.body.classList.toggle('chrome', CHROME);
   // the incpt.io brand for the reels rebuilt after 2026-11-06 (white canvas, navy type, the site's gradient, the lock-up)
-  window.BRAND = REEL.startsWith('howto_') || REEL.startsWith('ig_') || REEL === 'promo';
+  window.BRAND = REEL.startsWith('howto_') || REEL.startsWith('ig_') || REEL === 'promo' || REEL.startsWith('x_') || REEL.startsWith('lab3d');
   document.body.classList.toggle('brand', BRAND);
   document.documentElement.style.setProperty('--W', STAGE[0] + 'px');
   document.documentElement.style.setProperty('--H', STAGE[1] + 'px');
@@ -201,7 +201,25 @@
 <script src="/src/vec.js"></script>
 <script src="/src/glass.js"></script>
 <script src="/src/chrome.js"></script>
-<script>document.write(`<script src="/src/${REEL === 'wallet' ? 'scenes' : 'scenes_' + SCENES_FILE}.js"><\/script>`);</script>
-<script>boot();</script>
+<script>
+  // reels drawn with real 3D (three.js, PBR): three is an ES module, so they load the kit and their scenes after it
+  window.USE3D = REEL.startsWith('lab3d') || REEL.startsWith('x_');
+  if (!USE3D) document.write(`<script src="/src/${REEL === 'wallet' ? 'scenes' : 'scenes_' + SCENES_FILE}.js"><\/script>`);
+</script>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+<script type="module">
+  if (window.USE3D) {
+    const THREE = await import('three');
+    const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
+    const { RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js');
+    const { mergeGeometries } = await import('three/addons/utils/BufferGeometryUtils.js');
+    window.THREE = THREE;
+    window.THREEX = { RoomEnvironment, RoundedBoxGeometry, mergeGeometries };
+    const load = src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.body.appendChild(s); });
+    await load('/src/kit3d.js');
+    await load(`/src/scenes_${SCENES_FILE}.js`);
+  }
+  boot();
+</script>
 </body>
 </html>

@@ -1,0 +1,6 @@
+{"duration": 22.42, "fade_out": 2.8, "pieces": [
+  {"src": "x_card_a.mp3", "from": 8.777, "to": 19.686, "at": 0.0},
+  {"src": "x_card_a.mp3", "from": 28.414, "to": 30.595, "at": 10.909},
+  {"src": "x_card_a.mp3", "from": 30.595, "to": 34.959, "at": 13.091},
+  {"src": "x_card_a.mp3", "from": 2.232, "to": 8.777, "at": 17.455, "gain_db": 5}
+]}
