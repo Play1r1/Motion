@@ -10,7 +10,7 @@
 
 const BT = 60 / 92.012, BAR = 4 * BT;
 const S = n => n * BAR;
-DURATION = 31.0;
+DURATION = 30.0;
 META = { drop: S(2), end: 25.8, bpm: 92, musicEdit: 'assets/music/f_stake_edit.json', sfxGain: 0.4, sfxOnly: ['whoosh', 'tap'] };
 const oC = Ease.outCubic, iC = Ease.inCubic, oQ = Ease.outQuint, io = Ease.inOutCubic;
 drawBg = t => { LG.reset(); LG.F.white = 1; LG.draw(t); };
@@ -54,13 +54,14 @@ scene({
     this.lDep = new Lift(this.Ll, this.p.dep, `<div style="position:absolute;left:0;top:0">${AK.stakeDeposit('≈ $0.00')}</div>`, { w: 826, h: 236, r: 44, tint: 0.72, solid: 0.92 });
     this.lDepFc = AK.q(this.lDep.body, 'fc');
     this.lTop = new Lift(this.Ll, this.p.top, `<div style="position:absolute;left:0;top:0">${AK.stakeTop('$20,000.00', '$14.42')}</div>`, { w: 920, h: 250, r: 60, tint: 0.62, solid: 0 });
+    this.topPill = this.lTop.body.querySelector('.ak-pill');
     this.tap = new TapDot(this.Lx);
     this.h = [
       [HL('Пусть ~USDT\nработает'), 0.3, S(2) - 0.02],
-      [HL('Liquid Vault —\n~20–40% APY', 100), S(2) + 0.25, S(4) - 0.02],
-      [HL('Впиши\n~сумму'), S(4) + 0.12, S(6) - 0.02],
-      [HL('Один тап —\n~депозит открыт', 100), S(6) + 0.12, S(8) - 0.02],
-      [HL('Доход\n~каждый день'), S(8) + 0.12, 25.6],
+      [HL('Liquid Vault —\n~20–40% APY', 100), S(2) + 0.85, S(4) - 0.02],
+      [HL('Впиши\n~сумму'), S(4) + 0.02, S(6) - 0.02],
+      [HL('Один тап —\n~депозит открыт', 100), S(6) + 0.02, S(8) - 0.02],
+      [HL('Доход\n~каждый день'), S(8) + 0.02, 25.6],
     ];
     cue(S(2) + 0.05, 'whoosh', { dur: 1.1, gain: 0.14 });
     cue(S(3) + 0.05, 'whoosh', { dur: 0.6, gain: 0.1, up: true });
@@ -75,7 +76,7 @@ scene({
     // ================================================================ the phone: the hook at 1:1, then the pull-back
     const enter = oQ(prog(t, 0.05, 0.95));
     const pull = io(prog(t, drop + 0.08, drop + 1.25));
-    const chromeO = oC(prog(t, drop - 0.02, drop + 0.4));
+    const chromeO = oC(prog(t, drop - 0.02, drop + 0.25));
     const exit = Ease.inCubic(prog(t, 25.2, 25.75));
     // scroll stations: the card (B, C, D), the deposits (D), back to the top (E)
     const scroll = kf(t, [[drop + 1.2, 0], [drop + 2.2, 640, io], [S(6) + 2 * BT + 0.3, 640], [S(6) + 2 * BT + 1.15, 1460, io], [S(8) + 0.5, 1460], [S(8) + 1.5, 0, io]]);
@@ -119,15 +120,16 @@ scene({
     const fp = oC(prog(t, drop + 0.05, drop + 0.75));
     this.fcTop.textContent = AK.usd(14.42 * fp);
 
+    const fl = Math.sin(t * 1.1) * 6, flr = Math.sin(t * 0.8) * 1.5;
     // ================================================================ B. Liquid Vault and its vaults (5.22 – 10.43)
     const kT = io(prog(t, S(3), S(3) + 0.6)) * (1 - io(prog(t, S(4) - 0.6, S(4) - 0.05)));
-    this.lTabs.at(kT, { x: 540, y: 1110, s: 1.22, arc: 30 }, { glass: kT });
+    this.lTabs.at(kT, { x: 540, y: 1110 + fl, s: 1.22, rx: flr, arc: 30 }, { glass: kT });
     const kA = io(prog(t, S(3) + 2 * BT, S(3) + 2 * BT + 0.55)) * (1 - io(prog(t, S(4) - 0.6, S(4) - 0.05)));
     this.lApy.at(kA, { x: 540, y: 880, s: 2.3, arc: 20 }, { glass: kA });
 
     // ================================================================ C. the amount (10.43 – 15.65)
     const kM = io(prog(t, S(4) + 0.1, S(4) + 0.7)) * (1 - io(prog(t, S(6) - 0.55, S(6))));
-    this.lMid.at(kM, { x: 540, y: 1060, s: 1.17, arc: 30 }, { glass: kM });
+    this.lMid.at(kM, { x: 540, y: 1060 + fl, s: 1.17, rx: flr, arc: 30 }, { glass: kM });
     const tapMax = S(4) + 2 * BT;
     const ap = oC(prog(t, tapMax + 0.05, tapMax + 0.75));
     const amtS = t < tapMax + 0.05 ? '$0' : '$' + Math.round(20000 * ap).toLocaleString('en-US');
@@ -147,13 +149,15 @@ scene({
     AK.op(this.p.dep, dIn);
     this.p.dep.style.transform = `translateY(${((1 - dIn) * 40).toFixed(2)}px)`;
     const kD = io(prog(t, S(7), S(7) + 0.6)) * (1 - io(prog(t, S(8) + 0.2, S(8) + 0.8)));
-    this.lDep.at(kD, { x: 540, y: 1000, s: 1.12, arc: 30 }, { glass: kD });
+    this.lDep.at(kD, { x: 540, y: 1000 + fl, s: 1.12, rx: flr, arc: 30 }, { glass: kD });
     const dfc = '≈ ' + AK.usd(14.42 * oC(prog(t, S(7) + 0.5, S(7) + 1.3)));
     this.lDepFc.textContent = dfc; this.fcDep.textContent = t > S(7) + 1.3 ? '≈ $14.42' : dfc;
 
     // ================================================================ E. the result (20.87 – 25.8)
     const kR = io(prog(t, 22.6, 23.35)), rOut = Ease.inCubic(prog(t, 25.15, 25.65));
-    this.lTop.at(kR, { x: 540, y: 1030 - rOut * 140, s: 1.06, arc: 30 }, { glass: kR, o: 1 - rOut });
+    this.lTop.at(kR, { x: 540, y: 1030 + fl - rOut * 140, s: 1.0, rx: flr, arc: 30 }, { glass: kR, o: 1 - rOut });
+    const shp = prog(t, 23.7, 24.6);
+    this.topPill.style.backgroundImage = shp > 0 && shp < 1 ? `linear-gradient(105deg, transparent ${(shp * 160 - 50).toFixed(1)}%, rgba(255,255,255,0.9) ${(shp * 160 - 30).toFixed(1)}%, transparent ${(shp * 160 - 10).toFixed(1)}%)` : '';
   },
 });
 

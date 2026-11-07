@@ -54,13 +54,14 @@ scene({
     this.lFees = new Lift(this.Ll, this.p.fees, AK.swapFees(), { w: 836, h: 430, r: 56, tint: 0.72, solid: 0.92 });
     this.l = { giveAmt: AK.q(this.lGive.body, 'amt'), giveUsd: AK.q(this.lGive.body, 'usd'), getAmt: AK.q(this.lGet.body, 'amt'), getUsd: AK.q(this.lGet.body, 'usd'),
       bal: AK.q(this.lGet.body, 'bal'), rate: AK.q(this.lFees.body, 'rate'), recv: AK.q(this.lFees.body, 'recv'), incl: AK.q(this.lFees.body, 'incl') };
+    this.gain = new GlassCard(this.Ll, `<div class="ak-pill" style="inset:0;font-size:44px;font-weight:700;color:${AK.green}">+0.0119 BTC</div>`, { w: 360, h: 100, r: 50, tint: 0.75 });
     this.tap = new TapDot(this.Lx);
     this.h = [
       [HL('Обмен\n~внутри кошелька'), 0.15, S(2) - 0.02],
-      [HL('Отдаёте USDT —\nполучаете ~BTC', 100), S(2) + 0.15, S(4) - 0.02],
-      [HL('Впиши\n~сумму'), S(4) + 0.1, S(6) - 0.02],
-      [HL('Комиссия обмена —\n~уже в курсе', 96), S(6) + 0.1, S(8) - 0.02],
-      [HL('Один тап —\n~и готово'), S(8) + 0.1, 20.4],
+      [HL('Отдаёте USDT —\nполучаете ~BTC', 100), S(2) + 0.04, S(4) - 0.02],
+      [HL('Впиши\n~сумму'), S(4) + 0.02, S(6) - 0.02],
+      [HL('Комиссия обмена —\n~уже в курсе', 96), S(6) + 0.02, S(8) - 0.02],
+      [HL('Один тап —\n~и готово'), S(8) + 0.02, 20.4],
     ];
     cue(BT * 2 - 0.05, 'whoosh', { dur: 0.45, gain: 0.12 });
     cue(BT * 6 - 0.05, 'whoosh', { dur: 0.45, gain: 0.12 });
@@ -79,7 +80,10 @@ scene({
     const kB = io(prog(t, 18.9, 19.45)) * (1 - io(prog(t, 19.95, 20.4)));
     const lifted = Math.max(kG, kR, kF, kB);
     const scroll = kf(t, [[S(8) + 0.05, 0], [S(8) + 0.75, 298, io], [17.9, 298], [18.6, 0, io]]);
-    this.ph.set({ x: PH.x, y: PH.y + (1 - rise) * 1150 + exit * 1000, s: PH.s + 0.01 * io(prog(t, S(3), S(4))), ry: Math.sin(t * 0.5) * 2 * rise, rx: (1 - rise) * 10 + Math.sin(t * 0.37) * 1.2,
+    // a slow push towards «Отдаёте» while the amount is waited for; back out for the button
+    const ps = kf(t, [[S(2) + 1.4, PH.s], [S(4) - 0.1, 0.68, io], [S(8) - 0.2, 0.68], [S(8) + 0.6, PH.s, io]]);
+    const pyy = kf(t, [[S(2) + 1.4, PH.y], [S(4) - 0.1, 1190, io], [S(8) - 0.2, 1190], [S(8) + 0.6, PH.y, io]]);
+    this.ph.set({ x: PH.x, y: pyy + (1 - rise) * 1150 + exit * 1000, s: ps, ry: Math.sin(t * 0.5) * 2 * rise, rx: (1 - rise) * 10 + Math.sin(t * 0.37) * 1.2,
       vis: t > S(2) + 0.1 && t < 20.61, blur: lifted * 7, dim: lifted * 0.45, scroll });
 
     // ================================================================ A. the hook: the coins trade places on beats 2 and 6
@@ -115,6 +119,7 @@ scene({
     this.tap.at(t, 7.0, t > 6.6 && t < 7.7 ? AK.at(this.pGiveAmt) : t > S(8) + 2 * BT - 0.4 && t < S(8) + 2 * BT + 0.7 ? AK.at(this.p.btn) : null);
     if (t > S(8) + 1) this.tap.at(t, S(8) + 2 * BT, t > S(8) + 2 * BT - 0.4 && t < S(8) + 2 * BT + 0.7 ? AK.at(this.p.btn) : null);
 
+    const fl = Math.sin(t * 1.1) * 6, flr = Math.sin(t * 0.8) * 1.5;
     // ================================================================ C. type the amount (8.0 – 12.0)
     const keys = [S(4) + 1.5 * BT, S(4) + 2 * BT, S(4) + 2.5 * BT, S(4) + 3 * BT];
     const typed = ['1', '10', '100', '1,000'];
@@ -127,7 +132,7 @@ scene({
     for (const e of [this.pGiveUsd, this.l.giveUsd]) e.textContent = '≈ ' + AK.usd(usd);
     // a key press nudges the number
     if (n && t - keys[n - 1] < 0.18) this.l.giveAmt.style.transform = `translateY(${(Math.sin(Math.PI * (t - keys[n - 1]) / 0.18) * -6).toFixed(2)}px)`; else this.l.giveAmt.style.transform = '';
-    this.lGive.at(kG, { x: 540, y: kR > 0 ? lerp(1000, 820, kR) : 1000, s: 1.08, arc: 30 }, { glass: kG });
+    this.lGive.at(kG, { x: 540, y: (kR > 0 ? lerp(1000, 820, kR) : 1000) + fl, s: 1.08, rx: flr, arc: 30 }, { glass: kG });
     // what you get rolls in when the panel arrives
     const gp = oC(prog(t, S(5) + 0.35, S(5) + 1.15));
     const btc = 0.0119 * gp;
@@ -143,7 +148,7 @@ scene({
     const hl = prog(t, S(6) + 0.7 + 2 * BT, S(6) + 1.7 + 2 * BT);
     this.l.incl.style.backgroundImage = hl > 0 && hl < 1 ? `linear-gradient(105deg, transparent ${(hl * 160 - 50).toFixed(1)}%, rgba(255,255,255,0.95) ${(hl * 160 - 30).toFixed(1)}%, transparent ${(hl * 160 - 10).toFixed(1)}%)` : '';
     this.l.incl.style.transform = `scale(${(1 + Math.sin(Math.PI * hl) * 0.08).toFixed(4)})`;
-    this.lFees.at(kF, { x: 540, y: 1020, s: 1.1, arc: 30 }, { glass: kF });
+    this.lFees.at(kF, { x: 540, y: 1020 + fl, s: 1.1, rx: flr, arc: 30 }, { glass: kF });
 
     // ================================================================ E. Обменять (16.0 – 20.0)
     this.p.btnon.style.opacity = oC(prog(t, S(5) + 1.2, S(5) + 1.6)).toFixed(3);
@@ -153,7 +158,9 @@ scene({
     this.p.btnl.innerHTML = ok > 0 ? `<span style="display:inline-block;transform:scale(${lerp(0.5, 1, ok).toFixed(3)});opacity:${ok.toFixed(3)}">${AK.ico('check', '#fff', 56, 2.6)}</span>` : 'Обменять';
     const bp = prog(t, 18.75, 19.15);
     for (const e of [this.pBal, this.l.bal]) { AK.flip(e, 'Баланс: 0.5 BTC', 'Баланс: 0.5119 BTC', bp); e.style.color = bp > 0 ? AK.green : ''; }
-    this.lGet.at(Math.max(kR, kB), { x: 540, y: kB > 0 ? 1010 : 1250, s: kB > 0 ? 1.15 : 1.08, arc: 30 }, { glass: Math.max(kR, kB) });
+    const gIn = oQ(prog(t, 19.15, 19.6)) * (1 - io(prog(t, 19.95, 20.35)));
+    this.gain.set({ x: 540, y: 790 + fl - (1 - gIn) * 30, o: clamp(gIn * 2), s: lerp(0.85, 1, gIn) });
+    this.lGet.at(Math.max(kR, kB), { x: 540, y: (kB > 0 ? 1010 : 1250) + fl, s: kB > 0 ? 1.15 : 1.08, rx: flr, arc: 30 }, { glass: Math.max(kR, kB) });
   },
 });
 

@@ -172,6 +172,7 @@ scene({
     // today's line on the phone: in $0 -> $5,000 when the card receives it (the hook already showed the balance)
     AK.flip(this.pTin, '$0', '$5,000', prog(t, S(3), S(3) + 0.4));
 
+    const fl = Math.sin(t * 1.1) * 6;
     // ================================================================ C. pay with the card (8.73 – 13.09)
     const kL = io(prog(t, 8.9, 9.7)) * (1 - io(prog(t, 11.6, 12.4)));
     const payT = 10.09, pay = Math.sin(Math.PI * prog(t, payT - 0.28, payT + 0.42));
@@ -194,7 +195,7 @@ scene({
     AK.flip(this.pTout, '$0', '$18.50', prog(t, 12.45, 12.85));
 
     // ================================================================ D. the operations (13.09 – 17.45)
-    this.ops.set({ x: 540, y: lerp(1260, 1060, sheet), o: clamp(sheet * 2.5), s: lerp(0.92, 0.98, sheet), blur: (1 - clamp(sheet * 2)) * 4 });
+    this.ops.set({ x: 540, y: lerp(1260, 1060, sheet) + fl, o: clamp(sheet * 2.5), s: lerp(0.92, 0.98, sheet), blur: (1 - clamp(sheet * 2)) * 4 });
     this.opsRows.forEach((r, i) => { const a = oQ(prog(t, S(6) + 0.2 + i * BT, S(6) + 0.7 + i * BT)); r.style.opacity = a.toFixed(3); r.style.transform = `translateY(${((1 - a) * 26).toFixed(2)}px)`; });
     this.opsSeps.forEach((r, i) => { r.style.opacity = clamp((t - (S(6) + 0.45 + (i + 1) * BT)) * 3).toFixed(3); });
 
@@ -202,7 +203,7 @@ scene({
     const tapT = 18.82;
     this.tap.at(t, tapT, t > tapT - 0.4 && t < tapT + 0.7 ? AK.at(this.pAdd) : null);
     const kA = io(prog(t, 19.0, 19.85)), aOut = Ease.inCubic(prog(t, 20.9, 21.4));
-    this.ladd.at(kA, { x: 540, y: 1040 - aOut * 160, s: 1.1 - aOut * 0.06, arc: 40 }, { glass: kA, o: 1 - aOut, hide: true });
+    this.ladd.at(kA, { x: 540, y: 1040 + fl - aOut * 160, s: 1.1 - aOut * 0.06, arc: 40 }, { glass: kA, o: 1 - aOut, hide: true });
   },
 });
 
