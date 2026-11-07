@@ -62,13 +62,13 @@ scene({
     // the yearly range on an odometer: «20–100%» in the site's gradient, «годовых» under it
     this.range = document.createElement('div');
     this.range.className = 'wl wl-h';
-    Object.assign(this.range.style, { left: '0px', top: '1255px', width: W + 'px', textAlign: 'center', fontSize: '196px', letterSpacing: '-0.035em', zIndex: 4 });
-    this.range.innerHTML = '<span class="wl-irid" style="font-variant-numeric: tabular-nums"></span>';
+    Object.assign(this.range.style, { left: '0px', top: '1232px', width: W + 'px', textAlign: 'center', fontSize: '176px', letterSpacing: '-0.035em', zIndex: 4, lineHeight: '1' });
+    this.range.innerHTML = '<span class="wl-irid" style="font-variant-numeric: tabular-nums"></span><div class="wl-s" style="position: static; font-size: 44px; letter-spacing: 0; margin-top: 4px">годовых</div>';
     this.rangeTxt = this.range.firstChild;
     $('#text').appendChild(this.range);
     this.h = [
       [T2('Пусть ~USDT\nработает', 190, 124), 0.4, S(2)],
-      [T2('Стейкинг\nот 20 до 100% ~годовых', 190, 104), S(2) + 0.1, S(5)],
+      [T2('Три тарифа\n~на выбор', 190, 124), S(2) + 0.1, S(5)],
       [T2('Прогноз дохода\n~каждый день', 190, 116), S(5) + 0.1, S(8)],
     ];
     this.rangeTxt.style.backgroundSize = '100% 100%';
@@ -133,7 +133,7 @@ scene({
     this.range.style.display = t > LAND.range - 0.01 && rb < 1 ? '' : 'none';
     this.rangeTxt.textContent = `${lo}–${hi}%`;
     Object.assign(this.range.style, { opacity: (clamp(r1 * 3) * (1 - rb)).toFixed(3), transform: `translateY(${((1 - oX(prog(t, LAND.range, LAND.range + 0.4))) * 40 + rb * 120).toFixed(1)}px)`, filter: rb > 0.01 ? `blur(${(rb * 8).toFixed(1)}px)` : '' });
-    sock(LAND.range, 540, 1360, 760, 250, 125, S(5), 150);
+    sock(LAND.range, 540, 1352, 900, 300, 120, S(5), 150);
     // section 3: the staked total and the deposit card (its forecast: ≈ $14.42 today)
     sock(LAND.staked, 540, 975, this.staked.w + 52, this.staked.h + 52, 64, S(8) - 0.3, 0);
     snap(this.staked, LAND.staked, 540, 975, S(8) + 0.2, 1);
