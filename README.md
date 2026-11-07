@@ -200,7 +200,34 @@ The promo, the six how-tos and the three Instagram reels now render in a brand m
 - **Sound effects:** only quiet functional cues stay over the music (`META.sfxOnly`).
 - **Staking:** «от 20 до 100% годовых» across the three plans. The app's Liquid Vault screen still reads 20–40% APY for that plan.
 
-## Instagram films in real 3D (RU, 9:16) — current
+## Instagram films: the app in a phone (RU, 9:16) — current
+
+`f_card`, `f_stake` and `f_swap`. They replace the 3D films below. Each one shows the app itself and tells one
+real flow with numbers that add up, cut to one stretch of its own track.
+
+| Film | Length | Music | Story |
+|---|---|---|---|
+| `f_card` | 24.6 s | `x_card_a`, 110 BPM, uncut: the intro and its riser, the drop at 4.36 s, a hall ring-out on the next downbeat. | A USDT coin rides the riser into the app's card; on the drop +$5,000 and the balance rolls $20,018.50 → $25,018.50 → the card drops into «Мои карты» on the phone, the two operations arrive (−$5,025 TRC-20, +$5,000) → the card lifts out and pays Starbucks −$18.50 → $25,000.00 → the operations sheet → «Добавить карту»: virtual and metal. |
+| `f_stake` | 30 s | `stake_a`, 92 BPM: the intro and the build uncut, one cut on a phrase boundary into the track's own outro. | The top of «Стейкинг» at the app's own size: four coins land in the safe on the build, the total rolls to $20,000.00, the forecast to $14.42 on the drop, then the camera pulls back into the phone → Liquid Vault 20–40% APY and its three vaults → «Макс» → $20,000 and ≈ $5,263.30 a year → «Открыть стейкинг» → the deposit is active, ≈ $14.42 today → the result. |
+| `f_swap` | 25.4 s | `ig_a` take 2, 120 BPM, uncut: the groove from frame one, the lift at 8 s, the track's own stop at 24 s. | USDT and BTC trade places around a glass ⇅ on the beats → they land in the swap screen → 1,000 is typed on the beat, ≈ 0.0119 BTC → the rate (the app's BTC price $83,992.01), the network fee, «Комиссия обмена — в курсе» → «Обменять», a check, +0.0119 BTC on the balance. |
+
+- **Screens:** `src/appkit.js` rebuilds «Обмен», «Стейкинг» and «Мои карты» in vector on the screenshots' own grid
+  (checked by overlaying them at 50% in the `f_kit` bench) inside the real phone frame, with the real header and tab bar.
+  Vector means the camera can push in and a panel can lift to any size and stay sharp.
+- **Renders:** the app's 3D art (the card, the safe, the card holder) is never shown above its own pixels. The card has
+  a copy without its baked balance (`assets/style/card_holo_blank.png`) so the balance can change.
+- **Liquid Glass:** only over content. A panel lifting out of the phone turns into glass over the blurred screen; the tap
+  mark, the notifications, the ⇅ and the result chips are glass. No glass blobs on the empty background.
+- **Music:** `tools/music_edit.py` gained `ring` (the music ends on a hit with a hall tail) and `fade_in`. Each film's beat
+  grid is fitted to the kicks of its edit (within 10 ms).
+
+```bash
+node tools/render.mjs video --workers 3 --reel f_card      # -> out/f_card/ (also f_stake, f_swap)
+python3 tools/sound.py out/f_card
+bash tools/finalize.sh renders/instagram/incpt_card.mp4 out/f_card
+```
+
+## Instagram films in real 3D (RU, 9:16) — superseded by the films above
 
 They replace the three reels below, which shared one template, one song and flat vector models.
 Each film is built anew: its own concept, its own song and light, its own motion and type animation.
