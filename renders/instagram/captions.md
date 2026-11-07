@@ -1,26 +1,30 @@
 # INCPT Wallet: Instagram films
 
-Three short films in the incpt.io style, 9:16, 1080×1920, built in real 3D with Liquid Glass.
-Each film has its own original generated track (vidIQ, royalty-free), its own light and its own motion.
+Three short films in the incpt.io style, 9:16, 1080×1920. Each one shows the app itself: its screens are rebuilt
+in vector to the app's own layout (sharp at any size), the 3D renders from the app are never enlarged, and Liquid
+Glass is used for what lifts out of the phone. Each film is cut to one stretch of its own generated track.
 
-- **Videos:** `incpt_x_*.mp4` in this folder (`renders/instagram/`), plus `_preview.mp4` for messengers.
-- **Covers:** `cover_x_*.jpg`, also here.
-- **Superseded:** the older reels (`incpt_ig_*.mp4`, `cover_card/stake/swap.jpg`) used one shared template and should no longer be posted.
+- **Videos:** `incpt_card.mp4`, `incpt_stake.mp4`, `incpt_swap.mp4` in this folder, plus `_preview.mp4` for messengers.
+- **Covers:** `cover_card_v2.jpg`, `cover_stake_v2.jpg`, `cover_swap_v2.jpg`.
+- **Superseded:** `incpt_x_*`, `incpt_ig_*` and the older covers should no longer be posted.
 
-**Safe areas.** Text stays in the upper part of the frame, models and UI sit in the middle, and the bottom is left free for the caption and the buttons.
+**Safe areas.** The headline stays in the upper part of the frame, the phone and the panels in the middle, and the
+bottom is left free for the caption and the buttons.
 
-All money amounts, percentages and operations are taken from the app's screens.
+All money amounts, percentages and operations are taken from the app's screens, and they add up: the card's
+$20,018.50 + $5,000 − $18.50 = $25,000.00; the forecast of $14.42 a day × 365 ≈ $5,263.30 a year; 1,000 USDT at the
+app's BTC price of $83,992.01 ≈ 0.0119 BTC.
 
 ---
 
-## 1. «Из крипты — в карту»: `incpt_x_card.mp4` (22 s)
+## 1. «Из крипты — в карту»: `incpt_card.mp4` (24.6 s)
 
-**Cover:** `cover_x_card.jpg`
+**Cover:** `cover_card_v2.jpg`
 
 ```
 Из крипты — в карту 💳
 
-Пополняете карту INCPT из USDT и платите ей как обычной картой — в кофейне, в магазине, онлайн.
+Пополняете карту INCPT из USDT и платите ей как обычной картой. Все пополнения и траты сразу видны в приложении.
 Виртуальные и металлическая — выбирайте сами.
 
 Всё прямо в Telegram 👉 ссылка в профиле
@@ -28,14 +32,14 @@ All money amounts, percentages and operations are taken from the app's screens.
 #INCPTWallet #криптокарта #криптовалюта #USDT #крипта #Telegram #финтех #crypto
 ```
 
-## 2. «Пусть USDT работает»: `incpt_x_stake.mp4` (26 s)
+## 2. «Пусть USDT работает»: `incpt_stake.mp4` (31 s)
 
-**Cover:** `cover_x_stake.jpg`
+**Cover:** `cover_stake_v2.jpg`
 
 ```
 Пусть ваши USDT работают 🔐
 
-Стейкинг в INCPT Wallet: от 20 до 100% годовых (Liquid, Monthly, Maximum), прогноз дохода — каждый день.
+Liquid Vault — 20–40% APY. Впишите сумму, нажмите «Открыть стейкинг» — и прогноз дохода виден каждый день.
 В Liquid Vault пополнять и выводить можно в любой момент (в пределах 20 000 USDT).
 
 Открыть стейкинг — в разделе Stake 👉 ссылка в профиле
@@ -45,14 +49,14 @@ All money amounts, percentages and operations are taken from the app's screens.
 #INCPTWallet #стейкинг #USDT #пассивныйдоход #криптовалюта #крипта #Telegram #crypto
 ```
 
-## 3. «Обмен внутри кошелька»: `incpt_x_swap.mp4` (18 s)
+## 3. «Обмен внутри кошелька»: `incpt_swap.mp4` (25.4 s)
 
-**Cover:** `cover_x_swap.jpg`
+**Cover:** `cover_swap_v2.jpg`
 
 ```
 Обмен — прямо в кошельке ⚡️
 
-Отдаёте USDT — получаете BTC. Выбираете сумму (25%, 50%, 75% или Макс), видите комиссию сети до обмена.
+Отдаёте USDT — получаете BTC. Вписываете сумму и сразу видите курс, комиссию сети и сколько получите.
 Комиссия обмена уже в курсе — без сюрпризов.
 
 Всё в Telegram 👉 ссылка в профиле
