@@ -62,7 +62,9 @@ scene({
     this.card = new Piece('pr_card', CARD.k, 4);
     // the card's sheen: a soft light band that crosses it on the tap
     this.sheen = document.createElement('div');
-    Object.assign(this.sheen.style, { position: 'absolute', inset: '0', borderRadius: '0px', pointerEvents: 'none', mixBlendMode: 'soft-light' });
+    const cc = CUT('pr_card'), ins = cc.pad * CARD.k;            // the light stays on the card itself, never on its shadow
+    Object.assign(this.sheen.style, { position: 'absolute', left: ins + 'px', top: ins + 'px', width: cc.box[2] * CARD.k + 'px', height: cc.box[3] * CARD.k + 'px',
+      borderRadius: cc.r * CARD.k + 'px', overflow: 'hidden', pointerEvents: 'none', mixBlendMode: 'soft-light' });
     this.card.el.appendChild(this.sheen);
     this.rows = ['pr_op_topcard', 'pr_op_topup', 'pr_op_starbucks', 'pr_op_nike'].map(n => new Piece(n, 0.95, 3));
     this.holder = new Piece('pr_holder', 1.9, 5);
