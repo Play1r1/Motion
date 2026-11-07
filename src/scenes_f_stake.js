@@ -99,9 +99,9 @@ scene({
     const ca = prog(t, S(2) + 0.4, S(2) + 0.6);
     this.card.set({ x: CARDP.x, y: CARDP.y + out(1) * 1000, o: ca, vis: t > S(2) + 0.4 && t < S(8) + 0.3 });
     const part = (p, t0, t1) => { const a = oX(prog(t, t0, t0 + 0.45)), b = iC(prog(t, t1 - 0.3, t1)); p.set({ o: clamp(a * 2.5) * (1 - b), dy: (1 - a) * 22 - b * 22 }); };
-    part(this.head, AT(1), S(5) + 0.25);                  // the plans leave as the deposit arrives (the card is never empty)
-    part(this.tabs, AT(2), S(5) + 0.25);
-    part(this.range, AT(4), S(5) + 0.25);
+    part(this.head, AT(1), S(5) + 0.1);                   // the plans leave just as the deposit arrives (the card is never empty)
+    part(this.tabs, AT(2), S(5) + 0.1);
+    part(this.range, AT(4), S(5) + 0.1);
     const r1 = oC(prog(t, AT(4), AT(4) + 0.5)), r2 = oC(prog(t, AT(4) + 0.45, AT(4) + 1.25));
     this.rangeTxt.textContent = `${Math.round(20 * r1)}–${Math.round(lerp(20, 100, r2))}%`;
     part(this.total, S(5) + 0.15, S(8) + 1);
