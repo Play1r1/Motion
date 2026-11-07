@@ -184,12 +184,12 @@
 <script>
   window.REEL = new URLSearchParams(location.search).get('reel') || 'wallet';
   window.STAGE = { topup: [1080, 1080] }[REEL] || [1080, 1920];
-  window.MANIFEST_NAME = (REEL.startsWith('howto_') || REEL.startsWith('x_howto_')) ? 'howto' : REEL.startsWith('ig_') ? 'ig' : REEL.startsWith('presale') ? 'presale' : (REEL.startsWith('x_') || REEL.startsWith('lab3d')) ? 'welcome' : REEL;   // series share one manifest
+  window.MANIFEST_NAME = (REEL.startsWith('howto_') || REEL.startsWith('x_howto_')) ? 'howto' : REEL.startsWith('f_') ? 'promo' : REEL.startsWith('ig_') ? 'ig' : REEL.startsWith('presale') ? 'presale' : (REEL.startsWith('x_') || REEL.startsWith('lab3d')) ? 'welcome' : REEL;   // series share one manifest
   window.SCENES_FILE = { presale_chrome: 'presale' }[REEL] || (REEL.startsWith('x_howto_') ? REEL.slice(2) : REEL);   // ХРОМ versions reuse a reel's scenes; 3D how-tos reuse the how-to's data
   window.CHROME = ['welcome', 'presale_chrome', 'presale2', 'presale3', 'presale4', 'presale5'].includes(REEL);
   document.body.classList.toggle('chrome', CHROME);
   // the incpt.io brand for the reels rebuilt after 2026-11-06 (white canvas, navy type, the site's gradient, the lock-up)
-  window.BRAND = REEL.startsWith('howto_') || REEL.startsWith('ig_') || REEL === 'promo' || REEL.startsWith('x_') || REEL.startsWith('lab3d');
+  window.BRAND = REEL.startsWith('howto_') || REEL.startsWith('ig_') || REEL === 'promo' || REEL.startsWith('x_') || REEL.startsWith('f_') || REEL.startsWith('lab3d');
   document.body.classList.toggle('brand', BRAND);
   document.body.classList.toggle('g3', REEL.startsWith('x_howto_'));        // the 3D how-tos: the step card's glass is drawn in WebGL
   document.documentElement.style.setProperty('--W', STAGE[0] + 'px');

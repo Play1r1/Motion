@@ -383,6 +383,111 @@
     294
    ],
    "r": 40
+  },
+  "pr_deposit": {
+   "src": "promo/build/pr_deposit.png",
+   "box": [
+    47,
+    673,
+    826,
+    235
+   ],
+   "pad": 90,
+   "size": [
+    1006,
+    415
+   ],
+   "r": 44
+  },
+  "pr_tabs": {
+   "src": "promo/build/pr_tabs.png",
+   "box": [
+    84,
+    320,
+    752,
+    141
+   ],
+   "pad": 90,
+   "size": [
+    932,
+    321
+   ],
+   "r": 34
+  },
+  "pr_fees": {
+   "src": "promo/build/pr_fees.png",
+   "box": [
+    44,
+    1410,
+    832,
+    426
+   ],
+   "pad": 90,
+   "size": [
+    1012,
+    606
+   ],
+   "r": 44
+  },
+  "pr_pct_25": {
+   "src": "promo/build/pr_pct_25.png",
+   "box": [
+    44,
+    1272,
+    192,
+    96
+   ],
+   "pad": 60,
+   "size": [
+    312,
+    216
+   ],
+   "r": 30
+  },
+  "pr_pct_50": {
+   "src": "promo/build/pr_pct_50.png",
+   "box": [
+    256,
+    1272,
+    196,
+    96
+   ],
+   "pad": 60,
+   "size": [
+    316,
+    216
+   ],
+   "r": 30
+  },
+  "pr_pct_75": {
+   "src": "promo/build/pr_pct_75.png",
+   "box": [
+    472,
+    1272,
+    192,
+    96
+   ],
+   "pad": 60,
+   "size": [
+    312,
+    216
+   ],
+   "r": 30
+  },
+  "pr_pct_max": {
+   "src": "promo/build/pr_pct_max.png",
+   "box": [
+    684,
+    1272,
+    192,
+    96
+   ],
+   "pad": 60,
+   "size": [
+    312,
+    216
+   ],
+   "r": 30
   }
  },
  "slots": {
